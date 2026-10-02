@@ -26,7 +26,7 @@
 :root{
   --bg:#f2f4f6; --surface:#ffffff; --fill:#f2f4f6;--chip:#ffffff; --track:#e5e8eb; --line:#e5e8eb;
   --ink:#191f28; --sub:#4e5968; --muted:#8b95a1;
-  --accent:#3182f6; --accent-press:#1b64da; --accent-soft:#e8f3ff; --on-accent:#ffffff;
+  --accent:#3182f6; --accent-press:#1b64da; --accent-soft:#e8f3ff; --banner:#d6e8ff; --on-accent:#ffffff;
   --now:#0a9c5d; --now-soft:#e5f8ef; --old:#6b7684; --old-soft:#f2f4f6;
   --warn:#c26a00; --warn-soft:#fff3e0; --mark:rgba(255,196,0,.34);
   --del:#e5484d; --star:#d98a00; --star-soft:#fff4d6;
@@ -38,7 +38,7 @@
   color-scheme:dark;
   --bg:#101013; --surface:#1d1d22; --fill:#2a2a31;--chip:#2a2a31; --track:#2a2a31; --line:#2e2e36;
   --ink:#f2f2f5; --sub:#c4c4cc; --muted:#8a8a95;
-  --accent:#4c9aff; --accent-press:#3182f6; --accent-soft:#18263d; --on-accent:#ffffff;
+  --accent:#4c9aff; --accent-press:#3182f6; --accent-soft:#18263d; --banner:#18263d; --on-accent:#ffffff;
   --now:#41d392; --now-soft:#143023; --old:#a0a0aa; --old-soft:#2a2a31;
   --warn:#ffb547; --warn-soft:#3a2a12; --mark:rgba(255,196,0,.26);
   --del:#ff7a7f; --star:#ffc53d; --star-soft:#3a2f12;
@@ -48,7 +48,7 @@
   color-scheme:dark;
   --bg:#101013; --surface:#1d1d22; --fill:#2a2a31;--chip:#2a2a31; --track:#2a2a31; --line:#2e2e36;
   --ink:#f2f2f5; --sub:#c4c4cc; --muted:#8a8a95;
-  --accent:#4c9aff; --accent-press:#3182f6; --accent-soft:#18263d; --on-accent:#ffffff;
+  --accent:#4c9aff; --accent-press:#3182f6; --accent-soft:#18263d; --banner:#18263d; --on-accent:#ffffff;
   --now:#41d392; --now-soft:#143023; --old:#a0a0aa; --old-soft:#2a2a31;
   --warn:#ffb547; --warn-soft:#3a2a12; --mark:rgba(255,196,0,.26);
   --del:#ff7a7f; --star:#ffc53d; --star-soft:#3a2f12;
@@ -187,7 +187,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .mq svg{width:18px;height:18px;flex:none;color:var(--muted)}
 .mq span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mq span.ph{color:var(--muted);font-weight:500}
-.md{flex:none;font:inherit;font-size:13.5px;font-weight:700;border:0;border-radius:12px;padding:10px 12px;background:var(--accent-soft);color:var(--accent);font-variant-numeric:tabular-nums;cursor:pointer;white-space:nowrap}
+.md{flex:none;font:inherit;font-size:13.5px;font-weight:700;border:0;border-radius:12px;padding:10px 12px;background:var(--banner);color:var(--accent);font-variant-numeric:tabular-nums;cursor:pointer;white-space:nowrap}
 .md.none{background:var(--fill);color:var(--muted)}
 .qlabel{flex:none;font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap;margin-right:2px}
 .qd{font:inherit;font-size:14px;font-weight:600;white-space:nowrap;border:1px solid var(--edge);background:var(--surface);color:var(--sub);border-radius:999px;padding:8px 14px;cursor:pointer;font-variant-numeric:tabular-nums;box-shadow:var(--lift)}
@@ -225,7 +225,7 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
 @media (max-width:560px){.status .st-of{display:none}}
 
 /* 요약 띠 */
-.banner{margin:6px 0 0;padding:16px 20px;border-radius:20px;background:var(--accent-soft);color:var(--sub);font-size:14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;font-variant-numeric:tabular-nums}
+.banner{margin:6px 0 0;padding:16px 20px;border-radius:20px;background:var(--banner);color:var(--sub);font-size:14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;font-variant-numeric:tabular-nums}
 .banner .bdate{width:100%;font-weight:600}
 .banner .big{font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-.03em}
 .banner .small{font-size:15px;font-weight:700;color:var(--muted)}
@@ -419,7 +419,7 @@ dialog.viewer::backdrop{background:rgba(0,0,0,.6)}
 /* 카드 그림 밑 제목 */
 .imgs figure{margin:0;max-width:100%}
 .imgs figcaption{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.4;max-width:260px}
-footer{word-break:keep-all;margin-top:48px;padding:28px 24px;border-radius:24px;background:var(--fill);font-size:13.5px;color:var(--muted);line-height:1.75}
+footer{word-break:keep-all;margin-top:48px;padding:28px 24px;border-radius:24px;background:var(--surface);box-shadow:var(--lift);border:1px solid var(--edge);font-size:13.5px;color:var(--muted);line-height:1.75} /* 밝은 화면에선 --fill이 바탕색과 같아 상자가 안 보였음: 카드처럼 흰 바탕 */
 .ft-brand{font-size:16px;color:var(--ink);font-weight:700;letter-spacing:-.02em}
 .ft-brand b{color:var(--accent);font-weight:800}
 .ft-brand span{display:block;font-size:12.5px;font-weight:500;color:var(--muted);letter-spacing:.01em;margin-top:2px}
@@ -450,7 +450,7 @@ footer a{color:var(--accent)}
   .printonly{display:inline!important}
   @page{size:A4;margin:14mm 12mm}
   /* 기기가 어두운 모드여도 흰 종이에 검은 글씨로 (어두운 색 규칙이 더 강해서 선택자를 같이 적는다) */
-  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){color-scheme:light;--bg:#fff;--surface:#fff;--fill:#f2f4f6;--chip:#ffffff;--ink:#000;--sub:#222;--muted:#555;--edge:transparent;--lift:none;--accent:#1b64da;--accent-soft:#e8f3ff;--now:#0a7a48;--now-soft:#e5f8ef;--old:#444;--old-soft:#f2f4f6;--warn:#a35800;--warn-soft:#fff3e0;--mark:rgba(255,196,0,.34)}
+  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){color-scheme:light;--bg:#fff;--surface:#fff;--fill:#f2f4f6;--chip:#ffffff;--ink:#000;--sub:#222;--muted:#555;--edge:transparent;--lift:none;--accent:#1b64da;--accent-soft:#e8f3ff;--banner:#e8f3ff;--now:#0a7a48;--now-soft:#e5f8ef;--old:#444;--old-soft:#f2f4f6;--warn:#a35800;--warn-soft:#fff3e0;--mark:rgba(255,196,0,.34)}
   body{background:#fff;padding:0;font-size:12pt}
   .wrap{max-width:none;padding:0}
   header,footer,.relq,.acts,.excl,.topics,.more,.minibar,.totop,.toast,.upd,.offline,.note,.resline,.endfb,dialog,#note,.noprint{display:none!important}
@@ -579,7 +579,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.03.1"</script>버전 v2026.10.03.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.03.2"</script>버전 v2026.10.03.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
