@@ -314,6 +314,7 @@ article.off{opacity:.75}
 .topics{margin-top:14px;background:var(--surface);border:1px solid var(--edge);border-radius:16px;padding:12px 14px;box-shadow:var(--lift)}
 .topics summary{font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer}
 .topics summary .ts{margin-left:6px;font-size:12.5px;font-weight:500;color:var(--muted)}
+.favoth{display:block;margin-top:4px} /* 즐겨찾기만 볼 때 '다른 쪽에도 N개' 안내: 앞 문장과 섞여 줄이 끊기지 않게 따로 한 줄 */
 .tg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
 .tg .qlabel{flex-basis:100%;margin-bottom:-2px}
 .tg .qd{font-size:13.5px;padding:6px 12px;box-shadow:none;background:var(--fill)} /* 흰 상자 안이라 버튼도 흰색이면 밝은 화면에서 글자만 떠 보여서 회색 바탕으로 */
@@ -465,6 +466,8 @@ footer a{color:var(--accent)}
   *,*::before,*::after{box-shadow:none!important;text-shadow:none!important;filter:none!important}
   article{border:0;border-top:1.5px solid #999;border-radius:0;background:#fff;padding:12px 2px;break-inside:avoid;margin-bottom:0}
   .list>article:last-child{border-bottom:1.5px solid #999}
+  /* 표준화 자료를 펼친 조항은 통째로 한 쪽에 안 들어가 다음 쪽으로 밀리며 첫 쪽이 비었다(2026-10-04 6.1.2.1) → 쪽 사이에서 나뉘게 하고, 안의 표준화 카드 하나하나만 안 쪼개지게 */
+  article:has(>.rel:not([hidden])){break-inside:auto}
   #dateBanner[hidden]~#out>div.list>article:first-child{border-top:0} /* 허가일 안내가 없으면 머리글 밑줄 바로 아래라, 첫 카드 윗줄까지 두 줄로 찍혔다 */
   .pill,.label,mark,.imgs button,.imgs img,.banner{border-radius:0!important}
   .pill.hit{background:none;color:#000;border:1.5px solid #000} /* 배경색이 안 찍혀도 보이게 */
@@ -580,7 +583,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.04.1"</script>버전 v2026.10.04.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.04.2"</script>버전 v2026.10.04.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -663,6 +666,8 @@ const keyOf=(x,isStd)=>x.__k||((isStd?"s|":"c|")+[x.title,x.label,x.from,x.to,te
 const favs=new Set(); try{JSON.parse(localStorage.getItem("elisn-fav")||"[]").forEach(k=>favs.add(k))}catch(e){}
 const saveFavs=()=>{try{localStorage.setItem("elisn-fav",JSON.stringify([...favs]))}catch(e){}};
 let favOnly=false;
+// 조항 안 '표준화 자료 N건'을 펼친 조항: 다시 그려도(인쇄·즐겨찾기 등) 펼친 채로 둔다 → 펼쳐 보던 그대로 함께 인쇄된다 (2026-10-04 운영자)
+const relOpen=new Set();
 const favCount=()=>new Set((src==="s"?curS():cur()).map(x=>keyOf(x,src==="s")).filter(k=>favs.has(k))).size; // 지금 자료(검사기준/표준화)에서 별표한 수
 const favLabel=()=>{const n=favCount(),b=document.getElementById("favonly");b.textContent=favOnly?`★ 즐겨찾기만 보는 중 · ${n}`:`☆ 즐겨찾기만${n?" · "+n:""}`;b.setAttribute("aria-pressed",favOnly)};
 // 최근 검색어: 이 기기에 5개까지
@@ -976,8 +981,8 @@ function card(x,rxs,isStd,upNote,why){
     <div class="meta">${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<button type="button" class="pill rev" data-act="cmp" data-i="${x.__i}" title="옛 글과 비교">${dot(x.from)} 개정 ›</button>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
     <div class="text${long?" clip fold":""}">${textHTML(bodyText(x),rxs)}</div>
     ${imgs.length?`<div class="imgs">${imgs.map((p,n)=>{const cap=(x.imageCap||[])[n]||"";p=imgSrc(p);return `<figure><button type="button" data-img="${esc(p)}" data-cap="${esc(cap||x.title||"")}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(cap||x.title||"그림")}"></button>${cap?`<figcaption>${esc(cap)}</figcaption>`:""}</figure>`}).join("")}</div>`:""}
-    <div class="acts"><button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${long?`<button class="chipbtn" type="button" data-act="open" aria-expanded="false">전체 보기</button>`:""}${nv>1?`<button class="chipbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교 ${nv}</button>`:""}${rel.length?`<button class="chipbtn relbtn" type="button" data-act="rel" aria-expanded="false">표준화 자료 ${rel.length}건</button>`:""}<span class="acts-r"><button class="linkbtn" type="button" data-act="report">의견 남기기</button>${isStd?"":`<button class="chipbtn primary" type="button" data-act="law" data-i="${x.__i}">원문 보기</button>`}</span></div>
-    ${rel.length?`<div class="rel" hidden>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
+    <div class="acts"><button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${long?`<button class="chipbtn" type="button" data-act="open" aria-expanded="false">전체 보기</button>`:""}${nv>1?`<button class="chipbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교 ${nv}</button>`:""}${rel.length?`<button class="chipbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료 ${rel.length}건</button>`:""}<span class="acts-r"><button class="linkbtn" type="button" data-act="report">의견 남기기</button>${isStd?"":`<button class="chipbtn primary" type="button" data-act="law" data-i="${x.__i}">원문 보기</button>`}</span></div>
+    ${rel.length?`<div class="rel"${relOpen.has(k)?"":" hidden"}>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
   </article>`;
 }
 function render(){
@@ -1006,7 +1011,7 @@ function render(){
   else if(p&&p.from===p.to){ d=p.from;
     // 6자리가 두 뜻으로 읽히면(201205) 다른 뜻을 고를 수 있게, 앞날이면 오타일 수 있다고 알린다
     const alt=p.alt?` · <button type="button" class="qd" data-pick="${p.alt.from.slice(0,7)}">${+p.alt.from.slice(0,4)}년 ${+p.alt.from.slice(5,7)}월로 읽기</button>`:"";
-    msg.innerHTML=`→ ${kor(d)}${d>todayIso()?" · 앞으로 올 날짜예요. 허가일이 맞는지 확인해 주세요":""}${alt}`; }
+    msg.innerHTML=`→ ${kor(d)}${d>todayIso()?" · 앞으로 올 날짜예요. 허가일이 맞는지 확인해 주세요.":""}${alt}`; }
   else if(p){
     const label=p.y?`${p.from.slice(0,4)}년`:`${+p.from.slice(0,4)}년 ${+p.from.slice(5,7)}월`;
     split=changeDays(isStd?[]:[...res,...part],p.from,p.to); // 일부만 맞는 조항도 그 기간 안에서 기준이 바뀔 수 있어 함께 본다
@@ -1020,7 +1025,7 @@ function render(){
   }
   // 표준화 자료는 허가일로 거르지 않는다: 날짜 칸·바로 고르기를 흐리게 하고, 날짜 아래 안내로 알린다 (값은 두어 검사기준으로 돌아가면 다시 적용)
   document.body.classList.toggle("stdmode",isStd);
-  if(isStd&&raw.trim()){ msg.hidden=false; msg.className="dmsg off"; msg.textContent="표준화 자료는 허가일로 거르지 않아요. 검사기준으로 돌아가면 다시 적용돼요"; }
+  if(isStd&&raw.trim()){ msg.hidden=false; msg.className="dmsg off"; msg.textContent="표준화 자료는 허가일로 거르지 않아요. 검사기준으로 돌아가면 다시 적용돼요."; }
   markQuick(d);
   // 얇은 검색줄에 지금 검색어·허가일을 보여 준다
   const qv=q.trim(), dv=raw.trim();
@@ -1058,7 +1063,11 @@ function render(){
   const exNote=exQ&&q===exQ?`예시로 찾았어요: <b>${esc(exQ)}</b><button class="chipbtn" type="button" data-act="exclear">지우기</button> `:"";
   // 즐겨찾기만 볼 때: 별표한 조항을 한 번에 지우는 버튼 (2026-10-01 운영자)
   const favClr=favOnly&&favCount()&&res.length?` <button class="chipbtn noprint" type="button" data-act="favclear">모두 지우기</button>`:"";
-  $("#note").innerHTML=exNote+esc(note.join(" "))+favClr;
+  // 즐겨찾기 숫자는 지금 보는 쪽(검사기준/표준화)만 센다. 다른 쪽에도 별표한 게 있으면 알려 주고 바로 넘어가게 (조항 안 '표준화 자료 N건'에서 별표한 것 등, 2026-10-04 운영자)
+  const oName=isStd?"검사기준":"표준화 자료", oc=favOnly&&(isStd||curS().length)?new Set((isStd?cur():curS()).map(x=>keyOf(x,!isStd)).filter(k=>favs.has(k))).size:0;
+  const oBtn=`<button class="chipbtn noprint" type="button" data-act="favother">${oName} 보기</button>`;
+  const favOth=oc&&res.length?` <span class="favoth">${oName}에도 즐겨찾기 ${oc}개가 있어요. ${oBtn}</span>`:"";
+  $("#note").innerHTML=exNote+esc(note.join(" "))+favClr+favOth;
   $("#dateBanner").hidden=!useDate;
   const revList=Object.keys(revDays).sort();
   const revTag=!eraStart?"":revList.length?`<span class="revs"><span class="rl">${dot(eraStart)} 체계 뒤 개정<button type="button" class="rvb all${revSel?"":" off"}" data-rev=""${revSel?"":" tabindex=\"-1\" aria-hidden=\"true\""}>전체 보기</button></span>${revList.map(f=>`<button type="button" class="rvb${revSel===f?" on":""}" data-rev="${f}">${dot(f)} ${revDays[f]}건</button>`).join("")}</span>`:
@@ -1086,6 +1095,7 @@ function render(){
   if(!res.length&&favOnly){ const hq=!!q.trim(), fc=favCount();
     const qb=`<button class="chipbtn" type="button" data-act="qclear">검색어 지우기</button>`, db=`<button class="chipbtn" type="button" data-act="dclear">허가일 지우기</button>`;
     const msg=!favs.size?"아직 즐겨찾기한 조항이 없어요. 조항 아래 ☆ 즐겨찾기를 누르면 여기 모여요."
+      :!fc&&oc?`${isStd?"표준화 자료":"검사기준"}에는 즐겨찾기한 게 없어요. ${oName}에 ${oc}개 있어요.<br>${oBtn}`
       :useDate&&!hq&&!revSel&&fc?`즐겨찾기한 조항 중 이 허가일에 적용되는 게 없어요. 허가일을 지우면 ${fc}개 다 보여요.<br>${db}`
       :hq&&!useDate?`즐겨찾기한 조항 중 이 검색어에 맞는 게 없어요.<br>${qb}`
       :hq&&useDate?`즐겨찾기한 조항 중 지금 검색에 맞는 게 없어요. 검색어나 허가일을 지워 보세요.<br>${qb} ${db}`
@@ -1265,7 +1275,7 @@ $("#out").addEventListener("click",e=>{
     c.classList.add("fold-ok"); c.classList.toggle("shut"); a.setAttribute("aria-expanded",!c.classList.contains("shut")); return; }
   const art=a.closest("article");
   if(a.dataset.act==="open") foldText(art);
-  else if(a.dataset.act==="rel"){const r=art.querySelector(":scope>.rel");r.hidden=!r.hidden;a.setAttribute("aria-expanded",!r.hidden)} // 버튼 모양으로 열림·닫힘을 보여 준다
+  else if(a.dataset.act==="rel"){const r=art.querySelector(":scope>.rel");r.hidden=!r.hidden;a.setAttribute("aria-expanded",!r.hidden);relOpen[r.hidden?"delete":"add"](art.dataset.k)} // 버튼 모양으로 열림·닫힘을 보여 준다
   else if(a.dataset.act==="more"){limit+=40;render()}
   else if(a.dataset.act==="report") report(art);
   else if(a.dataset.act==="law") showLaw(+a.dataset.i);
@@ -1275,7 +1285,7 @@ $("#out").addEventListener("click",e=>{
     // 같은 조항이 화면 여러 곳(시기별 칸 등)에 있으면 함께 바꾼다
     document.querySelectorAll("#out article").forEach(el=>{ if(el.dataset.k!==k) return; const b=el.querySelector(':scope>.acts>[data-act="fav"]'); if(b){b.setAttribute("aria-pressed",on);b.innerHTML=favLbl(on)} });
     if(favOnly&&!on) render(); else favLabel();
-    toast(on?"즐겨찾기에 넣었어요. 위의 ‘즐겨찾기만’으로 모아 볼 수 있어요":"즐겨찾기에서 뺐어요",2500);
+    toast(on?"즐겨찾기에 넣었어요. 위의 ‘즐겨찾기만’으로 모아 볼 수 있어요.":"즐겨찾기에서 뺐어요",2500);
   }
   else if(a.dataset.act==="excl"){const l=a.nextElementSibling;l.hidden=!l.hidden;a.textContent=a.textContent.replace(l.hidden?"접기":"보기",l.hidden?"보기":"접기")}
 });
@@ -1559,7 +1569,7 @@ $("#share").addEventListener("click",async()=>{
   catch(e){ // 새 방식이 막힌 환경: 숨은 칸에 넣고 옛 방식으로 복사
     const ta=document.createElement("textarea"); ta.value=url; ta.setAttribute("readonly",""); ta.style.cssText="position:fixed;opacity:0;top:0";
     document.body.appendChild(ta); ta.select(); try{ ok=document.execCommand("copy"); }catch(_){} ta.remove(); }
-  toast(ok?"링크를 복사했어요. 붙여 넣어 보내면 같은 화면이 열려요":"주소창의 주소를 복사해 보내 주세요",ok?3000:4000);
+  toast(ok?"링크를 복사했어요. 붙여 넣어 보내면 같은 화면이 열려요.":"주소창의 주소를 복사해 보내 주세요",ok?3000:4000);
 });
 // 폰으로 이어 보기(2026-10-01 운영자): PC에서만 버튼을 보이고, 누르면 지금 화면 주소(검색어·허가일·종류 포함)를 QR로 띄운다.
 // 폰 카메라로 비추면 같은 화면이 폰에서 열린다. QR 그리는 파일(lib/qrcode.js, MIT)은 처음 누를 때만 받는다
@@ -1667,6 +1677,8 @@ $("#dateBanner").addEventListener("click",e=>{ const rb=e.target.closest("[data-
   const hd=$("header"), off=getComputedStyle(hd).position==="sticky"?hd.offsetHeight+12:72;
   scrollTo({top:first.getBoundingClientRect().top+scrollY-off,behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"}); });
 // 즐겨찾기 모두 지우기: 지금 보는 종류·자료(검사기준/표준화)에서 별표한 것만 지운다. 버튼 옆 숫자와 같은 범위
+// 다른 쪽(검사기준/표준화) 즐겨찾기 보기: 즐겨찾기만 보기는 그대로 두고 자료만 바꾼다
+document.addEventListener("click",e=>{ if(!e.target.closest('[data-act="favother"]')) return; $(`[data-src="${src==="s"?"c":"s"}"]`).click(); scrollTo(0,0); });
 $("#note").addEventListener("click",e=>{ if(!e.target.closest('[data-act="favclear"]')) return;
   const isStd=src==="s", ks=[...new Set((isStd?curS():cur()).map(x=>keyOf(x,isStd)).filter(k=>favs.has(k)))];
   if(!ks.length) return;
