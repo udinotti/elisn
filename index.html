@@ -583,7 +583,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.04.2"</script>버전 v2026.10.04.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.04.3"</script>버전 v2026.10.04.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -1432,6 +1432,8 @@ const tidy=s=>s.replace(/([가-힣])\?(?=[가-힣A-Za-z0-9])/g,"$1·").replace(/
   .replace(/[＜＞＝＋]/g,c=>({"＜":"<","＞":">","＝":"=","＋":"+"})[c])
   .replace(/(\d) °/g,"$1°")            // "35 °" → "35°" (판마다 띄어쓰기만 달라 비교에서 바뀐 말로 잡히던 것)
   .replace(/(\S)[ \t]{2,}(?=\S)/g,"$1 "); // 줄 가운데 겹빈칸 → 한 칸 (줄 앞 들여쓰기는 그대로)
+// 원문 글 첫머리의 조항 번호가 창 제목과 같으면 본문에선 뺀다 (번호가 두 번 보이지 않게, 2026-10-04 운영자). 원문 자료는 그대로, 보여 줄 때만
+const dropNum=(t,n)=>{ t=String(t||""); return n&&t.startsWith(n)&&/\s/.test(t.charAt(n.length))?t.slice(n.length).replace(/^[ \t]+/,""):t; };
 async function showLaw(i){
   const x=byI(i); const dlg=$("#lawdlg"), my=++lawSeq;
   $("#lawttl").textContent=x.label&&/^\d/.test(x.label)?dotAll(x.label):(x.title||"");
@@ -1440,7 +1442,7 @@ async function showLaw(i){
   if(!dlg.open) dlg.showModal();
   if(x.kind||x.added){ // 종류 자료·보충한 옛 판 글은 고시 원문에서 바로 옮긴 글이라 그대로 보여 준다
     $("#lawsrc").textContent=x.srcName||""; $("#lawttl").textContent=x.label||x.title||""; $("#lawfull").href=x.srcUrl||lawUrl(x);
-    $("#lawbody").textContent=x.text||""; return; }
+    $("#lawbody").textContent=dropNum(x.text,x.label); return; }
   try{
     const L=await loadLaw(); if(my!==lawSeq) return; let r=L.clauses[i];
     if(!r){ $("#lawsrc").textContent="원문 조각을 자동으로 찾지 못한 조항이에요";
@@ -1452,7 +1454,7 @@ async function showLaw(i){
       r=all.filter(v=>L.sources[v.src].date<=d).pop()||all[0]; }
     const s=L.sources[r.src];
     $("#lawsrc").textContent=s.name; $("#lawttl").textContent=r.num; $("#lawfull").href=s.url;
-    $("#lawbody").textContent=tidy(r.text);
+    $("#lawbody").textContent=dropNum(tidy(r.text),r.num);
     const w=[];
     if(r.near) w.push("이 조항이 적용되던 때의 판 원문이 없어 가장 가까운 판으로 보여 줘요. 글이 조금 다를 수 있어요.");
     if(r.quoted) w.push("2009 고시보다 앞선 기준이라, 원문 중 \"종전기준\"이라고 인용된 부분이 이 조항의 근거예요.");
