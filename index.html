@@ -130,6 +130,7 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .nofbl{display:inline-block;margin-top:10px;font-size:14px}
 .nofbl .linkbtn{padding:4px 2px;font-size:14px;color:var(--accent);font-weight:700;text-decoration-color:currentColor}
 .chipbtn.primary{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.chipbtn.srcb{font-size:12.5px;padding:6px 10px;color:var(--muted);font-weight:600} /* 카드 글이 원문과 같을 때의 "출처": 덜 눈에 띄게 */
 /* 맨 위로 */
 .totop{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:15;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.16)}
 .totop svg{width:22px;height:22px}
@@ -279,6 +280,7 @@ article.warn{box-shadow:inset 0 0 0 1.5px var(--warn)}
 /* 허가일 직전 개정일에 바뀐 조항 표시 (누르면 시기별 비교) */
 .pill.rev{background:var(--warn-soft);color:var(--warn);border:0;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
 span.pill.rev{cursor:default}
+.pill.sum{background:var(--fill);color:var(--sub);border:1px dashed var(--muted);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer} /* 원래 자료가 원문을 줄여 적은 조항(원문이 길어 요약을 남긴 것): 눌러서 원문 보기 */
 /* 허가일 칸의 개정일 목록: 누르면 그 날 개정만 */
 .banner .revs{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
 .banner .revs .rl{flex-basis:100%;display:flex;align-items:center;gap:8px;min-height:28px;font-size:13px;font-weight:700;color:var(--muted)} /* 제목은 한 줄 따로, 개정일 버튼은 그 아래 한데 모아 */
@@ -583,7 +585,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.04.3"</script>버전 v2026.10.04.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.04.4"</script>버전 v2026.10.04.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -668,6 +670,8 @@ const saveFavs=()=>{try{localStorage.setItem("elisn-fav",JSON.stringify([...favs
 let favOnly=false;
 // 조항 안 '표준화 자료 N건'을 펼친 조항: 다시 그려도(인쇄·즐겨찾기 등) 펼친 채로 둔다 → 펼쳐 보던 그대로 함께 인쇄된다 (2026-10-04 운영자)
 const relOpen=new Set();
+// 카드 글과 원문 보기 글의 관계(빌드가 미리 비교, data/fixes.json lawRel): "s" 같음 → 버튼을 작은 "출처"로, "p" 카드가 조항 일부 → "원문 전체" (2026-10-04 운영자)
+const LAWREL={};
 const favCount=()=>new Set((src==="s"?curS():cur()).map(x=>keyOf(x,src==="s")).filter(k=>favs.has(k))).size; // 지금 자료(검사기준/표준화)에서 별표한 수
 const favLabel=()=>{const n=favCount(),b=document.getElementById("favonly");b.textContent=favOnly?`★ 즐겨찾기만 보는 중 · ${n}`:`☆ 즐겨찾기만${n?" · "+n:""}`;b.setAttribute("aria-pressed",favOnly)};
 // 최근 검색어: 이 기기에 5개까지
@@ -969,6 +973,10 @@ function foldText(art){
   if(b){b.textContent=closing?"전체 보기":"접기"; b.setAttribute("aria-expanded",!closing);}
   if(closing&&art.getBoundingClientRect().top<0) art.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
 }
+// 원문 보기 버튼: 종류 자료·보충한 옛 판 글은 원문에서 바로 옮긴 글이라 "출처"
+const lawBtn=x=>{ const r=x.kind||x.added?"s":LAWREL[x.__i];
+  return r==="s"?`<button class="chipbtn srcb" type="button" data-act="law" data-i="${x.__i}" title="카드 글이 고시 원문과 같아요. 눌러서 어느 고시의 몇 년 판인지 봐요">출처</button>`
+    :`<button class="chipbtn primary" type="button" data-act="law" data-i="${x.__i}"${r==="p"?' title="카드는 조항의 일부예요. 눌러서 조항 전체 원문을 봐요"':""}>${r==="p"?"원문 전체":"원문 보기"}</button>`; };
 function card(x,rxs,isStd,upNote,why){
   const r=!isStd&&range(x);
   const rel=isStd?[]:relStd(x);
@@ -978,10 +986,10 @@ function card(x,rxs,isStd,upNote,why){
   return `<article class="${r&&r.bad?"warn":""}${why?" off":""}" data-k="${esc(k)}">
     ${why?`<div class="why">적용 안 됨 · ${esc(why)}</div>`:""}
     <div class="head">${shownLabel(x)||!x.label?`<span class="label">${esc(dotAll(shownLabel(x)||"번호 없음"))}</span>`:""}<span class="title">${hl(x.title||"",rxs)}</span></div>
-    <div class="meta">${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<button type="button" class="pill rev" data-act="cmp" data-i="${x.__i}" title="옛 글과 비교">${dot(x.from)} 개정 ›</button>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
+    <div class="meta">${x.summary?`<button type="button" class="pill sum" data-act="law" data-i="${x.__i}" title="원래 자료가 원문을 줄여 적은 조항이에요. 눌러서 고시 원문을 확인하세요">요약 · 원문 확인 ›</button>`:""}${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<button type="button" class="pill rev" data-act="cmp" data-i="${x.__i}" title="옛 글과 비교">${dot(x.from)} 개정 ›</button>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
     <div class="text${long?" clip fold":""}">${textHTML(bodyText(x),rxs)}</div>
     ${imgs.length?`<div class="imgs">${imgs.map((p,n)=>{const cap=(x.imageCap||[])[n]||"";p=imgSrc(p);return `<figure><button type="button" data-img="${esc(p)}" data-cap="${esc(cap||x.title||"")}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(cap||x.title||"그림")}"></button>${cap?`<figcaption>${esc(cap)}</figcaption>`:""}</figure>`}).join("")}</div>`:""}
-    <div class="acts"><button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${long?`<button class="chipbtn" type="button" data-act="open" aria-expanded="false">전체 보기</button>`:""}${nv>1?`<button class="chipbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교 ${nv}</button>`:""}${rel.length?`<button class="chipbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료 ${rel.length}건</button>`:""}<span class="acts-r"><button class="linkbtn" type="button" data-act="report">의견 남기기</button>${isStd?"":`<button class="chipbtn primary" type="button" data-act="law" data-i="${x.__i}">원문 보기</button>`}</span></div>
+    <div class="acts"><button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${long?`<button class="chipbtn" type="button" data-act="open" aria-expanded="false">전체 보기</button>`:""}${nv>1?`<button class="chipbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교 ${nv}</button>`:""}${rel.length?`<button class="chipbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료 ${rel.length}건</button>`:""}<span class="acts-r"><button class="linkbtn" type="button" data-act="report">의견 남기기</button>${isStd?"":lawBtn(x)}</span></div>
     ${rel.length?`<div class="rel"${relOpen.has(k)?"":" hidden"}>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
   </article>`;
 }
@@ -1434,6 +1442,8 @@ const tidy=s=>s.replace(/([가-힣])\?(?=[가-힣A-Za-z0-9])/g,"$1·").replace(/
   .replace(/(\S)[ \t]{2,}(?=\S)/g,"$1 "); // 줄 가운데 겹빈칸 → 한 칸 (줄 앞 들여쓰기는 그대로)
 // 원문 글 첫머리의 조항 번호가 창 제목과 같으면 본문에선 뺀다 (번호가 두 번 보이지 않게, 2026-10-04 운영자). 원문 자료는 그대로, 보여 줄 때만
 const dropNum=(t,n)=>{ t=String(t||""); return n&&t.startsWith(n)&&/\s/.test(t.charAt(n.length))?t.slice(n.length).replace(/^[ \t]+/,""):t; };
+// 장의 마지막 조항은 원문 조각 끝에 다음 장 제목(8.18.2 끝의 "9. 현수, 보상, …")이 딸려 와서 뺀다. 다음 장 번호로 시작하고 문장으로 끝나지 않는 마지막 줄만 (2026-10-04, 35곳)
+const dropNextHead=(t,n)=>{ const N=parseInt(n,10)+1; if(!N) return t; const m=t.match(new RegExp("\\n[ \\t]*"+N+"\\.?[ \\t]+([^\\n]{1,60})$")); return m&&!/다\.?$/.test(m[1])?t.slice(0,m.index):t; };
 async function showLaw(i){
   const x=byI(i); const dlg=$("#lawdlg"), my=++lawSeq;
   $("#lawttl").textContent=x.label&&/^\d/.test(x.label)?dotAll(x.label):(x.title||"");
@@ -1454,7 +1464,7 @@ async function showLaw(i){
       r=all.filter(v=>L.sources[v.src].date<=d).pop()||all[0]; }
     const s=L.sources[r.src];
     $("#lawsrc").textContent=s.name; $("#lawttl").textContent=r.num; $("#lawfull").href=s.url;
-    $("#lawbody").textContent=dropNum(tidy(r.text),r.num);
+    $("#lawbody").textContent=dropNum(dropNextHead(tidy(r.text),r.num),r.num);
     const w=[];
     if(r.near) w.push("이 조항이 적용되던 때의 판 원문이 없어 가장 가까운 판으로 보여 줘요. 글이 조금 다를 수 있어요.");
     if(r.quoted) w.push("2009 고시보다 앞선 기준이라, 원문 중 \"종전기준\"이라고 인용된 부분이 이 조항의 근거예요.");
@@ -1719,6 +1729,7 @@ Promise.all(["data/criteria.json","data/standardization.json","data/fixes.json"]
    // replace가 있으면 원래 자료가 줄여 적은 글을 법령 원문 글로 통째로 바꾼다
    for(const [k,v] of Object.entries(f.textfixes||{})){const x=C[k-1]; if(!x) continue;
      if(v.newLabel) x.label=v.newLabel; // 원래 자료가 "…요약"처럼 적은 번호 칸도 바로잡는다
+     if(v.summary) x.summary=true; // 원문이 길어 원래 자료의 요약을 그대로 두는 조항: "요약 · 원문 확인" 표시 (2026-10-04)
      if(v.replace){x.text=v.replace; continue;}
      if(v.remove&&(x.text||"").includes(v.remove)) x.text=x.text.replace(v.remove,"");}
    // 원래 자료에 2019 글만 있던 조항의 2019-03-28 전 판(옛 고시 원문 글)을 뒤에 붙인다.
@@ -1726,6 +1737,7 @@ Promise.all(["data/criteria.json","data/standardization.json","data/fixes.json"]
    // 원래 자료 글에서 낱말·문장 중간에 끊긴 줄(공조장⏎치를)을 잇는다. 어디를 어떻게 잇는지는 줄잇기2.js가 자료 전체 낱말로 판단해 보정.json lineJoins에 둠 (2026-10-01)
    for(const [k,list] of Object.entries(f.lineJoins||{})){ const x=k[0]==="s"?S[+k.slice(1)-1]:C[+k.slice(1)-1]; if(!x||!x.text) continue;
      let t=x.text.replace(/<br\s*\/?>/gi,"\n"); for(const [p,m] of list){ const [ta,hb]=p.split("\n"); t=t.replace(ta+"\n"+hb,ta+(m==="s"?" ":"")+hb); } x.text=t; }
+   for(const [t,ids] of Object.entries(f.lawRel||{})) for(const i of ids) LAWREL[i]=t;
    for(const a of f.additions||[]){const x={...a,added:true}; x.__i=C.length+1; x.__k=keyOf(x,false); C.push(x);}
    // 원래 자료에 같은 조항이 다른 시작일로 한 번 더 들어간 카드는 뺀다 (dup=남기는 쪽 순번. 연혁집 2017.1.28 묶음을 옮기며 생긴 문 조항 8건 등)
    for(const [k,v] of fixList) if(v.dup&&C[k-1]) C[k-1].dup=v.dup;
