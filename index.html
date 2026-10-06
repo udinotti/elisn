@@ -292,6 +292,13 @@ span.pill.rev{cursor:default}
 .text{white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere;margin-top:14px;font-size:15.5px;line-height:1.75;color:var(--sub)}
 .text.fold{cursor:pointer} /* 긴 본문은 눌러서 펼치고 접는다 */
 .text .ln{padding-left:calc(var(--lv,0)*1.4em)} /* 목록 단계만큼 들여쓰기 */
+/* 고시 표(종류 자료의 tables): 글 사이 제자리에 실제 표로. 넓으면 표 상자만 가로로 밀어 보고(쪽 전체는 안 밀림) */
+.kt{margin:10px 0;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:normal}
+.kt table{border-collapse:collapse;font-size:13.5px;line-height:1.5;color:var(--sub);font-variant-numeric:tabular-nums}
+.kt th,.kt td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top;word-break:keep-all;overflow-wrap:break-word;min-width:3.2em}
+.kt th{background:var(--fill);color:var(--ink);font-weight:700}
+.kt td[rowspan],.kt td[colspan]{background:color-mix(in srgb,var(--fill) 55%,transparent)}
+.sh-body .kt,.cmp-text .kt{margin:8px 0}
 .text.clip{max-height:16em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 65%,transparent);mask-image:linear-gradient(#000 65%,transparent)}
 mark{background:var(--mark);color:var(--ink);border-radius:4px;padding:0 2px;font-weight:600}
 .acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
@@ -422,7 +429,14 @@ dialog.viewer::backdrop{background:rgba(0,0,0,.6)}
 .vbox.big img{max-width:none;max-height:none;cursor:zoom-out}
 /* 카드 그림 밑 제목 */
 .imgs figure{margin:0;max-width:100%}
-.imgs figcaption{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.4;max-width:260px}
+.imgs figcaption{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.4;max-width:min(100%,340px)}
+.imgs.inl{margin:10px 0 12px;white-space:normal;cursor:default}
+.fc-t{font-weight:600;color:var(--sub)}
+.imgs table{border-collapse:collapse;margin-top:6px;width:100%;font-size:12.5px;line-height:1.4}
+.imgs th,.imgs td{padding:3px 8px 3px 0;vertical-align:top;text-align:left;border-top:1px solid var(--line);word-break:keep-all;overflow-wrap:anywhere}
+.imgs th{font-weight:600;color:var(--sub);white-space:nowrap;width:1%}
+.fc-facts th{white-space:normal;width:38%}
+.fc-note{margin-top:6px;padding-left:8px;border-left:2px solid var(--line);color:var(--muted)}
 footer{word-break:keep-all;margin-top:48px;padding:28px 24px;border-radius:24px;background:var(--surface);box-shadow:var(--lift);border:1px solid var(--edge);font-size:13.5px;color:var(--muted);line-height:1.75} /* 밝은 화면에선 --fill이 바탕색과 같아 상자가 안 보였음: 카드처럼 흰 바탕 */
 .ft-brand{font-size:16px;color:var(--ink);font-weight:700;letter-spacing:-.02em}
 .ft-brand b{color:var(--accent);font-weight:800}
@@ -481,6 +495,13 @@ footer a{color:var(--accent)}
   .text{font-size:11pt;line-height:1.6;margin-top:6px}
   .text.clip{max-height:none;-webkit-mask-image:none;mask-image:none}
   .imgs img{max-height:60mm}
+  .imgs figure{break-inside:avoid}
+  .imgs th,.imgs td{border-color:#bbb}
+  .kt{overflow:visible;break-inside:avoid;margin:6px 0}
+  .kt table{font-size:9.5pt;color:#000;max-width:100%}
+  .kt th,.kt td{border-color:#888;padding:2px 5px}
+  .kt th,.kt td[rowspan],.kt td[colspan]{background:none!important;color:#000}
+  .kt th{font-weight:800}
   mark{background:none;font-weight:700;text-decoration:underline}
   /* 일부만 맞는 결과가 펼쳐져 있으면(모두 맞는 조항이 없을 때) 그 목록을 찍는다. 접힌 칸은 버튼·안내 없이 비어 있음 */
   .excl.part{display:block!important;margin:0}.excl.part>.chipbtn,.excl.part .note{display:none!important}
@@ -585,7 +606,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.06.3"</script>버전 v2026.10.06.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.06.4"</script>버전 v2026.10.06.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -610,7 +631,7 @@ footer a{color:var(--accent)}
     <div class="sh-head"><div><div class="sh-src" id="lawsrc"></div><h2 id="lawttl"></h2></div><button type="button" class="chipbtn" id="lawclose" aria-label="닫기">닫기</button></div>
     <p class="sh-warn" id="lawwarn" hidden></p>
     <div class="sh-body" id="lawbody"></div>
-    <div class="sh-foot"><a class="chipbtn" id="lawfull" target="_blank" rel="noopener">고시 전체 보기</a><span class="sh-note">국가법령정보센터 고시 원문에서 옮긴 글이에요. 표·그림은 고시 전체 보기에서 확인하세요.</span></div>
+    <div class="sh-foot"><a class="chipbtn" id="lawfull" target="_blank" rel="noopener">고시 전체 보기</a><span class="sh-note">국가법령정보센터 고시 원문에서 옮긴 글이에요. 빠진 표·그림이 있으면 고시 전체 보기에서 확인하세요.</span></div>
   </div>
 </dialog>
 <dialog id="qrdlg" aria-labelledby="qrttl">
@@ -789,7 +810,7 @@ function hl(text,rxs){
     out+=esc(text.slice(i,m.index))+"<mark>"+esc(m[0])+"</mark>"; i=m.index+m[0].length; }
   return nb(out+esc(text.slice(i)));
 }
-function hay(x){return [x.label||"",x.num||"",x.title||"",x.keyword||"",x.text||""].join("\n")}
+function hay(x){return [x.label||"",x.num||"",x.title||"",x.keyword||"",x.text||"",tabFlat(x)].join("\n")}
 function search(arr,q){
   const rxs=terms(q);
   if(!rxs.length) return {rxs,res:arr.map((x,i)=>({x,i,s:0})),part:[]};
@@ -870,7 +891,7 @@ function joinLines(t){
 //  같은 종류가 다시 나오면 그 단으로 돌아가고, 표시 없는 줄은 바로 윗줄 단을 따르며, * ※ 주석 줄은 윗줄보다 한 단 안으로
 //  "6.4.2 …" 같은 조항 번호 줄·비고·표·그림 줄은 맨 앞으로. 첫 줄부터 목록이면 그 단을 맨 앞으로 친다 (2026-09-30)
 const MKS=[[/^[①-⑳]/,"c"],[/^[가-하]\)/,"kp"],[/^[가-하]\.\s/,"kd"],[/^\(\d+\)/,"np"],[/^\d+\)/,"nr"],[/^\d+\.(?!\d)/,"nd"],[/^[a-z][.)]/,"l"],[/^[-·•]\s/,"d"]];
-const TOP=/^\s*(\d+(\.\d+)+\s|비고|표\s?\d|그림)/;
+const TOP=/^\s*(\d+(\.\d+)+\s|비고|표\s?\d|그림|\[표:\d+\]$)/;
 function lineLevels(lines){
   let st=[], cur=0; const lv=lines.map(l=>{
     const s=l.trimStart(); if(!s) return cur;
@@ -882,11 +903,60 @@ function lineLevels(lines){
   const f=lines.findIndex(l=>l.trim()), base=f>=0&&lv[f]>0?lv[f]:0;
   return lv.map(v=>Math.max(0,v-base));
 }
-function textHTML(t,rxs){
-  const L=t.split("\n"), lv=lineLevels(L);
-  if(!lv.some(v=>v>0)) return hl(t,rxs);
-  return L.map((l,i)=>`<div class="ln" style="--lv:${lv[i]}">${l.trim()?hl(l.trimStart(),rxs):"&#8203;"}</div>`).join("");
+// 고시 표 (조항의 tables, 글에는 "[표:N]" 줄): 칸마다 hl()이라 검색어 표시가 칸 안에서도 된다. prev가 있고 칸 수가 같으면 바뀐 칸만 낱말 비교 (시기별 비교)
+const TABMARK=/^\[표:(\d+)\]$/;
+function tabHTML(tab,rxs,prev){
+  if(!tab) return "";
+  const same=prev&&prev.rows.length===tab.rows.length&&prev.rows.every((r,i)=>r.length===tab.rows[i].length);
+  const body=tab.rows.map((r,i)=>"<tr>"+r.map((c,k)=>{
+    const th=i<(tab.h||0), tag=th?"th":"td", at=(c.rs>1?` rowspan="${c.rs}"`:"")+(c.cs>1?` colspan="${c.cs}"`:"")+(th?` scope="col"`:"");
+    const pc=same?prev.rows[i][k]:null, html=pc&&pc.t!==c.t?diffHtml(pc.t,c.t).html:hl(c.t,rxs);
+    return `<${tag}${at}>${html.replace(/\n/g,"<br>")}</${tag}>`;}).join("")+"</tr>").join("");
+  return `<div class="kt"><table>${body}</table></div>`;
 }
+const tabFlat=x=>x.tables?x.tables.map(t=>t.rows.map(r=>r.map(c=>c.t).join(" ")).join("\n")).join("\n"):"";
+const tabSig=x=>x.tables?JSON.stringify(x.tables):"";
+function textHTML(t,rxs,figAt,tabs){
+  const L=t.split("\n"), lv=lineLevels(L);
+  if(!figAt&&!tabs&&!lv.some(v=>v>0)) return hl(t,rxs);
+  return L.map((l,i)=>{ const m=tabs&&l.match(TABMARK); if(m&&tabs[m[1]-1]) return tabHTML(tabs[m[1]-1],rxs)+(figAt&&figAt[i]?figAt[i]:"");
+    return `<div class="ln" style="--lv:${lv[i]}">${l.trim()?hl(l.trimStart(),rxs):"&#8203;"}</div>`+(figAt&&figAt[i]?figAt[i]:""); }).join("");
+}
+// 표 자리 줄을 글 그대로 두고 줄 잇기 (줄 잇기가 표 자리 줄을 윗줄에 붙이지 않게 표 자리마다 끊어서)
+function joinKeep(t){ if(!/(^|\n)\[표:\d+\](\n|$)/.test(t)) return joinLines(t);
+  const out=[], seg=[]; const flush=()=>{ if(seg.length){ out.push(joinLines(seg.join("\n"))); seg.length=0; } };
+  for(const l of t.split("\n")){ if(TABMARK.test(l.trim())){ flush(); out.push(l.trim()); } else seg.push(l); } flush(); return out.join("\n"); }
+// 표가 든 글을 창에 넣을 HTML로 (원문 보기): 글은 그대로 이스케이프, 표 자리에 표
+function plainWithTables(t,tabs){ return String(t||"").split("\n").map(l=>{ const m=l.trim().match(TABMARK); return m&&tabs[m[1]-1]?tabHTML(tabs[m[1]-1],[]): esc(l)+"\n"; }).join("").replace(/\n$/,""); }
+// 그림 사이사이 넣기 (2026-10-06): 그림 제목 맨 앞의 "그림 N."(표 4·그림 11, 그림 8~10, 그림 27.2·27.3 포함)에서 번호를 읽어
+// 본문에서 "그림 N"을 처음 가리키는 줄 바로 밑에 그림을 놓는다. 번호를 못 읽거나 본문에 가리키는 데가 없으면 맨 끝에 그대로 둔다
+const FID=String.raw`[A-Z0-9Ⅰ-Ⅹ]+(?:\.\d+)?`;
+const figNums=s=>{ const m=String(s||"").match(new RegExp(String.raw`^(?:표\s*\d+(?:\.\d+)?\s*[·,]\s*)?그림\s*(${FID})(?:\s*([~·,])\s*(${FID}))?`));
+  if(!m) return []; const a=m[1], b=m[3];
+  if(!b) return [a]; if(m[2]!=="~") return [a,b]; return rangeIds(a,b); };
+function rangeIds(a,b){ const pa=a.split("."), pb=b.split(".");
+  if(/^\d+$/.test(a)&&/^\d+$/.test(b)&&+b>=+a&&+b-+a<12){ const r=[]; for(let i=+a;i<=+b;i++) r.push(String(i)); return r; }
+  if(pa.length===2&&pb.length===2&&pa[0]===pb[0]&&+pb[1]>=+pa[1]&&+pb[1]-+pa[1]<12){ const r=[]; for(let i=+pa[1];i<=+pb[1];i++) r.push(pa[0]+"."+i); return r; }
+  return [a,b]; }
+function lineRefs(l){ const out=new Set(), re=new RegExp(String.raw`그림\s*(${FID}(?:\s*(?:[,·~∼\-–]|및|과|와|또는)\s*(?:그림\s*)?${FID})*)`,"g"); let m;
+  while((m=re.exec(l))){ const g=m[1]; (g.match(new RegExp(FID,"g"))||[]).forEach(t=>out.add(t));
+    const rg=g.match(new RegExp(String.raw`(${FID})\s*[~∼]\s*(${FID})`)); if(rg) rangeIds(rg[1],rg[2]).forEach(t=>out.add(t)); }
+  return out; }
+// 반환: at(줄 번호 → 그 줄 밑에 넣을 그림 번호들), rest(맨 끝에 둘 그림 번호들)
+function placeFigs(x,text,n){
+  const caps=x.imageCap||[], L=text.split("\n").map(lineRefs), at={}, rest=[];
+  for(let k=0;k<n;k++){ const ids=figNums(caps[k]); let ln=-1;
+    for(const id of ids){ const i=L.findIndex(r=>r.has(id)); if(i>=0&&(ln<0||i<ln)) ln=i; }
+    if(ln<0) for(const id of ids){ const b=id.split(".")[0]; if(b===id) continue; const i=L.findIndex(r=>r.has(b)); if(i>=0&&(ln<0||i<ln)) ln=i; } // 8.1 → 본문에 "그림 8"만 있을 때
+    if(ln<0) rest.push(k); else (at[ln]=at[ln]||[]).push(k); }
+  return {at,rest}; }
+// 그림 한 칸: 제목 줄 + (번호 풀이 표 / 값 표 / 비고). 구조는 보정.json imageNote({legend,facts,note})에서 온다
+function figHTML(x,p,n){
+  const cap=(x.imageCap||[])[n]||"", nt=(x.imageNote||[])[n]||null; p=imgSrc(p);
+  const flat=cap+(nt?(nt.legend||[]).map((r,i)=>(i?", ":" (")+(r[0]?r[0]+" ":"")+r[1]).join("")+((nt.legend||[]).length?")":"")+(nt.facts||[]).map(r=>" / "+r[0]+" "+r[1]).join("")+(nt.note?" / "+nt.note:""):"");
+  const tbl=(rows,c)=>`<table class="${c}">${rows.map(r=>`<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`;
+  const capHtml=cap||nt?`<figcaption>${cap?`<div class="fc-t">${esc(cap)}</div>`:""}${nt&&nt.legend?tbl(nt.legend,"fc-leg"):""}${nt&&nt.facts?tbl(nt.facts,"fc-facts"):""}${nt&&nt.note?`<div class="fc-note">${esc(nt.note)}</div>`:""}</figcaption>`:"";
+  return `<figure><button type="button" data-img="${esc(p)}" data-cap="${esc(flat||x.title||"")}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(cap||x.title||"그림")}"></button>${capHtml}</figure>`; }
 // 줄 잇기는 조항 번호를 떼기 전에 한다: 번호가 붙어 있어야 "10.2.1.3 감속도"가 제목 줄로 알아봐져 본문과 붙지 않는다
 // 원래 자료에 글자로 남은 <br>은 줄바꿈으로 바꾼다
 // 원래 자료가 번호 칸에 번호 대신 "1997-08-18 이후(건축허가분)"처럼 날짜 설명만 적은 곳: 기간은 옆에 따로 보이니
@@ -898,7 +968,7 @@ const dateOnly=l=>!!l&&!l.replace(/\d{4}[-.]\d{1,2}[-.]\d{1,2}|\d{4}년|\d{1,2}�
 const shownLabel=x=>{const l=(x.label||"").replace(/\s*\([^()]*\d{4}-\d{2}-\d{2}\+\)/g,"").trim(); const m=(x.text||"").match(/^\s*(?:\[[^\]]*\]\s*)?(\d+(?:\.\d+)+(?:\(\d+\))?)(?=[\s(]|$)/);
   if(l&&!dateOnly(l)) return x.num&&!m&&!/^\d/.test(l)?x.num.trim()+" "+l:l; return m?m[1]:(x.num||"").trim();};
 // (2026-10-02) 줄 잇기를 마친 뒤 빈 줄은 뺀다: 원래 자료가 항목 사이마다 빈 줄을 넣어 둔 곳(5.8 가)·나)… 사이)이 쓸데없이 벌어져 보이던 것
-const bodyText=x=>{let t=joinLines((x.text||"").replace(/<br\s*\/?>/gi,"\n").trim()).replace(/\n[ \t]*(?=\n)/g,"");const l=shownLabel(x);if(l&&t.startsWith(l+" "))t=t.slice(l.length).trim();return t;};
+const bodyText=x=>{let t=joinKeep((x.text||"").replace(/<br\s*\/?>/gi,"\n").trim()).replace(/\n[ \t]*(?=\n)/g,"");const l=shownLabel(x);if(l&&t.startsWith(l+" "))t=t.slice(l.length).trim();return t;};
 // ── 시기별 비교 ──
 // 같은 제목 묶음 안에서 "같은 조항의 다른 시기 판"을 찾는다
 // - 날짜뿐인 이름("2013-09-15 이후(건축허가분)")끼리는 제목이 곧 한 조항이라 묶는다
@@ -954,13 +1024,23 @@ function diffHtml(a,b){
   const mark=(tag,s)=>{const m=s.match(/^(\s*)([\s\S]*?)(\s*)$/); if(tag==="del") return `<del>${esc(s)}</del>`; return esc(m[1])+`<ins>${esc(m[2])}</ins>`+esc(m[3]);};
   return {html:nb(out.map(o=>o.t==="="||!o.s.trim()?(o.t==="-"?"":esc(o.s)):o.t==="+"?mark("ins",o.s):mark("del",o.s)).join("")),rewritten:false};
 }
+// 시기별 비교에서 표: 글 속 표 자리("[표:N]")는 낱말 비교 때 글자 하나(사설 영역 U+E900+N)로 바꿔 두었다가, 비교가 끝난 글에서 표로 되돌린다.
+// 앞 판에도 같은 차례 표가 있고 칸 수가 같으면 바뀐 칸만 밑줄. 없어진 말 속의 표는 "[표]"로만 (평소엔 숨김)
+const tabCode=t=>t.replace(/^\[표:(\d+)\]$/gm,(m,n)=>String.fromCharCode(0xE900+ +n-1));
+function fillTabs(html,y,py){
+  const get=(ch,prev)=>tabHTML(y.tables[ch.charCodeAt(0)-0xE900],[],prev&&py&&py.tables?py.tables[ch.charCodeAt(0)-0xE900]:null);
+  return html.replace(/<(ins|del)>([\s\S]*?)<\/\1>|[\uE900-\uE9FF]/g,(m,tag,inner)=>{
+    if(tag==="del") return `<del>${inner.replace(/[\uE900-\uE9FF]/g,"[표]")}</del>`;
+    if(tag==="ins") return inner.split(/([\uE900-\uE9FF])/).map(p=>/^[\uE900-\uE9FF]$/.test(p)?get(p,false):p?`<ins>${p}</ins>`:"").join("");
+    return get(m,true); }).replace(/(<\/table><\/div>)\n/g,"$1"); // 표 바로 뒤 줄바꿈은 표가 이미 줄을 바꾸므로 뺀다
+}
 function showCompare(i){
   const x=byI(i), v=x.__v||[x];
   $("#cmpttl").textContent=x.title||"";
   let prev=null, pv=null;
   $("#cmpbody").innerHTML=v.map(y=>{
-    const t=bodyText(y), same=prev!==null&&prev===t, kin=!same&&prev!==null&&SAMEM.has(pv.__i+">"+y.__i); // kin: 표현만 다듬어 뜻이 같은 개정 — 밑줄 없이 새 글만
-    const d=prev===null||same||kin?{html:nb(esc(t))}:diffHtml(prev,t); prev=t; pv=y;
+    const t0=bodyText(y), t=y.tables?tabCode(t0):t0, sg=t+"\u0001"+tabSig(y), same=prev!==null&&prev===sg, kin=!same&&prev!==null&&SAMEM.has(pv.__i+">"+y.__i); // kin: 표현만 다듬어 뜻이 같은 개정 — 밑줄 없이 새 글만
+    const d=prev===null||same||kin?{html:nb(esc(t))}:diffHtml(prev.split("\u0001")[0],t); if(y.tables) d.html=fillTabs(d.html,y,pv); prev=sg; pv=y;
     return `<div class="cmp-v${y===x?" me":""}"><div class="cmp-top">${periodPills(y,false)}${shownLabel(y)?`<span>${esc(dotAll(shownLabel(y)))}</span>`:""}${y===x?"<em>지금 보는 조항</em>":""}</div>`+
       (same?`<div class="cmp-same">앞 시기와 글이 같아요</div>`:kin?`<div class="cmp-same">앞 시기와 뜻이 같아요 (표현만 다듬었어요)</div>`:d.rewritten?`<div class="cmp-same">앞 시기와 글이 많이 바뀌어 새 글만 보여 줘요</div>`:d.long?`<div class="cmp-same">글이 길어 바뀐 곳 표시 없이 새 글만 보여 줘요</div>`:"")+`<div class="cmp-text">${ind(d.html)}</div></div>`;
   }).join("");
@@ -983,15 +1063,16 @@ const lawBtn=x=>{ const r=x.kind||x.added?"s":LAWREL[x.__i];
 function card(x,rxs,isStd,upNote,why){
   const r=!isStd&&range(x);
   const rel=isStd?[]:relStd(x);
-  const imgs=[].concat(x.image||[]);
-  const long=(x.text||"").length>600;
+  const imgs=[].concat(x.image||[]), bT=bodyText(x), fp=placeFigs(x,bT,imgs.length);
+  const figAt=Object.keys(fp.at).length?Object.fromEntries(Object.entries(fp.at).map(([i,a])=>[i,`<div class="imgs inl">${a.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`])):null;
+  const long=(x.text||"").length+tabFlat(x).length>600;
   const k=keyOf(x,isStd), faved=favs.has(k), nv=isStd?0:(x.__v||[]).length;
   return `<article class="${r&&r.bad?"warn":""}${why?" off":""}" data-k="${esc(k)}">
     ${why?`<div class="why">적용 안 됨 · ${esc(why)}</div>`:""}
     <div class="head">${shownLabel(x)||!x.label?`<span class="label">${esc(dotAll(shownLabel(x)||"번호 없음"))}</span>`:""}<span class="title">${hl(x.title||"",rxs)}</span></div>
     <div class="meta">${x.summary?`<button type="button" class="pill sum" data-act="law" data-i="${x.__i}" title="원래 자료가 원문을 줄여 적은 조항이에요. 눌러서 고시 원문을 확인하세요">요약 · 원문 확인 ›</button>`:""}${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<button type="button" class="pill rev" data-act="cmp" data-i="${x.__i}" title="옛 글과 비교">${dot(x.from)} 개정 ›</button>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
-    <div class="text${long?" clip fold":""}">${textHTML(bodyText(x),rxs)}</div>
-    ${imgs.length?`<div class="imgs">${imgs.map((p,n)=>{const cap=(x.imageCap||[])[n]||"";p=imgSrc(p);return `<figure><button type="button" data-img="${esc(p)}" data-cap="${esc(cap||x.title||"")}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(cap||x.title||"그림")}"></button>${cap?`<figcaption>${esc(cap)}</figcaption>`:""}</figure>`}).join("")}</div>`:""}
+    <div class="text${long?" clip fold":""}">${textHTML(bT,rxs,figAt,x.tables)}</div>
+    ${fp.rest.length?`<div class="imgs">${fp.rest.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`:""}
     <div class="acts"><button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${long?`<button class="chipbtn" type="button" data-act="open" aria-expanded="false">전체 보기</button>`:""}${nv>1?`<button class="chipbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교 ${nv}</button>`:""}${rel.length?`<button class="chipbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료 ${rel.length}건</button>`:""}<span class="acts-r"><button class="linkbtn" type="button" data-act="report">의견 남기기</button>${isStd?"":lawBtn(x)}</span></div>
     ${rel.length?`<div class="rel"${relOpen.has(k)?"":" hidden"}>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
   </article>`;
@@ -1011,7 +1092,7 @@ function render(){
   // 원래 자료에 글·기간이 똑같은 조항이 여러 번 들어 있어 카드가 겹쳐 나온다 → 하나만 (띄어쓰기 차이는 같은 글로)
   // 즐겨찾기만: 이 기기에 별표해 둔 조항만 남긴다 (검색어·허가일은 그대로 함께 적용). 아래 겹친 카드 걸러내기보다 먼저 해야 별표한 쪽이 남는다
   if(favOnly){ res=res.filter(o=>favs.has(keyOf(o.x,isStd))); part=part.filter(o=>favs.has(keyOf(o.x,isStd))); }
-  const seen=new Set(), uniq=a=>a.filter(o=>{const k=(o.x.text||"").replace(/\s+/g,"")+"|"+o.x.from+"|"+o.x.to; if(seen.has(k)) return false; seen.add(k); return true;});
+  const seen=new Set(), uniq=a=>a.filter(o=>{const k=((o.x.text||"")+tabSig(o.x)).replace(/\s+/g,"")+"|"+o.x.from+"|"+o.x.to; if(seen.has(k)) return false; seen.add(k); return true;});
   res=uniq(res); part=uniq(part); lastHits=res.length+part.length;
   favLabel();
   // 날짜 읽기
@@ -1259,11 +1340,11 @@ addEventListener("touchend",e=>{ if(swX===null) return;
 // 엘리베이터 밖 종류 자료(data/kinds.json): 처음 고를 때 한 번 불러와 번호·즐겨찾기 키·시기별 묶음을 붙인다
 function loadKinds(){ if(KP) return KP;
   return KP=fetch("data/kinds.json").then(r=>{ if(!r.ok) throw new Error("kinds"); return r.json(); }).then(j=>{
-    K=j.items||[]; K.forEach((x,n)=>{ x.__i=C.length+n+1; x.__k=x.kind+"|"+[x.title,x.label,x.from,x.to,textSig(x.text)].join("|"); if(x.text) x.text=tidy(x.text); });
+    K=j.items||[]; K.forEach((x,n)=>{ x.__i=C.length+n+1; x.__k=x.kind+"|"+[x.title,x.label,x.from,x.to,textSig(x.text)].join("|"); if(x.text) x.text=tidy(x.text); if(x.tables) for(const t of x.tables) for(const r of t.rows) for(const c of r) c.t=tidy(c.t); });
     const g={}; for(const x of K) (g[x.kind+"|"+x.label]=g[x.kind+"|"+x.label]||[]).push(x);
     // 같은 번호라도 기준 체계(2009 / 2013~2019 / 2019~)가 다르면 내용이 다를 수 있어, 다른 체계끼리는 글이 비슷할 때만(엘리베이터와 같은 기준) 한 묶음으로
     const era=x=>!x.from?0:x.from<"2019-03-28"?1:2;
-    for(const v of Object.values(g)){ v.sort((a,b)=>(a.from||"0000").localeCompare(b.from||"0000")); v.forEach(x=>x.__t=vToks(x.text||""));
+    for(const v of Object.values(g)){ v.sort((a,b)=>(a.from||"0000").localeCompare(b.from||"0000")); v.forEach(x=>x.__t=vToks((x.text||"")+" "+tabFlat(x)));
       for(const x of v){ const w=v.filter(y=>y===x||era(y)===era(x)||dice(x.__t,y.__t)>=0.3); x.__v=w.length>1?w:null; } }
     render();
   }).catch(()=>{ KP=null; $("#status").textContent="자료를 불러오지 못했어요. 다시 눌러 주세요."; });
@@ -1460,7 +1541,7 @@ async function showLaw(i){
   if(!dlg.open) dlg.showModal();
   if(x.kind||x.added){ // 종류 자료·보충한 옛 판 글은 고시 원문에서 바로 옮긴 글이라 그대로 보여 준다
     $("#lawsrc").textContent=x.srcName||""; $("#lawttl").textContent=x.label||x.title||""; $("#lawfull").href=x.srcUrl||lawUrl(x);
-    $("#lawbody").textContent=dropNum(x.text,x.label); return; }
+    if(x.tables) $("#lawbody").innerHTML=plainWithTables(dropNum(x.text,x.label),x.tables); else $("#lawbody").textContent=dropNum(x.text,x.label); return; }
   try{
     const L=await loadLaw(); if(my!==lawSeq) return; let r=L.clauses[i];
     if(!r){ $("#lawsrc").textContent="원문 조각을 자동으로 찾지 못한 조항이에요";
