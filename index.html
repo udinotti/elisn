@@ -201,6 +201,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacity .15s}
 .dmsg[hidden]{display:none}
 .row2{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.row2 .brk{display:none}
 .seg[hidden]{display:none}
 .seg{display:inline-flex;gap:2px;background:var(--track);border-radius:12px;padding:3px}
 .seg.off{opacity:.4}
@@ -210,11 +211,11 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
 .chipbtn{font:inherit;font-size:13.5px;font-weight:600;border:0;background:var(--fill);color:var(--sub);border-radius:10px;padding:8px 12px;cursor:pointer}
 /* 위쪽 도구 버튼(즐겨찾기만·인쇄·결과 공유): 밝은 모드에선 --fill이 페이지 바탕과 같아 박스가 안 보여 흰 바탕으로 */
 #favonly,#print,#share,#qrbtn,#fbtool,#note [data-act=favclear]{background:var(--chip)}
-/* 폰으로 보기: 글 앞에 작은 폰 그림. [hidden]일 땐(폰 화면) 그대로 숨게 :not([hidden])에만 flex */
-#qrbtn:not([hidden]){display:inline-flex;align-items:center;gap:3px}
+/* 폰으로 보기·결과 공유: 글 앞에 작은 그림(폰, 위로 올리는 화살표 상자). [hidden]일 땐(폰 화면) 그대로 숨게 :not([hidden])에만 flex */
+#qrbtn:not([hidden]),#share{display:inline-flex;align-items:center;gap:3px}
 /* 가운데 맞춤만 하면 폰 그림이 글자보다 1px 높아 보여서(실측) 1px 내림.
    폰 그림 양옆에 빈 칸이 있어 왼쪽 여백이 2.5px 넓어 보여서(실측) 왼쪽으로 당기고, 글자와 사이(gap)도 줄임 */
-#qrbtn svg{width:16px;height:16px;flex:none;position:relative;top:1px;margin-left:-2.5px}
+#qrbtn svg,#share svg{width:16px;height:16px;flex:none;position:relative;top:1px;margin-left:-2.5px}
 /* 창의 닫기 버튼: 제목이 길어도 줄어들거나 '닫/기'로 꺾이지 않게 */
 #lawclose,#cmpclose,#repclose{flex:none;white-space:nowrap}
 @media (hover:hover) and (pointer:fine){.chipbtn:hover{color:var(--accent)}}
@@ -390,6 +391,7 @@ html:has(dialog[open]){overflow:hidden}
 .recent .rrow{display:flex;align-items:center}
 .recent .rrow .ri{flex:1;min-width:0}
 .recent .rrow .ri span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recent .ri[aria-selected=true]{background:var(--fill);box-shadow:inset 0 0 0 2px var(--accent)} /* 위아래 화살표로 고른 줄 */
 .recent .rx{flex:none;width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:10px;background:none;color:var(--muted);cursor:pointer}
 @media (hover:hover) and (pointer:fine){.recent .rx:hover{background:var(--fill);color:var(--ink)}}
 .recent .rx svg{width:15px;height:15px}
@@ -529,6 +531,11 @@ footer a{color:var(--accent)}
   .quick{margin-top:10px;gap:6px}
   .qd{font-size:13.5px;padding:6px 12px}
   .row2{margin-top:10px;gap:6px}
+  /* 좁은 화면: 목록·시기별 줄 다음에서 줄을 바꿔 즐겨찾기만~의견 보내기를 한 줄에 (종류 탭마다 같은 모양, 2026-10-07 운영자) */
+  /* 줄 바꿈 칸(높이 0)도 줄 하나로 쳐져 줄 사이가 두 번 벌어지므로, 줄 간격은 gap 대신 위 여백으로 준다 */
+  .row2{margin-top:4px;row-gap:0}
+  .row2>*{margin-top:6px}
+  .row2 .brk{display:block;flex-basis:100%;height:0;margin-top:0}
   .seg button{font-size:13.5px;padding:6px 11px}
   .note{margin-top:6px}
   .resline{margin-top:6px}
@@ -559,7 +566,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
   <div class="controls">
-    <div class="q"><button class="qgo" id="qgo" type="button" aria-label="찾기 (비어 있으면 보이는 예시로 찾기)" title="찾기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" placeholder="낱말이나 조항 번호" autocomplete="off" aria-label="검색어"><button class="qclear" id="qclear" type="button" aria-label="검색어 지우기" title="검색어 지우기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button><div class="recent" id="recent" hidden></div></div>
+    <div class="q"><button class="qgo" id="qgo" type="button" aria-label="찾기 (비어 있으면 보이는 예시로 찾기)" title="찾기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" placeholder="낱말이나 조항 번호" autocomplete="off" aria-label="검색어" role="combobox" aria-autocomplete="list" aria-controls="recent" aria-expanded="false"><button class="qclear" id="qclear" type="button" aria-label="검색어 지우기" title="검색어 지우기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button><div class="recent" id="recent" role="listbox" aria-label="최근 검색어" hidden></div></div>
     <div class="date"><label for="d">건축허가일</label><input id="d" type="text" inputmode="decimal" placeholder="예: 240612, 2013.9" autocomplete="off" aria-label="건축허가일, 아무 모양으로 적어도 됨"><button class="chipbtn" id="dclear" type="button">지우기</button></div>
   </div>
   <div class="quick" role="group" aria-label="기준 바뀌는 날 바로 고르기">
@@ -583,9 +590,10 @@ footer a{color:var(--accent)}
       <button type="button" data-view="list" aria-pressed="true">목록</button>
       <button type="button" data-view="era" aria-pressed="false">시기별 나란히</button>
     </div>
+    <span class="brk" aria-hidden="true"></span>
     <button type="button" class="chipbtn" id="favonly" aria-pressed="false">★ 즐겨찾기만</button>
     <button type="button" class="chipbtn" id="print">인쇄</button>
-    <button type="button" class="chipbtn" id="share">결과 공유</button>
+    <button type="button" class="chipbtn" id="share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 11v7.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V11"/></svg>결과 공유</button>
     <button type="button" class="chipbtn" id="qrbtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3.5"/><path d="M10.5 5.5h3"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg>폰으로 보기</button>
     <button type="button" class="chipbtn" id="fbtool" data-act="feedback">의견 보내기</button>
   </div>
@@ -606,7 +614,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.07.2"</script>버전 v2026.10.07.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.07.3"</script>버전 v2026.10.07.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -1434,7 +1442,8 @@ addEventListener("afterprint",restorePrint);
 const IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 // 폰·태블릿은 기기 이름으로 알아본다: S펜 갤럭시는 hover가 되는 기기로 잡혀 (hover:none)으로는 PC로 보였다 (2026-09-30)
 const MOB=IOS||/Android|Mobile/i.test(navigator.userAgent)||matchMedia("(hover:none) and (pointer:coarse)").matches;
-if(MOB) $("#print").textContent="PDF 저장";
+// 폰에서는 PDF 저장을 거의 안 써서 버튼 줄만 차지한다 → 버튼을 숨긴다 (2026-10-06 운영자, lab에서 먼저)
+if(MOB) $("#print").hidden=true;
 $("#print").addEventListener("click",()=>{
   // 카카오톡·네이버 등 앱 안 브라우저는 인쇄(PDF 저장) 창이 안 뜬다 → 카카오톡은 바깥 브라우저로 바로 열고, 다른 앱은 여는 법을 알려 준다
   if(inApp){
@@ -1474,10 +1483,42 @@ function showRecent(){
   const list=typed?recent.filter(s=>flat(s).includes(flat(typed))&&flat(s)!==flat(typed)):recent;
   if(!list.length||document.activeElement!==$("#q")){box.hidden=true;return}
   const rx=typed?[new RegExp(loose(typed),"gi")]:[];
-  box.innerHTML=`<div class="rh"><span>최근 검색어</span><button type="button" data-rclear>기록 지우기</button></div>`+list.map(s=>`<div class="rrow"><button type="button" class="ri" data-r="${esc(s)}">${rIcon}<span>${hl(s,rx)}</span></button><button type="button" class="rx" data-rdel="${esc(s)}" aria-label="${esc(s)} 지우기" title="지우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>`).join("");
+  box.innerHTML=`<div class="rh"><span>최근 검색어</span><button type="button" data-rclear>기록 지우기</button></div>`+list.map((s,n)=>`<div class="rrow" role="presentation"><button type="button" class="ri" role="option" aria-selected="false" id="ri${n}" tabindex="-1" data-r="${esc(s)}">${rIcon}<span>${hl(s,rx)}</span></button><button type="button" class="rx" data-rdel="${esc(s)}" aria-label="${esc(s)} 지우기" title="지우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>`).join("");
   if(box.hidden){ recentY=scrollY; recentAt=Date.now(); }
-  box.hidden=false;
+  box.hidden=false; rSel(-1); $("#q").setAttribute("aria-expanded","true");
 }
+// 위아래 화살표(PC): 최근 검색어 줄을 고르고 검색창에 그 말을 미리 보여 준다. 맨 위에서 위로 가면 처음 친 글로 돌아온다.
+// 아래로 끝까지 가면 다시 처음 친 글(검색창)로, 거기서 위로 가면 맨 끝 줄로. 엔터=그 말로 찾기, Esc=목록 닫고 처음 친 글 유지
+let rIdx=-1, rTyped="";
+function rSel(n){
+  const box=$("#recent"), q=$("#q"); rIdx=n;
+  box.querySelectorAll(".ri").forEach((b,i)=>b.setAttribute("aria-selected",i===n?"true":"false"));
+  const b=box.querySelectorAll(".ri")[n];
+  if(b){ q.setAttribute("aria-activedescendant",b.id); b.scrollIntoView({block:"nearest"}); } else q.removeAttribute("aria-activedescendant");
+}
+$("#q").addEventListener("keydown",e=>{
+  if(e.isComposing||e.keyCode===229) return;
+  const box=$("#recent"), q=$("#q");
+  if(box.hidden){ if(e.key==="ArrowDown"&&!q.value.trim()&&recent.length){ e.preventDefault(); showRecent(); } return; }
+  const items=box.querySelectorAll(".ri"), N=items.length;
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+    if(!N) return; e.preventDefault();
+    if(rIdx<0) rTyped=q.value;
+    let n=rIdx+(e.key==="ArrowDown"?1:-1);
+    if(n>=N) n=-1; else if(n<-1) n=N-1;
+    rSel(n); q.value=n<0?rTyped:items[n].dataset.r;
+    try{ q.setSelectionRange(q.value.length,q.value.length); }catch(_){}
+  } else if(e.key==="Enter"&&rIdx>=0){ box.hidden=true; q.setAttribute("aria-expanded","false"); rSel(-1); }
+});
+// Esc: 목록이 열려 있으면(고른 줄이 있든 없든, 포커스가 목록 안에 있어도) 목록만 닫는다. 친 글·검색 결과는 그대로, 포커스는 검색창에
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Escape"||e.isComposing) return;
+  const box=$("#recent"), q=$("#q");
+  if(box.hidden||!(document.activeElement===q||box.contains(document.activeElement))) return;
+  e.preventDefault(); e.stopPropagation();
+  if(rIdx>=0) q.value=rTyped; rSel(-1); box.hidden=true; q.setAttribute("aria-expanded","false");
+  if(document.activeElement!==q){ quietFocus=true; q.focus(); quietFocus=false; }
+},true);
 // 최근 검색어 창이 열린 채 12px 넘게 스크롤하면 닫는다(2026-09-30 더 예민하게, 전엔 30px). 폰은 자판도 내려 결과를 넓게 보이게
 // (열린 직후 0.35초는 폰 자판이 올라오며 화면이 저절로 밀리는 것이라 닫지 않고 기준 위치만 옮긴다)
 let recentY=0, recentAt=0;
@@ -1501,7 +1542,7 @@ addEventListener("touchmove",e=>{
 $("#q").addEventListener("focus",()=>{ if(!quietFocus) showRecent(); });
 $("#q").addEventListener("click",()=>{ if($("#recent").hidden) showRecent(); }); // 이미 커서가 있을 때 한 번 더 누르면 최근 검색어
 $("#q").addEventListener("input",showRecent);
-$("#q").addEventListener("blur",()=>{ setTimeout(()=>{$("#recent").hidden=true},150); if($("#q").value!==exQ&&lastHits>0) addRecent($("#q").value); });
+$("#q").addEventListener("blur",()=>{ setTimeout(()=>{$("#recent").hidden=true;$("#q").setAttribute("aria-expanded","false")},150); if($("#q").value!==exQ&&lastHits>0) addRecent($("#q").value); });
 $("#recent").addEventListener("pointerdown",e=>e.preventDefault()); // 누르는 동안 검색창이 포커스를 잃지 않게
 $("#recent").addEventListener("click",e=>{
   if(e.target.closest("[data-rclear]")){ recent=[]; try{localStorage.removeItem("elisn-recent")}catch(_){} $("#recent").hidden=true; return; }
