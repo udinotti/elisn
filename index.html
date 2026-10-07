@@ -617,7 +617,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.07.6"</script>버전 v2026.10.07.6 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.07.7"</script>버전 v2026.10.07.7 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -1010,6 +1010,25 @@ function buildVersions(){
     x.__v=v.length>1?v.sort((a,b)=>(a.from||"0000").localeCompare(b.from||"0000")||(a.to||"9999").localeCompare(b.to||"9999")):null;
   }
 }
+// 허가일이 비어 있을 때: 같은 조항의 여러 판 중 오늘 적용되는 판을 묶음 맨 앞에 (운영자 결정, 2026-10-07)
+// 목록 순서(점수순)는 묶음이 처음 나오는 자리를 지키고, 묶음 안에서만 오늘 판 → 새 판부터. 검색에 안 걸린 판은 끌어오지 않고, 건수는 그대로
+function curFirst(list){
+  const td=todayIso(), at=new Map(), placed=new Set(), out=[];
+  for(const o of list) if(!at.has(o.x)) at.set(o.x,o);
+  const cur=y=>{const r=range(y); return !r.bad&&applies(y,td)};
+  const rank=(a,b)=>{ const ra=range(a),rb=range(b);
+    return (ra.bad-rb.bad)||(cur(b)-cur(a))||((ra.t?1:0)-(rb.t?1:0))||(rb.t||"").localeCompare(ra.t||"")||(rb.f||"").localeCompare(ra.f||""); };
+  const put=o=>{placed.add(o); out.push(o)};
+  for(const o of list){
+    if(placed.has(o)) continue;
+    const V=o.x.__v; if(!V){ put(o); continue; }
+    const T=V.find(y=>cur(y)&&at.has(y)&&!placed.has(at.get(y)));
+    const G=(T&&T.__v)||V;
+    G.filter(y=>at.has(y)&&!placed.has(at.get(y))).sort(rank).forEach(y=>put(at.get(y)));
+    if(!placed.has(o)) put(o);
+  }
+  return out;
+}
 // 낱말 단위로 앞 판과 견줘, 새로 생긴 말은 <ins>, 빠진 말은 <del>로 (가장 긴 공통 부분 찾기)
 // 줄 앞 들여쓰기 빈칸은 &nbsp;로 (비교 글은 pre-line이라 보통 빈칸은 줄 앞에서 사라진다)
 const ind=h=>h.replace(/(^|\n)( +)/g,(m,a,s)=>a+"&nbsp;".repeat(s.length));
@@ -1136,6 +1155,7 @@ function render(){
   $("#md").textContent=dv?`허가일 ${dv}`:"허가일 넣기"; $("#md").className="md"+(dv?"":" none");
   const total=res.length, useDate=!isStd&&isDate(d);
   hitD=useDate?d:"";
+  if(!useDate&&!isStd&&!raw.trim()&&!/^[\d.()]+$/.test(q.trim())){ res=curFirst(res); part=curFirst(part); } // 허가일을 안 넣었으면 오늘 적용되는 판을 먼저 (조항 번호 검색은 그대로)
   let excl=[];
   if(useDate){ excl=res.filter(o=>!applies(o.x,d)); res=res.filter(o=>applies(o.x,d)); part=part.filter(o=>applies(o.x,d)); }
   // 이 허가일에 적용되는 글 중, 허가일이 속한 기준 체계(2013.9.15~ / 2019.3.28~)가 시작된 뒤 개정일에 바뀌거나 새로 생긴 조항을 날짜별로.
