@@ -166,7 +166,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .date{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--edge);border-radius:16px;padding:4px 6px 4px 16px;box-shadow:var(--lift)}
 .date:focus-within{box-shadow:0 0 0 2px var(--accent)}
 .date label{font-size:14px;font-weight:700;color:var(--sub);white-space:nowrap}
-.date input{border:0;box-shadow:none!important;background:transparent;padding:10px 4px;width:12.5em;font-variant-numeric:tabular-nums}
+.date input{border:0;box-shadow:none!important;background:transparent;padding:10px 4px;width:17em;font-variant-numeric:tabular-nums}
 .date input::placeholder{font-size:14px}
 @media (max-width:640px){.date input{flex:1;width:auto;min-width:0}}
 .quick{display:flex;gap:8px;align-items:center;margin-top:12px}
@@ -531,6 +531,7 @@ footer a{color:var(--accent)}
   input[type=search]{padding-left:42px}
   .qgo{left:4px}
   .date{padding-left:14px}
+  .date input{padding:8px 4px} /* 위 input[type=text] 폰 여백(12px 14px)이 날짜 칸 안쪽 여백을 덮어써 검색창보다 8px 커지던 것 바로잡음 */
   .quick{margin-top:10px;gap:6px}
   .qd{font-size:13.5px;padding:6px 12px}
   .row2{margin-top:10px;gap:6px}
@@ -570,7 +571,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="controls">
     <div class="q"><button class="qgo" id="qgo" type="button" aria-label="찾기 (비어 있으면 보이는 예시로 찾기)" title="찾기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" placeholder="낱말이나 조항 번호" autocomplete="off" aria-label="검색어" role="combobox" aria-autocomplete="list" aria-controls="recent" aria-expanded="false"><button class="qclear" id="qclear" type="button" aria-label="검색어 지우기" title="검색어 지우기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button><div class="recent" id="recent" role="listbox" aria-label="최근 검색어" hidden></div></div>
-    <div class="date"><label for="d">건축허가일</label><input id="d" type="text" inputmode="decimal" placeholder="예: 240612, 2013.9" autocomplete="off" aria-label="건축허가일, 아무 모양으로 적어도 됨"><button class="chipbtn" id="dclear" type="button">지우기</button></div>
+    <div class="date"><label for="d">건축허가일</label><input id="d" type="text" inputmode="decimal" placeholder="예: 240612 · 2406 · 2024.6" autocomplete="off" aria-label="건축허가일, 아무 모양으로 적어도 됨"><button class="chipbtn" id="dclear" type="button">지우기</button></div>
   </div>
   <div class="quick" role="group" aria-label="기준 바뀌는 날 바로 고르기">
     <span class="qlabel">바로 고르기</span>
@@ -601,7 +602,7 @@ footer a{color:var(--accent)}
     <button type="button" class="chipbtn" id="fbtool" data-act="feedback">의견 보내기</button>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.08)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.09)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -617,7 +618,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.08.1"</script>버전 v2026.10.08.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.09.1"</script>버전 v2026.10.09.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -730,7 +731,7 @@ const validIso=(y,m,d)=>{const iso=`${y}-${pad(m)}-${pad(d)}`;const t=new Date(i
 const lastDay=(y,m)=>new Date(Date.UTC(y,m,0)).getUTCDate();
 const fullYear=y=>{if(y>=100)return y;const cy=+todayIso().slice(2,4);return y<=cy+1?2000+y:1900+y}; // 24→2024, 97→1997
 const okYear=y=>y>=1900&&y<=2100;
-// 날짜를 아무렇게나 적어도 읽는다: 240612, 20240612, 2024.6.12, 24-6-12, 2024년 6월 12일, 2024.6(달만), 2016(해만)
+// 날짜를 아무렇게나 적어도 읽는다: 240612, 20240612, 2024.6.12, 24-6-12, 2024년 6월 12일, 2024.6(달만), 1309(13년 9월), 2016(해만)
 // 돌려주는 값: {from,to} 날짜 범위. 하루면 from=to
 function parseLoose(raw){
   const s=(raw||"").trim(); if(!s) return null;
@@ -748,7 +749,7 @@ function parseLoose(raw){
     const bOk=b&&+n.slice(0,4)>=1950&&+n.slice(0,4)<=+todayIso().slice(0,4);
     if(a&&bOk) a.alt=b; return a||b;
   }
-  if(n.length===4) return year(+n);
+  if(n.length===4) return /^(19|20)/.test(n)?year(+n):month(+n.slice(0,2),+n.slice(2)); // 2016 → 2016년, 1309 → 2013년 9월(앞 두 자리가 19·20이 아니면 연월)
   if(n.length===2) return year(+n);
   return null;
 }
@@ -1129,7 +1130,7 @@ function render(){
   const raw=$("#d").value, p=parseLoose(raw), msg=$("#dmsg");
   let d="", split=null;
   msg.hidden=!raw.trim(); msg.className="dmsg";
-  if(raw.trim()&&!p){ msg.textContent="날짜로 읽지 못했어요. 예) 240612, 2024.6.12, 2013.9, 2016"; msg.classList.add("bad"); }
+  if(raw.trim()&&!p){ msg.textContent="날짜로 읽지 못했어요. 예) 일: 240612 · 20240612 · 2024.6.12 · 24.6.12 / 월: 2024.6 · 24.6 · 2406 · 202406 / 연: 2024 · 24 (두 자리 24는 2024년으로 읽어요)"; msg.classList.add("bad"); }
   else if(p&&p.from===p.to){ d=p.from;
     // 6자리가 두 뜻으로 읽히면(201205) 다른 뜻을 고를 수 있게, 앞날이면 오타일 수 있다고 알린다
     const alt=p.alt?` · <button type="button" class="qd" data-pick="${p.alt.from.slice(0,7)}">${+p.alt.from.slice(0,4)}년 ${+p.alt.from.slice(5,7)}월로 읽기</button>`:"";
