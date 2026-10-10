@@ -570,7 +570,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
   <div class="controls">
-    <div class="q"><button class="qgo" id="qgo" type="button" aria-label="찾기 (비어 있으면 보이는 예시로 찾기)" title="찾기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" placeholder="낱말이나 조항 번호" autocomplete="off" aria-label="검색어" role="combobox" aria-autocomplete="list" aria-controls="recent" aria-expanded="false"><button class="qclear" id="qclear" type="button" aria-label="검색어 지우기" title="검색어 지우기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button><div class="recent" id="recent" role="listbox" aria-label="최근 검색어" hidden></div></div>
+    <div class="q"><button class="qgo" id="qgo" type="button" aria-label="찾기 (비어 있으면 보이는 예시로 찾기)" title="찾기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" maxlength="100" placeholder="낱말이나 조항 번호" autocomplete="off" aria-label="검색어" role="combobox" aria-autocomplete="list" aria-controls="recent" aria-expanded="false"><button class="qclear" id="qclear" type="button" aria-label="검색어 지우기" title="검색어 지우기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button><div class="recent" id="recent" role="listbox" aria-label="최근 검색어" hidden></div></div>
     <div class="date"><label for="d">건축허가일</label><input id="d" type="text" inputmode="decimal" placeholder="예: 240612, 2406, 2024.6" autocomplete="off" aria-label="건축허가일, 숫자로 적기"><button class="chipbtn" id="dclear" type="button">지우기</button></div>
   </div>
   <div class="quick" role="group" aria-label="기준 바뀌는 날 바로 고르기">
@@ -602,7 +602,7 @@ footer a{color:var(--accent)}
     <button type="button" class="chipbtn" id="fbtool" data-act="feedback">의견 보내기</button>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.09)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.11)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -618,7 +618,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.09.3"</script>버전 v2026.10.09.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.11.1"</script>버전 v2026.10.11.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -725,6 +725,7 @@ const fmt=iso=>iso?iso.replace(/-/g,"."):"";
 const dot=iso=>{const [y,m,d]=iso.split("-");return `${y}.${+m}.${+d}`}; // 화면에 보이는 날짜: 2019.3.28
 const dotAll=t=>t.replace(/\d{4}-\d{2}-\d{2}/g,dot); // 글 속 2013-09-15 → 2013.9.15
 const kor=iso=>{const [y,m,d]=iso.split("-").map(Number);return `${y}년 ${m}월 ${d}일`};
+// [날짜풀이 시작] 파서검사.js가 이 사이를 잘라 검사한다: 화면(DOM)을 건드리지 않는 순수 함수만 둘 것
 const todayIso=()=>{const n=new Date();return new Date(n.getTime()-n.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
 const pad=n=>String(n).padStart(2,"0");
 const validIso=(y,m,d)=>{const iso=`${y}-${pad(m)}-${pad(d)}`;const t=new Date(iso+"T00:00:00Z");return !isNaN(t)&&t.toISOString().slice(0,10)===iso?iso:""};
@@ -749,10 +750,15 @@ function parseLoose(raw){
     const bOk=b&&+n.slice(0,4)>=1950&&+n.slice(0,4)<=+todayIso().slice(0,4);
     if(a&&bOk) a.alt=b; return a||b;
   }
-  if(n.length===4) return /^(19|20)/.test(n)?year(+n):month(+n.slice(0,2),+n.slice(2)); // 2016 → 2016년, 1309 → 2013년 9월(앞 두 자리가 19·20이 아니면 연월)
+  if(n.length===4) return /^19(0[1-9]|1[0-2])$/.test(n)?month(2019,+n.slice(2)):/^(19|20)/.test(n)?year(+n):month(+n.slice(0,2),+n.slice(2)); // 2016 → 2016년, 1309 → 2013년 9월, 1912 → 2019년 12월(19+월 01~12는 연월: 1900년대 허가는 의미 없어서). 그 밖의 19·20으로 시작하면 해
   if(n.length===2) return year(+n);
   return null;
 }
+// 날짜 칸에 쳐도 되는 글자만 남긴다: 년·월·가운뎃점은 점으로, 일은 지우고 나머지(한글·영문)는 버린다 (2024년6월15일 → 2024.6.15)
+const dClean=t=>t.replace(/[년월·]/g,".").replace(/일/g,"").replace(/[^\d.\-\/ ]/g,"");
+// 월·일만 있고 연도가 없는 글(11월 3일): 연도를 짐작하지 않으려고 알아본다. 이미 점으로 바뀐 앞부분(2024.11월)은 숫자 두 덩이 이상이면 연도가 있는 것으로 본다
+const dNoYear=t=>/[월일]/.test(t)&&!t.includes("년")&&(t.split(/[월일]/)[0].match(/\d+/g)||[]).length<2;
+// [날짜풀이 끝]
 // 해나 달만 적었을 때: 그 기간 안에서 지금 검색 결과가 달라지는 날(기준 바뀌는 날)을 찾는다
 function changeDays(arr,from,to){
   const b=new Set();
@@ -804,6 +810,7 @@ function terms(q){
   return q.trim().split(/\s+/).filter(Boolean).map(w=>{
     const n=w.replace(/\s+/g,"");
     const g=SYN.find(g=>g.some(v=>v.replace(/\s+/g,"")===n));
+    if(!g&&/^[\d.()]+$/.test(w)) { const r=new RegExp("(^|[^\\d.])"+rxEsc(w)+"(?!\\d)","gi"); r.num=1; return r; } // 조항 번호: 5.1.2가 15.1.2·5.1.20에 맞지 않게 (하위 5.1.2.1은 맞음). lookbehind 없이(옛 아이폰), 앞 글자는 hl에서 표시 제외
     const alts=(g?g:[w]).map(loose);
     if(g&&g[0]==="카지붕") alts.push("카\\s*위(?![치험])");
     const r=new RegExp(alts.join("|"),"gi");
@@ -816,10 +823,11 @@ const UNIT_NB=/(\d) (?=(?:m\/s|mm|cm|km|m|㎜|㎝|㎞|㎧|㎨|㎏|kg|kN|N|MPa|�
 const nb=h=>h.replace(UNIT_NB,"$1&nbsp;");
 function hl(text,rxs){
   if(!rxs.length) return nb(esc(text));
-  const big=new RegExp(rxs.map(r=>r.source).join("|"),"gi");
+  const big=new RegExp(rxs.map(r=>r.source).join("|"),"gi"), nums=rxs.filter(r=>r.num).map(r=>new RegExp("^(?:"+r.source+")$","i"));
   let out="",i=0,m; big.lastIndex=0;
   while((m=big.exec(text))){ if(!m[0]){big.lastIndex++;continue}
-    out+=esc(text.slice(i,m.index))+"<mark>"+esc(m[0])+"</mark>"; i=m.index+m[0].length; }
+    let k=0; for(const n of nums){ const p=n.exec(m[0]); if(p){k=p[1].length;break} } // 조항 번호 앞 글자는 표시에서 뺀다
+    out+=esc(text.slice(i,m.index+k))+"<mark>"+esc(m[0].slice(k))+"</mark>"; i=m.index+m[0].length; }
   return nb(out+esc(text.slice(i)));
 }
 function hay(x){return [x.label||"",x.num||"",x.title||"",x.keyword||"",x.text||"",tabFlat(x)].join("\n")}
@@ -835,7 +843,7 @@ function search(arr,q){
       r.lastIndex=0; s+=Math.min((h.match(r)||[]).length,5); }
     if(!m) return;
     // 조항 번호로 찾을 때 그 번호로 시작하는 조항을 맨 위로
-    const lq=q.trim(); if(/^[\d.()]+$/.test(lq)&&((x.label||"").startsWith(lq)||(x.num||"").startsWith(lq)||(x.text||"").startsWith(lq))) s+=100;
+    const lq=q.trim(), pfx=v=>{v=v||""; return v.startsWith(lq)&&!/\d/.test(v[lq.length])}; /* 5.1.2가 5.1.20보다 앞서도록: 뒤에 숫자가 더 이어지면 제외 (5.1.2.1·5.1.2(1)·4.1.3(8)①은 그대로) */ if(/^[\d.()]+$/.test(lq)&&(pfx(x.label)||pfx(x.num)||pfx(x.text))) s+=100;
     (m===rxs.length?res:part).push({x,i,s,m});
   });
   res.sort((a,b)=>b.s-a.s||a.i-b.i);
@@ -865,8 +873,6 @@ function lawUrl(x){
   if(f>="2013-09-15") return "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000117932";
   return "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2000000057076";
 }
-// 그림 10.7.5.PNG와 10.7.5.png는 대소문자만 달라 윈도우·깃허브에 함께 못 둔다 → 작은 쪽은 다른 이름으로 올려 둠
-const imgSrc=p=>p==="images/10.7.5.png"?"images/10.7.5_small.png":p;
 // 본문이 조항 번호로 시작하면(위 번호와 같으면) 한 번만 보이게 뺀다
 // 원래 자료는 문서에서 옮기며 문장 중간에 줄이 바뀐 곳이 많다. 줄 끝이 띄어쓰기·쉼표·가운뎃점이면 문장 중간으로 보고 잇는다
 // (낱말 중간이나 제목 뒤에서 끊긴 곳은 구별이 안 돼 그대로 둔다. 다음 줄이 가) ① 1. - 비고 등 목록이면 잇지 않는다)
@@ -964,7 +970,7 @@ function placeFigs(x,text,n){
   return {at,rest}; }
 // 그림 한 칸: 제목 줄 + (번호 풀이 표 / 값 표 / 비고). 구조는 보정.json imageNote({legend,facts,note})에서 온다
 function figHTML(x,p,n){
-  const cap=(x.imageCap||[])[n]||"", nt=(x.imageNote||[])[n]||null; p=imgSrc(p);
+  const cap=(x.imageCap||[])[n]||"", nt=(x.imageNote||[])[n]||null;
   const flat=cap+(nt?(nt.legend||[]).map((r,i)=>(i?", ":" (")+(r[0]?r[0]+" ":"")+r[1]).join("")+((nt.legend||[]).length?")":"")+(nt.facts||[]).map(r=>" / "+r[0]+" "+r[1]).join("")+(nt.note?" / "+nt.note:""):"");
   const tbl=(rows,c)=>`<table class="${c}">${rows.map(r=>`<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`;
   const capHtml=cap||nt?`<figcaption>${cap?`<div class="fc-t">${esc(cap)}</div>`:""}${nt&&nt.legend?tbl(nt.legend,"fc-leg"):""}${nt&&nt.facts?tbl(nt.facts,"fc-facts"):""}${nt&&nt.note?`<div class="fc-note">${esc(nt.note)}</div>`:""}</figcaption>`:"";
@@ -1150,6 +1156,7 @@ function render(){
   // 표준화 자료는 허가일로 거르지 않는다: 날짜 칸·바로 고르기를 흐리게 하고, 날짜 아래 안내로 알린다 (값은 두어 검사기준으로 돌아가면 다시 적용)
   document.body.classList.toggle("stdmode",isStd);
   if(isStd&&raw.trim()){ msg.hidden=false; msg.className="dmsg off"; msg.textContent="표준화 자료는 허가일로 거르지 않아요. 검사기준으로 돌아가면 다시 적용돼요."; }
+  if(dHint){ msg.hidden=false; msg.textContent=dHint; msg.classList.add("bad"); dHint=""; } // 연도 없이 친 글 안내 (칸이 비어 있어도 한 번 보임)
   markQuick(d);
   // 얇은 검색줄에 지금 검색어·허가일을 보여 준다
   const qv=q.trim(), dv=raw.trim();
@@ -1335,11 +1342,14 @@ function relTerms(res,q,rxs){
 function setSeg(attr,val){document.querySelectorAll(`[data-${attr}]`).forEach(b=>b.setAttribute("aria-pressed",b.dataset[attr]===val))}
 
 let t; $("#q").addEventListener("input",()=>{clearTimeout(t);t=setTimeout(()=>{limit=40;render()},150)});
+var dHint=""; // 연도 없이 월·일만 친 글: 칸을 비우고 render가 안내를 한 번 보여 준다
+const dFix=t=>{dHint=dNoYear(t)?"연도까지 넣어 주세요. 예) 2024년 11월 3일":""; return dHint?"":dClean(t)};
 var dDone=false; let dt; // dDone: 붙여넣었거나 칸을 벗어나 "다 쳤다"고 볼 때 true → 덜 친 숫자도 바로 경고한다
-$("#d").addEventListener("input",()=>{const dv=$("#d"), cl=dv.value.replace(/[^\d.\-\/ ]/g,""); if(cl!==dv.value) dv.value=cl; /* 숫자와 . - / 띄어쓰기만 받는다 */ dDone=false; clearTimeout(dt);dt=setTimeout(()=>{limit=40;revSel="";render()},200)});
+$("#d").addEventListener("input",e=>{ if(e.isComposing) return; /* 한글 조합 중에는 값을 건드리지 않는다 */ const dv=$("#d"), cl=dFix(dv.value); if(cl!==dv.value) dv.value=cl; /* 숫자와 . - / 띄어쓰기만 받는다 (년·월은 점으로) */ dDone=false; clearTimeout(dt);dt=setTimeout(()=>{limit=40;revSel="";render()},200)});
 // 붙여넣기: "2013년9월"처럼 한글이 섞인 글은 한글만 지우면 20139로 남아 경고가 숨으니, 년·월은 점으로 바꿔 날짜로 읽게 하고 바로 경고한다
+$("#d").addEventListener("compositionend",()=>$("#d").dispatchEvent(new Event("input"))); // 조합이 끝나면 한 번 더 걸러 준다 (브라우저마다 마지막 input이 조합 중으로 올 수 있어서)
 $("#d").addEventListener("paste",e=>{ const t=(e.clipboardData||window.clipboardData)?.getData("text"); if(t==null) return; e.preventDefault();
-  $("#d").value=t.replace(/[년월]/g,".").replace(/일/g,"").replace(/[^\d.\-\/ ]/g,"").trim(); dDone=true; clearTimeout(dt); limit=40; revSel=""; render(); });
+  $("#d").value=dFix(t).trim(); dDone=true; clearTimeout(dt); limit=40; revSel=""; render(); });
 $("#d").addEventListener("blur",()=>{ if(!$("#d").value.trim()) return; dDone=true; render(); });
 $("#dmsg").addEventListener("click",e=>{const f=e.target.closest("[data-fill]"); if(f){ $("#d").value=f.dataset.fill; limit=40; render(); return; } const b=e.target.closest("[data-pick]"); if(!b) return; $("#d").value=fmt(b.dataset.pick); limit=40; render();});
 $("#dclear").addEventListener("click",()=>{$("#d").value="";limit=40;render()});
@@ -1861,12 +1871,12 @@ $("#note").addEventListener("click",e=>{ if(!e.target.closest('[data-act="favcle
   toast(`즐겨찾기 ${ks.length}개를 지웠어요`,2500); });
 $("#note").addEventListener("click",e=>{ if(!e.target.closest('[data-act="exclear"]')) return;
   exQ=""; $("#q").value=""; exI++; showExample(); limit=40; render(); });
-if(st.src)src=st.src; if(st.view)view=st.view; if(KIND[st.kind])kind=st.kind;
+if(st.src)src=st.src; if(st.view)view=st.view; if(Object.prototype.hasOwnProperty.call(KIND,st.kind))kind=st.kind;
 // 공유받은 링크(?q=…&d=…)로 들어오면 그 검색을 그대로 연다 (이 기기에 기억된 값보다 먼저)
 {const P=new URLSearchParams(location.search);
  // 주소에는 기본값(검사기준·목록)을 적지 않으므로, 주소로 들어왔으면 이 기기에 기억된 자료·보기가 아니라 기본값에서 시작한다
  if(["q","d","src","view","k"].some(k=>P.has(k))){src="c";view="list";kind="elev";}
- if(KIND[P.get("k")])kind=P.get("k");
+ if(Object.prototype.hasOwnProperty.call(KIND,P.get("k")))kind=P.get("k");
  if(P.has("q"))$("#q").value=P.get("q"); if(P.has("d"))$("#d").value=P.get("d");
  if(P.has("src"))src=P.get("src")==="s"?"s":"c"; if(P.has("view"))view=P.get("view")==="era"?"era":"list";}
 setSeg("src",src); setSeg("view",view); setSeg("kind",kind);
