@@ -56,7 +56,7 @@
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;letter-spacing:-.01em;padding-inline:16px;-webkit-font-smoothing:antialiased}
-.wrap{max-width:880px;margin:0 auto;padding-block:8px 56px}
+.wrap{max-width:880px;margin:0 auto;padding-block:8px calc(88px + env(safe-area-inset-bottom,0px))} /* 아래 여백: 떠 있는 ↑ 버튼(48px)이 맨 아래 글자를 가리지 않게 */
 [hidden]{display:none!important} /* 배포본 머리글에도 있지만, 원본 파일만 열어도 숨김이 먹게 */
 html,button,summary{-webkit-tap-highlight-color:transparent} /* 폰에서 누를 때 잠깐 뜨는 파란 상자(누름 강조)를 화면 어디서든 없애기 (링크·글자 칸·눌리는 상자 모두) */
 :focus:not(:focus-visible){outline:0} /* 손으로 누른 뒤 남는 테두리도 없애고, 키보드로 옮길 때 테두리는 남긴다 */
@@ -118,13 +118,15 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .nofbl{display:inline-block;margin-top:10px;font-size:14px}
 .nofbl .linkbtn{padding:4px 2px;font-size:14px;color:var(--accent);font-weight:700;text-decoration-color:currentColor}
 .chipbtn.primary{background:var(--accent-soft);color:var(--accent);font-weight:700}
-.chipbtn.srcb{font-size:12.5px;padding:6px 10px;color:var(--muted);font-weight:600} /* 카드 글이 원문과 같을 때의 "출처": 덜 눈에 띄게 */
+.chipbtn.srcb{font-size:12.5px;box-sizing:border-box;height:37.6px;display:inline-flex;align-items:center;padding:0 10px 1px;color:var(--muted);font-weight:600} /* 카드 글이 원문과 같을 때의 "출처": 덜 눈에 띄게 */
 /* 맨 위로 */
 .totop{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:15;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.16)}
 .totop svg{width:22px;height:22px}
 .totop[hidden]{display:none}
 /* 카드 아래 오른쪽 묶음(의견 남기기·원문 보기): 자리가 모자라면 둘이 함께 다음 줄 오른쪽으로 내려가 '원문 보기'만 혼자 떨어지지 않게 */
 .acts-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.fbico svg{display:none;pointer-events:none} /* PC는 글자 그대로, 폰 너비에서만 말풍선 */
+@media (max-width:480px){.fbico svg{display:block}}
 a.chipbtn{text-decoration:none;display:inline-flex;align-items:center}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:14px;font-weight:600;padding:12px 18px;border-radius:14px;max-width:calc(100vw - 32px);z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast[hidden]{display:none}
@@ -189,18 +191,20 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacity .15s}
 .dmsg[hidden]{display:none}
 .row2{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.row2>.tools{flex:0 0 100%;display:flex;flex-wrap:wrap;gap:inherit;align-items:center} /* 둘째 줄: 도구 버튼을 한 묶음으로 (첫 줄은 자료 탭만, 2026-10-11) */
+@media (min-width:641px){.row2>.tools{flex:0 1 auto;margin-left:auto;justify-content:flex-end}} /* PC 폭: 도구 버튼을 자료 탭 오른쪽 같은 줄로(모자라면 다음 줄로 접힘) */
 .seg[hidden]{display:none}
 .seg{display:inline-flex;gap:2px;background:var(--track);border-radius:12px;padding:3px}
 .seg button{font:inherit;font-size:14px;font-weight:600;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
 .seg button[aria-pressed=true]{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.chipbtn{font:inherit;font-size:13.5px;font-weight:600;border:0;background:var(--fill);color:var(--sub);border-radius:10px;padding:8px 12px;cursor:pointer}
+.chipbtn{font:inherit;font-size:13.5px;font-weight:600;border:0;background:var(--fill);color:var(--sub);border-radius:10px;padding:7.5px 12px 8.5px;cursor:pointer} /* 프리텐다드 한글이 줄 안에서 약간 아래로 앉아, 위 0.5px 줄이고 아래 0.5px 늘려 가운데로 (높이는 그대로, 1px은 너무 올라감) */
 /* 위쪽 도구 버튼(즐겨찾기만·인쇄·결과 공유): 밝은 모드에선 --fill이 페이지 바탕과 같아 박스가 안 보여 흰 바탕으로 */
 #favonly,#print,#share,#qrbtn,#fbtool,#note [data-act=favclear]{background:var(--chip)}
 /* 폰으로 보기·결과 공유: 글 앞에 작은 그림(폰, 위로 올리는 화살표 상자). [hidden]일 땐(폰 화면) 그대로 숨게 :not([hidden])에만 flex */
-#qrbtn:not([hidden]),#share{display:inline-flex;align-items:center;gap:3px}
+#qrbtn:not([hidden]),#share,#fbtool{display:inline-flex;align-items:center;gap:3px}
 /* 가운데 맞춤만 하면 폰 그림이 글자보다 1px 높아 보여서(실측) 1px 내림.
    폰 그림 양옆에 빈 칸이 있어 왼쪽 여백이 2.5px 넓어 보여서(실측) 왼쪽으로 당기고, 글자와 사이(gap)도 줄임 */
-#qrbtn svg,#share svg{width:16px;height:16px;flex:none;position:relative;top:1px;margin-left:-2.5px}
+#qrbtn svg,#share svg,#fbtool svg{width:16px;height:16px;flex:none;position:relative;top:1px;margin-left:-2.5px}
 /* 창의 닫기 버튼: 제목이 길어도 줄어들거나 '닫/기'로 꺾이지 않게 */
 #lawclose,#cmpclose,#repclose{flex:none;white-space:nowrap}
 @media (hover:hover) and (pointer:fine){.chipbtn:hover{color:var(--accent)}}
@@ -226,7 +230,7 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
 .banner .legend .pill{font-size:11.5px;padding:2px 7px}
 .banner[hidden]{display:none}
 .note{font-size:13px;color:var(--muted);margin:10px 2px 0}
-.note .chipbtn{font-size:12.5px;padding:3px 9px;margin-left:4px}
+.note .chipbtn{font-size:12.5px;padding:2px 9px 4px;margin-left:4px}
 .relq{display:flex;gap:6px;align-items:center;margin:10px 0 0}
 .relq[hidden]{display:none}
 .relq .qd{font-size:13.5px;padding:6px 12px;box-shadow:none}
@@ -303,7 +307,7 @@ header input,header textarea{-webkit-user-select:text;user-select:text}
 .tg .qd{font-size:13.5px;padding:6px 12px;box-shadow:none;background:var(--fill)} /* 흰 상자 안이라 버튼도 흰색이면 밝은 화면에서 글자만 떠 보여서 회색 바탕으로 */
 .tg .tn{margin-left:6px;font-size:12px;font-weight:600;color:var(--muted)}
 .empty-msg{color:var(--muted);font-size:15px;padding:24px 4px;text-align:center}
-.empty-msg .chipbtn{margin:10px 3px 0;font-size:13.5px;padding:6px 12px;background:var(--chip)} /* 빈 결과 안내의 "허가일 지우기" 등 */
+.empty-msg .chipbtn{margin:10px 3px 0;font-size:13.5px;padding:5px 12px 7px;background:var(--chip)} /* 빈 결과 안내의 "허가일 지우기" 등 */
 .more{margin:18px auto 0;display:block;padding:12px 20px;border-radius:14px;background:var(--surface);box-shadow:var(--lift);border:1px solid var(--edge)}
 
 dialog{border:0;padding:0;background:transparent;max-width:96vw;max-height:94vh}
@@ -349,9 +353,13 @@ html:has(dialog[open]){overflow:hidden}
 /* 즐겨찾기 */
 .chipbtn.fav[aria-pressed=true]{background:var(--star-soft);color:var(--star);font-weight:800;box-shadow:inset 0 0 0 1.5px var(--star)} /* 즐겨찾기됨: 노란 바탕 + 테두리로 한눈에 */
 /* 조항의 '표준화 자료 N건': 닫힘 ▾ / 열림 ▴ + 파란 바탕 */
-.relbtn::after{content:" ▾";font-size:.85em}
+.relbtn::after{content:"▾";margin-left:-3px;font-size:.85em;color:var(--muted)}
+.cntbtn{display:inline-flex;align-items:center;gap:8px}
+.cntbtn .cnt{position:relative;padding-left:9px;color:inherit;font-weight:700;font-variant-numeric:tabular-nums} /* 개수: 가는 세로줄 뒤에 버튼 글자색 그대로 (시기별 비교·표준화 자료) */
 .relbtn[aria-expanded=true]{background:var(--accent-soft);color:var(--accent)}
-.relbtn[aria-expanded=true]::after{content:" ▴"}
+.relbtn[aria-expanded=true]::after{content:"▴";color:inherit}
+.cntbtn .cnt::before{content:"";position:absolute;left:0;top:.5px;bottom:-.5px;width:1px;background:color-mix(in srgb,var(--muted) 45%,transparent)} /* 구분선: 글자를 0.5px 올린 만큼 같이 올라가 버튼 가운데에서 어긋나지 않게 0.5px 내려 둠 */
+.relbtn[aria-expanded=true] .cnt::before{background:currentColor}
 #favonly[aria-pressed=true]{background:var(--star-soft);color:var(--star)}
 /* 최근 검색어: 빈 검색창을 누르면 아래에 뜬다 */
 .recent{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:25;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.18)}
@@ -421,7 +429,7 @@ footer{word-break:keep-all;margin-top:48px;padding:28px 24px;border-radius:24px;
 @media (max-width:640px){.ft-grid{grid-template-columns:1fr}}
 .ft-grid h3{margin:0 0 4px;font-size:13.5px;font-weight:800;color:var(--ink)}
 .ft-grid p{margin:0;color:var(--sub)} /* 본문은 한 단계 진하게: 어두운 화면에서도 잘 읽히게 */
-.ft-btn{margin-top:12px;display:inline-flex;align-items:center;gap:6px;padding:9px 16px} /* 바닥글의 의견 버튼: 제목과 겹쳐 보이지 않게 색 있는 버튼으로 */
+.ft-btn{margin-top:12px;display:inline-flex;align-items:center;gap:6px;padding:8px 16px 10px 14px} /* 바닥글의 의견 버튼: 제목과 겹쳐 보이지 않게 색 있는 버튼으로 */
 .installhow{margin-top:10px;font-size:13.5px;line-height:1.6;color:var(--sub)}
 .installhow .ico{display:inline-flex;align-items:center;gap:2px}
 .installhow .ico svg{width:15px;height:15px;vertical-align:-2px}
@@ -490,6 +498,8 @@ footer a{color:var(--accent)}
   .theme{padding:8px 10px 8px 8px;font-size:0;gap:3px}
   .theme .aa{display:inline}
   .acts .linkbtn{font-size:13px} /* 폰에서는 아이콘만: 제목이 중간에 끊기지 않게 */
+  .acts .fbico{display:inline-flex;align-items:center;justify-content:center;width:38px;height:37.6px;padding:0;border-radius:10px;background:var(--fill);color:var(--sub);text-decoration:none} /* 카드 아래 의견 남기기: 폰에서는 말풍선만(이웃 버튼과 같은 높이·모양), 글자는 접근성용 이름으로만 */
+  .acts .fbico .fbt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .theme svg{width:20px;height:20px}
   .brand h1{font-size:18px}
   .brand .mark{width:42px;height:42px} /* 휴대폰: 아이콘은 제목·영문 두 줄 높이, 제목은 한 줄에 들어가게 */
@@ -557,11 +567,13 @@ footer a{color:var(--accent)}
       <button type="button" data-src="c" aria-pressed="true">검사기준</button>
       <button type="button" data-src="s" aria-pressed="false">표준화 자료</button>
     </div>
+    <div class="tools">
     <button type="button" class="chipbtn" id="favonly" aria-pressed="false">★ 즐겨찾기만</button>
     <button type="button" class="chipbtn" id="print">인쇄</button>
     <button type="button" class="chipbtn" id="share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 11v7.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V11"/></svg>결과 공유</button>
     <button type="button" class="chipbtn" id="qrbtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3.5"/><path d="M10.5 5.5h3"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg>폰으로 보기</button>
-    <button type="button" class="chipbtn" id="fbtool" data-act="feedback">의견 보내기</button>
+    <button type="button" class="chipbtn" id="fbtool" data-act="feedback" aria-label="의견 보내기" title="의견 보내기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbtxt">의견 보내기</span></button>
+    </div>
   </div>
 </header>
 <p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.11)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
@@ -577,10 +589,10 @@ footer a{color:var(--accent)}
     <section><h3>이용 안내</h3><p>이 서비스는 참고용이며 법적 효력이 없습니다. 실제 판단과 결정은 반드시 해당 고시 원문을 기준으로 하세요.</p></section>
     <section><h3>적용 기간</h3><p>건축허가일(또는 시행일) 기준입니다. 끝 날짜가 없는 조항은 현재까지 적용되는 것으로 봅니다. 허가일을 넣으면 적용되지 않는 조항은 맨 아래에 이유와 함께 따로 모아 보여 줍니다.</p></section>
     <section><h3>자료 출처</h3><p>근거 원문: <a href="https://www.law.go.kr/행정규칙/승강기안전부품안전기준및승강기안전기준" target="_blank" rel="noopener">국가법령정보센터 행정안전부 고시</a></p></section>
-    <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback">의견 보내기 →</button></section>
+    <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 보내기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.11.3"</script>버전 v2026.10.11.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.11.4"</script>버전 v2026.10.11.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -594,8 +606,8 @@ footer a{color:var(--accent)}
     <div class="sh-head"><div><div class="sh-src">ELISN</div><h2 id="repttl">의견 남기기</h2></div><button type="button" class="chipbtn" id="repclose" aria-label="닫기">닫기</button></div>
     <div class="rep-body">
       <div class="rep-step"><span class="rep-no">1</span><div><b>조항 정보 복사</b><div class="rep-box"><div id="repclause"></div><button type="button" class="chipbtn" id="repcopy">다시 복사</button></div><p class="rep-state" id="repstate" role="status"></p></div></div>
-      <div class="rep-step"><span class="rep-no">2</span><div><b>폼에 붙여 넣기</b><ul><li><em>조항 (번호·제목)</em> 칸에 붙여 넣으세요</li><li>폰은 칸을 길게 눌러 <em>붙여넣기</em></li></ul></div></div>
-      <div class="rep-step"><span class="rep-no">3</span><div><b>내용 적고 제출</b><ul><li>종류를 고르고 고쳤으면 하는 내용을 적어 주세요</li><li>근거가 있으면 함께 적어 주세요</li></ul></div></div>
+      <div class="rep-step"><span class="rep-no">2</span><div><b>폼에 붙여 넣기</b><ul><li><em>조항 (번호·제목)</em> 칸에 붙여 넣으세요.</li><li>폰은 칸을 길게 눌러 <em>붙여넣기</em></li></ul></div></div>
+      <div class="rep-step"><span class="rep-no">3</span><div><b>내용 적고 제출</b><ul><li>종류를 고르고 고쳤으면 하는 내용을 적어 주세요.</li><li>근거가 있으면 함께 적어 주세요.</li></ul></div></div>
     </div>
     <div class="sh-foot"><a class="rep-go" id="repopen" target="_blank" rel="noopener">의견 폼 열기</a></div>
   </div>
@@ -1026,15 +1038,17 @@ function fillTabs(html,y,py){
     if(tag==="ins") return inner.split(/([\uE900-\uE9FF])/).map(p=>/^[\uE900-\uE9FF]$/.test(p)?get(p,false):p?`<ins>${p}</ins>`:"").join("");
     return get(m,true); }).replace(/(<\/table><\/div>)\n/g,"$1"); // 표 바로 뒤 줄바꿈은 표가 이미 줄을 바꾸므로 뺀다
 }
+const strip0=x=>x.replace(/[\s\p{P}]/gu,""); // 띄어쓰기·문장부호 빼고 비교용
 function showCompare(i){
   const x=byI(i), v=x.__v||[x];
   $("#cmpttl").textContent=x.title||"";
   let prev=null, pv=null;
   $("#cmpbody").innerHTML=v.map(y=>{
     const t0=bodyText(y), t=y.tables?tabCode(t0):t0, sg=t+"\u0001"+tabSig(y), same=prev!==null&&prev===sg, kin=!same&&prev!==null&&SAMEM.has(pv.__i+">"+y.__i); // kin: 표현만 다듬어 뜻이 같은 개정 — 밑줄 없이 새 글만
+    const kinSp=kin&&prev.split("\u0001")[1]===tabSig(y)&&strip0(prev.split("\u0001")[0])===strip0(t); // 띄어쓰기·부호만 다른 개정(표 서명도 같을 때만)
     const d=prev===null||same||kin?{html:nb(esc(t))}:diffHtml(prev.split("\u0001")[0],t); if(y.tables) d.html=fillTabs(d.html,y,pv); prev=sg; pv=y;
     return `<div class="cmp-v${y===x?" me":""}"><div class="cmp-top">${periodPills(y,false)}${shownLabel(y)?`<span>${esc(dotAll(shownLabel(y)))}</span>`:""}${y===x?"<em>지금 보는 조항</em>":""}</div>`+
-      (same?`<div class="cmp-same">앞 시기와 글이 같아요</div>`:kin?`<div class="cmp-same">앞 시기와 뜻이 같아요 (표현만 다듬었어요)</div>`:d.rewritten?`<div class="cmp-same">앞 시기와 글이 많이 바뀌어 새 글만 보여 줘요</div>`:d.long?`<div class="cmp-same">글이 길어 바뀐 곳 표시 없이 새 글만 보여 줘요</div>`:"")+`<div class="cmp-text">${ind(d.html)}</div></div>`;
+      (same?`<div class="cmp-same">앞 시기와 글이 같아요.</div>`:kin?`<div class="cmp-same">${kinSp?"앞 시기와 같아요.":"앞 시기와 뜻이 같아요(표현만 다듬었어요)."}</div>`:d.rewritten?`<div class="cmp-same">앞 시기와 글이 많이 바뀌어 새 글만 보여 줘요.</div>`:d.long?`<div class="cmp-same">글이 길어 바뀐 곳 표시 없이 새 글만 보여 줘요.</div>`:"")+`<div class="cmp-text">${ind(d.html)}</div></div>`;
   }).join("");
   // 밑줄 설명·"빠진 말도 보기"는 이 조항에 실제로 표시할 게 있을 때만 (글이 많이 바뀌었거나 같으면 숨김)
   $("#cmpmark").hidden=!$("#cmpbody ins"); $("#cmpdelw").hidden=!$("#cmpbody del");
@@ -1050,8 +1064,8 @@ function foldText(art){
 }
 // 원문 보기 버튼: 종류 자료·보충한 옛 판 글은 원문에서 바로 옮긴 글이라 "출처"
 const lawBtn=x=>{ const r=x.kind||x.added?"s":LAWREL[x.__i];
-  return r==="s"?`<button class="chipbtn srcb" type="button" data-act="law" data-i="${x.__i}" title="카드 글이 고시 원문과 같아요. 눌러서 어느 고시의 몇 년 판인지 봐요">출처</button>`
-    :`<button class="chipbtn primary" type="button" data-act="law" data-i="${x.__i}"${r==="p"?' title="카드는 조항의 일부예요. 눌러서 조항 전체 원문을 봐요"':""}>${r==="p"?"원문 전체":"원문 보기"}</button>`; };
+  return r==="s"?`<button class="chipbtn srcb" type="button" data-act="law" data-i="${x.__i}" title="카드 글이 고시 원문과 같아요. 눌러서 어느 고시의 몇 년 판인지 봐요.">출처</button>`
+    :`<button class="chipbtn primary" type="button" data-act="law" data-i="${x.__i}"${r==="p"?' title="카드는 조항의 일부예요. 눌러서 조항 전체 원문을 봐요."':""}>${r==="p"?"원문 전체":"원문 보기"}</button>`; };
 function card(x,rxs,isStd,upNote,why){
   const r=!isStd&&range(x);
   const rel=isStd?[]:relStd(x);
@@ -1062,10 +1076,10 @@ function card(x,rxs,isStd,upNote,why){
   return `<article class="${r&&r.bad?"warn":""}${why?" off":""}" data-k="${esc(k)}">
     ${why?`<div class="why">적용 안 됨 · ${esc(why)}</div>`:""}
     <div class="head">${shownLabel(x)||!x.label?`<span class="label">${esc(dotAll(shownLabel(x)||"번호 없음"))}</span>`:""}<span class="title">${hl(x.title||"",rxs)}</span></div>
-    <div class="meta">${x.summary?`<button type="button" class="pill sum" data-act="law" data-i="${x.__i}" title="원래 자료가 원문을 줄여 적은 조항이에요. 눌러서 고시 원문을 확인하세요">요약 · 원문 확인 ›</button>`:""}${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<button type="button" class="pill rev" data-act="cmp" data-i="${x.__i}" title="옛 글과 비교">${dot(x.from)} 개정 ›</button>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
+    <div class="meta">${x.summary?`<button type="button" class="pill sum" data-act="law" data-i="${x.__i}" title="원래 자료가 원문을 줄여 적은 조항이에요. 눌러서 고시 원문을 확인하세요.">요약 · 원문 확인 ›</button>`:""}${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<button type="button" class="pill rev" data-act="cmp" data-i="${x.__i}" title="옛 글과 비교">${dot(x.from)} 개정 ›</button>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
     <div class="text${long?" clip fold":""}">${textHTML(bT,rxs,figAt,x.tables)}</div>
     ${fp.rest.length?`<div class="imgs">${fp.rest.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`:""}
-    <div class="acts"><button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${long?`<button class="chipbtn" type="button" data-act="open" aria-expanded="false">전체 보기</button>`:""}${nv>1?`<button class="chipbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교 ${nv}</button>`:""}${rel.length?`<button class="chipbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료 ${rel.length}건</button>`:""}<span class="acts-r"><button class="linkbtn" type="button" data-act="report">의견 남기기</button>${isStd?"":lawBtn(x)}</span></div>
+    <div class="acts"><button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${long?`<button class="chipbtn" type="button" data-act="open" aria-expanded="false">전체 보기</button>`:""}${nv>1?`<button class="chipbtn cntbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교<span class="cnt">${nv}</span></button>`:""}${rel.length?`<button class="chipbtn cntbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료<span class="cnt">${rel.length}건</span></button>`:""}<span class="acts-r"><button class="linkbtn fbico" type="button" data-act="report" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbt">의견 남기기</span></button>${isStd?"":lawBtn(x)}</span></div>
     ${rel.length?`<div class="rel"${relOpen.has(k)?"":" hidden"}>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
   </article>`;
 }
@@ -1156,8 +1170,8 @@ function render(){
   const revList=Object.keys(revDays).sort();
   const revTag=!eraStart?"":revList.length?`<span class="revs"><span class="rl">${dot(eraStart)} 체계 뒤 개정<button type="button" class="rvb all${revSel?"":" off"}" data-rev=""${revSel?"":" tabindex=\"-1\" aria-hidden=\"true\""}>전체 보기</button></span>${revList.map(f=>`<button type="button" class="rvb${revSel===f?" on":""}" data-rev="${f}">${dot(f)} ${revDays[f]}건</button>`).join("")}</span>`:
     d===eraStart?`<span class="sub">${dot(eraStart)}부터 새 기준 체계예요 (조항 번호·글이 통째로 바뀜)</span>`:"";
-  if(useDate) $("#dateBanner").innerHTML=`<span class="bdate">건축허가일 ${kor(d)} 기준</span><span class="big">${revSel?dot(revSel)+" 개정":"적용"} ${res.length}건</span>${revTag}${excl.length?`<button type="button" class="small bx" data-act="toexcl">적용 안 됨 ${excl.length}건 ›</button><span class="small printonly">적용 안 되는 ${excl.length}건은 인쇄하지 않았어요</span>`:`<span class="small">적용 안 됨 0건</span>`}`+
-    (excl.length?"":`<span class="sub">이 검색어의 조항은 이 날짜에 모두 적용돼요</span>`)+
+  if(useDate) $("#dateBanner").innerHTML=`<span class="bdate">건축허가일 ${kor(d)} 기준</span><span class="big">${revSel?dot(revSel)+" 개정":"적용"} ${res.length}건</span>${revTag}${excl.length?`<button type="button" class="small bx" data-act="toexcl">적용 안 됨 ${excl.length}건 ›</button><span class="small printonly">적용 안 되는 ${excl.length}건은 인쇄하지 않았어요.</span>`:`<span class="small">적용 안 됨 0건</span>`}`+
+    (excl.length?"":`<span class="sub">이 검색어의 조항은 이 날짜에 모두 적용돼요.</span>`)+
     `<span class="sub legend"><span class="li"><span class="pill hit">✓ 기간</span>적용</span><span class="li noprint"><span class="pill old">기간</span>적용 안 됨</span>${revSet.size?`<span class="li"><span class="pill rev">개정</span>허가일 전 개정·신설</span>`:""}</span>`; // 색 설명: 한 쌍씩 안 끊기게, 개정 표시가 없으면 뺀다
   $("#status").innerHTML=(!q.trim()&&!favOnly?"전체 ":"결과 ")+`<b>${res.length.toLocaleString()}</b>건`;
   $("#status").hidden=useDate; // 허가일을 넣으면 위 파란 칸에 '적용 N건'이 나오니 같은 숫자를 두 번 보이지 않게 숨긴다 (인쇄 건수 확인용으로 글은 채워 둠)
@@ -1358,7 +1372,7 @@ $("#out").addEventListener("click",e=>{
     // 같은 조항이 화면 여러 곳에 있으면 함께 바꾼다
     document.querySelectorAll("#out article").forEach(el=>{ if(el.dataset.k!==k) return; const b=el.querySelector(':scope>.acts>[data-act="fav"]'); if(b){b.setAttribute("aria-pressed",on);b.innerHTML=favLbl(on)} });
     if(favOnly&&!on) render(); else favLabel();
-    toast(on?"즐겨찾기에 넣었어요. 위의 ‘즐겨찾기만’으로 모아 볼 수 있어요.":"즐겨찾기에서 뺐어요",2500);
+    toast(on?"즐겨찾기에 넣었어요. 위의 ‘즐겨찾기만’으로 모아 볼 수 있어요.":"즐겨찾기에서 뺐어요.",2500);
   }
   else if(a.dataset.act==="excl"){const l=a.nextElementSibling;l.hidden=!l.hidden;a.textContent=a.textContent.replace(l.hidden?"접기":"보기",l.hidden?"보기":"접기")}
 });
@@ -1431,7 +1445,7 @@ $("#print").addEventListener("click",()=>{
   let seen=false; try{seen=localStorage.getItem("elisn-pdfhow")==="1"}catch(_){}
   // PC: 인쇄 창이 열리면 화면 알림이 가려져 못 읽으므로(2026-10-01 운영자) 확인 창으로 보여 주고, 처음 세 번만
   let pcTip=0; try{pcTip=+localStorage.getItem("elisn-printtip")||0}catch(_){}
-  if(!MOB&&pcTip<3) msg.push("PDF로 받을 때는 인쇄 창의 프린터(대상) 칸에서 ‘PDF로 저장’을 고르세요.\n쪽 아래 주소 줄을 없애려면 ‘설정 더보기 → 머리글 및 바닥글’ 체크를 끄세요.\n한 번 끄면 다음부터 기억돼요.\n\n(이 안내는 처음 세 번만 나와요)");
+  if(!MOB&&pcTip<3) msg.push("PDF로 받을 때는 인쇄 창의 프린터(대상) 칸에서 ‘PDF로 저장’을 고르세요.\n쪽 아래 주소 줄을 없애려면 ‘설정 더보기 → 머리글 및 바닥글’ 체크를 끄세요.\n한 번 끄면 다음부터 기억돼요.\n\n(이 안내는 처음 세 번만 나와요.)");
   if(MOB&&!seen) msg.push(IOS?"PDF로 저장하는 법: 다음 화면 위쪽의 공유 버튼을 누르고 ‘파일에 저장’을 고르세요."
     :"PDF로 저장하는 법: 다음 화면 맨 위 프린터 칸을 ‘PDF로 저장’으로 고르고, PDF 버튼(⬇)을 누르세요.");
   if(msg.length&&!confirm(msg.join("\n\n")+(MOB?"\n\n계속할까요?":"\n\n그대로 인쇄할까요?"))) return;
@@ -1558,7 +1572,7 @@ async function showLaw(i){
     if(x.tables) $("#lawbody").innerHTML=plainWithTables(dropNum(x.text,x.label),x.tables); else $("#lawbody").textContent=dropNum(x.text,x.label); return; }
   try{
     const L=await loadLaw(); if(my!==lawSeq) return; let r=L.clauses[i];
-    if(!r){ $("#lawsrc").textContent="원문 조각을 자동으로 찾지 못한 조항이에요";
+    if(!r){ $("#lawsrc").textContent="원문 조각을 자동으로 찾지 못한 조항이에요.";
       $("#lawbody").textContent="이 조항은 번호로 원문을 찾지 못했어요. 아래 \"고시 전체 보기\"에서 확인해 주세요.\n\n[원래 자료 글]\n"+bodyText(x); return; }
     // 허가일(하루로 넣은 날짜)이 이 조항 기간 안이면 그날 시행 중이던 판 글로 보여 준다 (2026-10-02). 아니면 기간 끝의 판
     const pd=parseLoose($("#d").value), d=pd&&pd.from===pd.to?pd.from:"";
@@ -1584,11 +1598,11 @@ function openForm(){ if(!FORM_URL) return false; const a=document.createElement(
 // 의견 남기기: 바로 폼으로 넘기지 않고 안내 창을 먼저 띄워, 조항 정보가 복사됐는지 눈으로 확인하게 한다
 async function copyClause(){
   const txt=$("#repclause").textContent+(window.ELISN_VER?" (ELISN "+window.ELISN_VER+")":""), st=$("#repstate"); // 어느 버전에서 본 조항인지 함께 복사
-  try{ await navigator.clipboard.writeText(txt); st.textContent="✓ 복사됐어요"; st.className="rep-state ok"; }
+  try{ await navigator.clipboard.writeText(txt); st.textContent="✓ 복사됐어요."; st.className="rep-state ok"; }
   catch(e){ // 새 방식이 막힌 환경: 글을 선택해 옛 방식으로 복사, 그것도 안 되면 직접 복사하게 한다
     const r=document.createRange(); r.selectNodeContents($("#repclause")); const s=getSelection(); s.removeAllRanges(); s.addRange(r);
     let ok=false; try{ ok=document.execCommand("copy"); }catch(_){}
-    if(ok){ st.textContent="✓ 복사됐어요"; st.className="rep-state ok"; }
+    if(ok){ st.textContent="✓ 복사됐어요."; st.className="rep-state ok"; }
     else{ st.textContent="복사가 안 됐어요. 위 글이 선택돼 있으니 길게 눌러 복사해 주세요."; st.className="rep-state bad"; } }
 }
 function report(art){
@@ -1605,7 +1619,7 @@ $("#repdlg").addEventListener("click",e=>{ if(e.target.id==="repdlg") $("#repdlg
 document.querySelectorAll("[data-act=feedback]").forEach(b=>b.addEventListener("click",()=>{ if(!openForm()) toast("의견 창구 준비 중이에요."); }));
 
 // 화면 모드: 버튼을 누르면 자동(폰·PC 설정 따라)·밝게·어둡게 중에 고르는 메뉴가 열린다. 고른 값은 이 기기에 기억
-const THEMES=[["auto","자동","폰·PC 설정을 따라가요",'<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/>'],
+const THEMES=[["auto","자동","폰·PC 설정을 따라가요.",'<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/>'],
   ["light","밝게","",'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
   ["dark","어둡게","",'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>']];
 const svg=i=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">${i}</svg>`;
@@ -1685,7 +1699,7 @@ $("#share").addEventListener("click",async()=>{
   catch(e){ // 새 방식이 막힌 환경: 숨은 칸에 넣고 옛 방식으로 복사
     const ta=document.createElement("textarea"); ta.value=url; ta.setAttribute("readonly",""); ta.style.cssText="position:fixed;opacity:0;top:0";
     document.body.appendChild(ta); ta.select(); try{ ok=document.execCommand("copy"); }catch(_){} ta.remove(); }
-  toast(ok?"링크를 복사했어요. 붙여 넣어 보내면 같은 화면이 열려요.":"주소창의 주소를 복사해 보내 주세요",ok?3000:4000);
+  toast(ok?"링크를 복사했어요. 붙여 넣어 보내면 같은 화면이 열려요.":"주소창의 주소를 복사해 보내 주세요.",ok?3000:4000);
 });
 // 폰으로 이어 보기(2026-10-01 운영자): PC에서만 버튼을 보이고, 누르면 지금 화면 주소(검색어·허가일·종류 포함)를 QR로 띄운다.
 // 폰 카메라로 비추면 같은 화면이 폰에서 열린다. QR 그리는 파일(lib/qrcode.js, MIT)은 처음 누를 때만 받는다
@@ -1748,7 +1762,7 @@ $("#install").addEventListener("click",async()=>{
   else installHow(`브라우저 메뉴(<b>⋮</b> 또는 <b>…</b>) → <b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 눌러 주세요. 메뉴에 없으면 크롬으로 열어 주세요.`);
 });
 addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEv=e; });
-addEventListener("appinstalled",()=>{ installEv=null; toast("홈 화면에 추가했어요",2500); installHow("✓ 홈 화면에 추가했어요. 이제 앱처럼 바로 열려요."); $("#install").hidden=true; });
+addEventListener("appinstalled",()=>{ installEv=null; toast("홈 화면에 추가했어요.",2500); installHow("✓ 홈 화면에 추가했어요. 이제 앱처럼 바로 열려요."); $("#install").hidden=true; });
 showInstall();
 // 처음 켜면 검색창·날짜는 비워 두고, 회색 예시 문구(placeholder)를 무작위로 보여 준다. 누르고 치면 예시는 저절로 사라진다
 // 승강기 종류마다 그 종류 자료에서 실제로 결과가 나오는 말로 고른다. 순서는 켤 때마다 섞는다
@@ -1801,7 +1815,7 @@ $("#note").addEventListener("click",e=>{ if(!e.target.closest('[data-act="favcle
   const rest=favs.size-ks.length;
   if(!confirm(`즐겨찾기 ${ks.length}개를 모두 지울까요?`+(rest>0?"\n다른 종류·자료의 즐겨찾기는 그대로 둬요.":""))) return;
   ks.forEach(k=>favs.delete(k)); saveFavs(); favOnly=false; limit=40; render();
-  toast(`즐겨찾기 ${ks.length}개를 지웠어요`,2500); });
+  toast(`즐겨찾기 ${ks.length}개를 지웠어요.`,2500); });
 $("#note").addEventListener("click",e=>{ if(!e.target.closest('[data-act="exclear"]')) return;
   exQ=""; $("#q").value=""; exI++; showExample(); limit=40; render(); });
 if(st.src)src=st.src; if(Object.prototype.hasOwnProperty.call(KIND,st.kind))kind=st.kind;
