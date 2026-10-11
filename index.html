@@ -112,7 +112,7 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var
 .linkbtn{font:inherit;font-size:13.5px;font-weight:600;border:0;background:none;color:var(--muted);padding:8px 6px;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
 @media (hover:hover) and (pointer:fine){.linkbtn:hover{color:var(--accent);text-decoration-color:currentColor}}
 /* 맨 위 의견 남기기: 화면 모드 버튼 옆에 같은 모양으로 (폰에서는 말풍선만). 안내 글 끝에 붙어 있으면 그 문장에 대한 의견처럼 보여서 옮김 */
-/* 의견 보내기: 위쪽 도구 줄 버튼 + 결과가 없을 때·결과 맨 끝 안내 줄 */
+/* 의견 남기기: 위쪽 도구 줄 버튼 + 결과가 없을 때·결과 맨 끝 안내 줄 */
 .endfb{text-align:center;color:var(--muted);font-size:14px;margin:24px 0 8px}
 .endfb .linkbtn{padding:4px 2px;font-size:14px;color:var(--accent);font-weight:700;text-decoration-color:currentColor}
 .nofbl{display:inline-block;margin-top:10px;font-size:14px}
@@ -572,11 +572,11 @@ footer a{color:var(--accent)}
     <button type="button" class="chipbtn" id="print">인쇄</button>
     <button type="button" class="chipbtn" id="share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 11v7.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V11"/></svg>결과 공유</button>
     <button type="button" class="chipbtn" id="qrbtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3.5"/><path d="M10.5 5.5h3"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg>폰으로 보기</button>
-    <button type="button" class="chipbtn" id="fbtool" data-act="feedback" aria-label="의견 보내기" title="의견 보내기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbtxt">의견 보내기</span></button>
+    <button type="button" class="chipbtn" id="fbtool" data-act="feedback" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbtxt">의견 남기기</span></button>
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.11)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.12)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -589,10 +589,10 @@ footer a{color:var(--accent)}
     <section><h3>이용 안내</h3><p>이 서비스는 참고용이며 법적 효력이 없습니다. 실제 판단과 결정은 반드시 해당 고시 원문을 기준으로 하세요.</p></section>
     <section><h3>적용 기간</h3><p>건축허가일(또는 시행일) 기준입니다. 끝 날짜가 없는 조항은 현재까지 적용되는 것으로 봅니다. 허가일을 넣으면 적용되지 않는 조항은 맨 아래에 이유와 함께 따로 모아 보여 줍니다.</p></section>
     <section><h3>자료 출처</h3><p>근거 원문: <a href="https://www.law.go.kr/행정규칙/승강기안전부품안전기준및승강기안전기준" target="_blank" rel="noopener">국가법령정보센터 행정안전부 고시</a></p></section>
-    <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 보내기 →</button></section>
+    <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.11.4"</script>버전 v2026.10.11.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.12.1"</script>버전 v2026.10.12.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -1188,7 +1188,7 @@ function render(){
     `<p class="note">낱말 ${words}개 중 일부만 들어 있는 조항이에요${useDate?" (이 날짜에 적용되는 것만)":""}. 많이 맞는 순서로 ${part.length>40?"40건까지 ":""}보여 줘요.</p>`+
     `${part.slice(0,40).map(o=>card(o.x,rxs,isStd)).join("")}</div></div>`:"";
   const tail=partBlock+exclBlock;
-  const endFb=`<p class="endfb">원하는 조항을 못 찾았나요? <button type="button" class="linkbtn nofb">의견 보내기</button></p>`; // 결과를 다 본 뒤 맨 끝에 한 줄
+  const endFb=`<p class="endfb">원하는 조항을 못 찾았나요? <button type="button" class="linkbtn nofb">의견 남기기</button></p>`; // 결과를 다 본 뒤 맨 끝에 한 줄
   // 즐겨찾기 중 맞는 게 없을 때: 걸린 조건(허가일·검색어)만 짚고, 그 조건을 바로 푸는 버튼을 둔다 (2026-10-03 운영자)
   if(!res.length&&favOnly){ const hq=!!q.trim(), fc=favCount();
     const qb=`<button class="chipbtn" type="button" data-act="qclear">검색어 지우기</button>`, db=`<button class="chipbtn" type="button" data-act="dclear">허가일 지우기</button>`;
@@ -1199,7 +1199,7 @@ function render(){
       :hq&&useDate?`즐겨찾기한 조항 중 지금 검색에 맞는 게 없어요. 검색어나 허가일을 지워 보세요.<br>${qb} ${db}`
       :"즐겨찾기한 조항 중 지금 검색에 맞는 게 없어요.";
     out.innerHTML=`<p class="empty-msg">${msg}</p>`+tail;return}
-  if(!res.length){out.innerHTML=`<p class="empty-msg">${useDate?"이 건축허가일에 모든 낱말이 맞는 조항은 없어요.":"모든 낱말이 맞는 조항이 없어요. 낱말을 줄이거나 다른 말로 찾아보세요 (예: \"상부\" 대신 \"지붕\")."}<br><span class="nofbl">찾는 조항이 없나요? <button type="button" class="linkbtn nofb">의견 보내기</button></span></p>`+tail;return}
+  if(!res.length){out.innerHTML=`<p class="empty-msg">${useDate?"이 건축허가일에 모든 낱말이 맞는 조항은 없어요.":"모든 낱말이 맞는 조항이 없어요. 낱말을 줄이거나 다른 말로 찾아보세요 (예: \"상부\" 대신 \"지붕\")."}<br><span class="nofbl">찾는 조항이 없나요? <button type="button" class="linkbtn nofb">의견 남기기</button></span></p>`+tail;return}
   const topics=!q.trim()&&!favOnly&&hasTopics(isStd)?topicPanel(isStd):""; // 항목으로 찾기: 종류마다 따로 만든 말로 (다른 종류의 표준화 자료는 분류가 엘리베이터 것이라 뺀다)
   out.innerHTML=topics+`<div class="list">${res.slice(0,limit).map(o=>card(o.x,rxs,isStd)).join("")}</div>`+
     (res.length>limit?`<button class="chipbtn more" type="button" data-act="more">${(res.length-limit).toLocaleString()}건 더 보기</button>`:"")+tail+endFb;
@@ -1353,7 +1353,7 @@ document.querySelectorAll("[data-src]").forEach(b=>b.addEventListener("click",()
 $("#out").addEventListener("click",e=>{
   const tp=e.target.closest("[data-topic]");
   if(tp){$("#q").value=tp.dataset.topic;addRecent(tp.dataset.topic);limit=40;render();scrollTo({top:0});return}
-  if(e.target.closest(".nofb")){ if(!openForm()) toast("의견 창구 준비 중이에요."); return; } // 결과가 없을 때 뜨는 의견 보내기
+  if(e.target.closest(".nofb")){ if(!openForm()) toast("의견 창구 준비 중이에요."); return; } // 결과가 없을 때 뜨는 의견 남기기
   const im=e.target.closest("[data-img]");
   if(im){openViewer(im.dataset.img,im.dataset.cap||"");return}
   // 긴 본문: 글을 누르면 펼치고, 다시 누르면 접는다 (글자를 끌어 고르는 중이면 그대로 둔다)
