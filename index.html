@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="ELISN 승강기 검사기준 길잡이: 건축허가일로 적용 기준과 근거 원문을 찾는 참고용 검색 서비스">
+<meta name="description" content="ELISN 승강기 검사기준 길잡이: 검사기준일로 적용 기준과 근거 원문을 찾는 참고용 검색 서비스">
 <meta name="robots" content="noindex">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -536,10 +536,10 @@ footer a{color:var(--accent)}
 <div class="wrap">
 <header>
   <div class="brand"><svg class="mark home" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#e8f3ff"/><rect x="11" y="13" width="42" height="41" rx="10" fill="#ffe08a"/><rect x="11" y="13" width="18" height="41" rx="8" fill="#3182f6"/><rect x="35" y="13" width="18" height="41" rx="8" fill="#3182f6"/><path d="M32 4l5 5h-10z" fill="#3182f6"/></svg><div class="bt"><h1><a class="home" href="./" title="처음 화면으로"><span class="logo">ELISN</span> 승강기 검사기준 길잡이</a></h1><small><b>EL</b>evator <b>I</b>nspection <b>S</b>tandards <b>N</b>avigator</small></div><div class="tm"><button type="button" class="theme" id="theme" aria-haspopup="menu" aria-expanded="false" aria-controls="tmenu"></button><div class="tmenu" id="tmenu" role="menu" aria-label="화면 모드와 글자 크기" hidden></div></div></div>
-  <p class="intro">건축허가일을 넣으면 그 승강기에 맞는 기준만 골라 보여 줘요. 낱말이나 조항 번호로 찾고, 근거 고시 원문도 바로 볼 수 있어요.</p>
+  <p class="intro">검사기준일을 넣으면 그 승강기에 맞는 기준만 골라 보여 줘요. 낱말이나 조항 번호로 찾고, 근거 고시 원문도 바로 볼 수 있어요.</p>
   <div class="quick kinds">
     <span class="qlabel">종류</span>
-    <div class="qs" role="radiogroup" aria-label="종류">
+    <div class="qs" role="radiogroup" aria-label="종류" title="← → 종류 바꾸기">
     <button type="button" class="qd" data-kind="elev" role="radio" aria-checked="true" tabindex="0">엘리베이터</button>
     <button type="button" class="qd" data-kind="esc" role="radio" aria-checked="false" tabindex="-1">에스컬레이터·무빙워크</button>
     <button type="button" class="qd" data-kind="wlv" role="radio" aria-checked="false" tabindex="-1">수직형 휠체어리프트</button>
@@ -550,7 +550,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="controls">
     <div class="q"><button class="qgo" id="qgo" type="button" aria-label="찾기 (비어 있으면 보이는 예시로 찾기)" title="찾기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" maxlength="100" placeholder="낱말이나 조항 번호" autocomplete="off" aria-label="검색어" role="combobox" aria-autocomplete="list" aria-controls="recent" aria-expanded="false"><button class="qclear" id="qclear" type="button" aria-label="검색어 지우기" title="검색어 지우기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button><div class="recent" id="recent" role="listbox" aria-label="최근 검색어" hidden></div></div>
-    <div class="date"><label for="d">건축허가일</label><input id="d" type="text" inputmode="decimal" placeholder="예: 240612, 2406, 2024.6" autocomplete="off" aria-label="건축허가일, 숫자로 적기"><button class="chipbtn" id="dclear" type="button">지우기</button></div>
+    <div class="date"><label for="d">검사기준일</label><input id="d" type="text" inputmode="decimal" placeholder="예: 240612, 2406, 2024.6" autocomplete="off" aria-label="검사기준일, 숫자로 적기"><button class="chipbtn" id="dclear" type="button">지우기</button></div>
   </div>
   <div class="quick" role="group" aria-label="기준 바뀌는 날 바로 고르기">
     <span class="qlabel">바로 고르기</span>
@@ -578,7 +578,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.13)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.15)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -586,22 +586,22 @@ footer a{color:var(--accent)}
 <main id="out"></main>
 <footer>
   <div class="ft-brand"><b>ELISN</b> 승강기 검사기준 길잡이 <span>ELevator Inspection Standards Navigator</span></div>
-  <p class="ft-lead">승강기 검사 현장에서 건축허가일에 맞는 검사기준 조항과 근거 고시 원문을 빠르게 찾기 위한 참고용 검색 서비스입니다.</p>
+  <p class="ft-lead">승강기 검사 현장에서 검사기준일에 맞는 검사기준 조항과 근거 고시 원문을 빠르게 찾기 위한 참고용 검색 서비스입니다.</p>
   <div class="ft-grid">
     <section><h3>이용 안내</h3><p>이 서비스는 참고용이며 법적 효력이 없습니다. 실제 판단과 결정은 반드시 해당 고시 원문을 기준으로 하세요.</p></section>
-    <section><h3>적용 기간</h3><p>건축허가일(또는 시행일) 기준입니다. 끝 날짜가 없는 조항은 현재까지 적용되는 것으로 봅니다. 허가일을 넣으면 적용되지 않는 조항은 맨 아래에 이유와 함께 따로 모아 보여 줍니다.</p></section>
+    <section><h3>적용 기간</h3><p>검사기준일(또는 시행일) 기준입니다. 끝 날짜가 없는 조항은 현재까지 적용되는 것으로 봅니다. 검사기준일을 넣으면 적용되지 않는 조항은 맨 아래에 이유와 함께 따로 모아 보여 줍니다.</p></section>
     <section><h3>자료 출처</h3><p>근거 원문: <a href="https://www.law.go.kr/행정규칙/승강기안전부품안전기준및승강기안전기준" target="_blank" rel="noopener">국가법령정보센터 행정안전부 고시</a></p></section>
     <section><h3>의견 남기기</h3><p>고쳤으면 하는 조항이나 바라는 기능이 있으면 편하게 알려 주세요. 조항마다 있는 ‘의견 남기기’로도 보낼 수 있어요.</p><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실·피트처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 그림은 한 번 본 것만 저장돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.13.1"</script>버전 v2026.10.13.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.15.1"</script>버전 v2026.10.15.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
 <button type="button" class="upd" id="upd" hidden>업데이트가 있어요 · 눌러서 적용</button>
-<div class="minibar" id="minibar"><button type="button" class="mq" id="mq" aria-label="검색창으로 가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span id="mqt"></span></button><button type="button" class="md" id="md" aria-label="건축허가일 칸으로 가기"></button></div>
+<div class="minibar" id="minibar"><button type="button" class="mq" id="mq" aria-label="검색창으로 가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span id="mqt"></span></button><button type="button" class="md" id="md" aria-label="검사기준일 칸으로 가기"></button></div>
 <button type="button" class="totop" id="totop" aria-label="맨 위로" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <dialog id="repdlg" aria-labelledby="repttl">
   <div class="sheet rep">
@@ -755,8 +755,8 @@ function applies(x,d){ // 건축허가일 d에 적용되는가
 // 허가일이 적용 안 되는 까닭 한 줄
 function whyNot(x,d){
   const r=range(x);
-  if(r.f&&d<r.f) return `${dot(r.f)} 이후 허가분부터 적용`;
-  if(r.t&&d>r.t) return `${dot(r.t)}까지 허가분에만 적용`;
+  if(r.f&&d<r.f) return `${dot(r.f)} 이후 검사기준일부터 적용`;
+  if(r.t&&d>r.t) return `${dot(r.t)}까지 검사기준일에만 적용`;
   return "";
 }
 function periodPills(x,isStd){
@@ -769,8 +769,8 @@ function periodPills(x,isStd){
   if(r.bad) return `<span class="pill warn">날짜 확인 필요 · 원래 자료 ${esc(x.from)} ~ ${esc(x.to)}</span>`;
   if(!r.f&&!r.t) return `<span class="pill ${hitD?"hit":"now"}">${hitD?"✓ ":""}처음부터 현재까지</span>`;
   const txt=r.f?`${dot(r.f)} ~ ${r.t?dot(r.t):"현재"}`:`~ ${dot(r.t)}까지`;
-  if(hitD&&applies(x,hitD)) return `<span class="pill hit" title="건축허가일 ${dot(hitD)}에 적용">✓ ${txt}</span>`;
-  if(hitD) return `<span class="pill old" title="건축허가일 ${dot(hitD)}에 적용 안 됨">${txt}</span>`; // 적용 안 되는 조항은 끝났든 현재까지든 회색(초록이 "해당"으로 읽히지 않게)
+  if(hitD&&applies(x,hitD)) return `<span class="pill hit" title="검사기준일 ${dot(hitD)}에 적용">✓ ${txt}</span>`;
+  if(hitD) return `<span class="pill old" title="검사기준일 ${dot(hitD)}에 적용 안 됨">${txt}</span>`; // 적용 안 되는 조항은 끝났든 현재까지든 회색(초록이 "해당"으로 읽히지 않게)
   return `<span class="pill ${r.t?"old":"now"}">${txt}</span>`;
 }
 function terms(q){
@@ -1109,7 +1109,7 @@ function render(){
   else if(p&&p.from===p.to){ d=p.from;
     // 6자리가 두 뜻으로 읽히면(201205) 다른 뜻을 고를 수 있게, 앞날이면 오타일 수 있다고 알린다
     const alt=p.alt?` · <button type="button" class="qd" data-pick="${p.alt.from.slice(0,7)}">${+p.alt.from.slice(0,4)}년 ${+p.alt.from.slice(5,7)}월로 읽기</button>`:"";
-    msg.innerHTML=`→ ${kor(d)}${d>todayIso()?" · 앞으로 올 날짜예요. 허가일이 맞는지 확인해 주세요.":""}${alt}`; }
+    msg.innerHTML=`→ ${kor(d)}${d>todayIso()?" · 앞으로 올 날짜예요. 검사기준일이 맞는지 확인해 주세요.":""}${alt}`; }
   else if(p){
     const label=p.y?`${p.from.slice(0,4)}년`:`${+p.from.slice(0,4)}년 ${+p.from.slice(5,7)}월`;
     split=changeDays(isStd?[]:[...res,...part],p.from,p.to); // 일부만 맞는 조항도 그 기간 안에서 기준이 바뀔 수 있어 함께 본다
@@ -1123,13 +1123,13 @@ function render(){
   }
   // 표준화 자료는 허가일로 거르지 않는다: 날짜 칸·바로 고르기를 흐리게 하고, 날짜 아래 안내로 알린다 (값은 두어 검사기준으로 돌아가면 다시 적용)
   document.body.classList.toggle("stdmode",isStd);
-  if(isStd&&raw.trim()){ msg.hidden=false; msg.className="dmsg off"; msg.textContent="표준화 자료는 허가일로 거르지 않아요. 검사기준으로 돌아가면 다시 적용돼요."; }
+  if(isStd&&raw.trim()){ msg.hidden=false; msg.className="dmsg off"; msg.textContent="표준화 자료는 검사기준일로 거르지 않아요. 검사기준으로 돌아가면 다시 적용돼요."; }
   if(dHint){ msg.hidden=false; msg.textContent=dHint; msg.classList.add("bad"); dHint=""; } // 연도 없이 친 글 안내 (칸이 비어 있어도 한 번 보임)
   markQuick(d);
   // 얇은 검색줄에 지금 검색어·허가일을 보여 준다
   const qv=q.trim(), dv=raw.trim();
   $("#mqt").textContent=qv||"낱말이나 조항 번호"; $("#mqt").className=qv?"":"ph";
-  $("#md").textContent=dv?`허가일 ${dv}`:"허가일 넣기"; $("#md").className="md"+(dv?"":" none");
+  $("#md").textContent=dv?`검사기준일 ${dv}`:"검사기준일 넣기"; $("#md").className="md"+(dv?"":" none");
   const total=res.length, useDate=!isStd&&isDate(d);
   hitD=useDate?d:"";
   if(!useDate&&!isStd&&!raw.trim()&&!/^[\d.()]+$/.test(q.trim())){ res=curFirst(res); part=curFirst(part); } // 허가일을 안 넣었으면 오늘 적용되는 판을 먼저 (조항 번호 검색은 그대로)
@@ -1145,9 +1145,9 @@ function render(){
   const note=[];
   // 옛 기준(2013.9.14 이전)의 휠체어리프트 기준은 별책(첨부 1·2)에 있는데 국가법령정보센터에 없어 자료가 없다 → 그 시기를 볼 때 알린다
   if((kind==="wlv"||kind==="wli")&&!isStd&&((useDate&&d<"2013-09-15")))
-    note.push("2013.9.14 이전 허가분 휠체어리프트 기준은 옛 승강기검사기준의 별책(첨부 1·2)에 있는데, 국가법령정보센터에 올라와 있지 않아 여기에는 없어요.");
+    note.push("2013.9.14 이전 검사기준일 휠체어리프트 기준은 옛 승강기검사기준의 별책(첨부 1·2)에 있는데, 국가법령정보센터에 올라와 있지 않아 여기에는 없어요.");
   // 즐겨찾기만 보는 중에 검색어·허가일도 있으면 그 조건에 맞는 것만 남으니 그렇게 알린다 (2026-10-02 운영자: "즐겨찾기 2개인데 결과 1건"이 헷갈림)
-  if(favOnly){ const cond=[q.trim()&&"검색어",useDate&&"허가일"].filter(Boolean).join("·");
+  if(favOnly){ const cond=[q.trim()&&"검색어",useDate&&"검사기준일"].filter(Boolean).join("·");
     const fc=favCount(); // 조건 때문에 실제로 빠진 게 있을 때만 "N개 중 M개"로 (다 맞으면 그냥 즐겨찾기만)
     // 하나도 안 맞으면 아래 빈 결과 안내가 이유를 말하니 이 줄은 뺀다 (같은 말 두 번 안 하게)
     if(!(cond&&!res.length)) note.push(cond&&res.length<fc?`즐겨찾기 ${fc}개 중 ${cond}에 맞는 ${res.length}개만 보여 줘요.`:"즐겨찾기한 조항만 보여 줘요."); }
@@ -1156,9 +1156,9 @@ function render(){
   // 탭 제목 = PDF 파일 이름(브라우저가 문서 제목을 파일 이름으로 씀): 검색어·허가일을 늘 제목에 둔다
   // 인쇄 직전에 바꿨다 되돌리면 폰 크롬은 옛 제목으로 저장하고, PC "Microsoft Print to PDF"는 저장 창이 안 떴다 → 미리 정해 두고 그대로 둔다
   // 날짜는 점 없이 "2013년 9월 15일"로 (파일 이름에 점이 여럿 들어가지 않게)
-  const tParts=[kind!=="elev"&&KIND[kind],isStd&&"표준화 자료",q.trim(),useDate?"허가일 "+kor(d):raw.trim()&&"허가일 "+raw.trim(),favOnly&&"즐겨찾기"].filter(Boolean);
+  const tParts=[kind!=="elev"&&KIND[kind],isStd&&"표준화 자료",q.trim(),useDate?"검사기준일 "+kor(d):raw.trim()&&"검사기준일 "+raw.trim(),favOnly&&"즐겨찾기"].filter(Boolean);
   document.title=tParts.length?(BASE_TITLE.startsWith("[LAB] ")?"[LAB] ":"")+"ELISN "+tParts.join(" ").replace(/[\\/:*?"<>|]+/g," ").slice(0,90):BASE_TITLE;
-  $("#phead").innerHTML=`<b>ELISN 승강기 검사기준 길잡이</b><br>`+esc([KIND[kind],isStd?"표준화 자료":"검사기준",q.trim()&&"검색어: "+q.trim(),raw.trim()&&"건축허가일: "+raw.trim(),favOnly&&"즐겨찾기만","인쇄일 "+dot(todayIso())].filter(Boolean).join(" · "))+` · 참고용이며 판단은 고시 원문 기준`;
+  $("#phead").innerHTML=`<b>ELISN 승강기 검사기준 길잡이</b><br>`+esc([KIND[kind],isStd?"표준화 자료":"검사기준",q.trim()&&"검색어: "+q.trim(),raw.trim()&&"검사기준일: "+raw.trim(),favOnly&&"즐겨찾기만","인쇄일 "+dot(todayIso())].filter(Boolean).join(" · "))+` · 참고용이며 판단은 고시 원문 기준`;
   // 돋보기로 예시를 넣었으면 무엇으로 찾았는지 알려 준다. 사람이 고쳐 치면 안내는 사라진다
   const exNote=exQ&&q===exQ?`예시로 찾았어요: <b>${esc(exQ)}</b><button class="chipbtn" type="button" data-act="exclear">지우기</button> `:"";
   // 즐겨찾기만 볼 때: 별표한 조항을 한 번에 지우는 버튼 (2026-10-01 운영자)
@@ -1172,9 +1172,9 @@ function render(){
   const revList=Object.keys(revDays).sort();
   const revTag=!eraStart?"":revList.length?`<span class="revs"><span class="rl">${dot(eraStart)} 체계 뒤 개정<button type="button" class="rvb all${revSel?"":" off"}" data-rev=""${revSel?"":" tabindex=\"-1\" aria-hidden=\"true\""}>전체 보기</button></span>${revList.map(f=>`<button type="button" class="rvb${revSel===f?" on":""}" data-rev="${f}">${dot(f)} ${revDays[f]}건</button>`).join("")}</span>`:
     d===eraStart?`<span class="sub">${dot(eraStart)}부터 새 기준 체계예요 (조항 번호·글이 통째로 바뀜)</span>`:"";
-  if(useDate) $("#dateBanner").innerHTML=`<span class="bdate">건축허가일 ${kor(d)} 기준</span><span class="big">${revSel?dot(revSel)+" 개정":"적용"} ${res.length}건</span>${revTag}${excl.length?`<button type="button" class="small bx" data-act="toexcl">적용 안 됨 ${excl.length}건 ›</button><span class="small printonly">적용 안 되는 ${excl.length}건은 인쇄하지 않았어요.</span>`:`<span class="small">적용 안 됨 0건</span>`}`+
+  if(useDate) $("#dateBanner").innerHTML=`<span class="bdate">검사기준일 ${kor(d)} 기준</span><span class="big">${revSel?dot(revSel)+" 개정":"적용"} ${res.length}건</span>${revTag}${excl.length?`<button type="button" class="small bx" data-act="toexcl">적용 안 됨 ${excl.length}건 ›</button><span class="small printonly">적용 안 되는 ${excl.length}건은 인쇄하지 않았어요.</span>`:`<span class="small">적용 안 됨 0건</span>`}`+
     (excl.length?"":`<span class="sub">이 검색어의 조항은 이 날짜에 모두 적용돼요.</span>`)+
-    `<span class="sub legend"><span class="li"><span class="pill hit">✓ 기간</span>적용</span><span class="li noprint"><span class="pill old">기간</span>적용 안 됨</span>${revSet.size?`<span class="li"><span class="pill rev">개정</span>허가일 전 개정·신설</span>`:""}</span>`; // 색 설명: 한 쌍씩 안 끊기게, 개정 표시가 없으면 뺀다
+    `<span class="sub legend"><span class="li"><span class="pill hit">✓ 기간</span>적용</span><span class="li noprint"><span class="pill old">기간</span>적용 안 됨</span>${revSet.size?`<span class="li"><span class="pill rev">개정</span>검사기준일 전 개정·신설</span>`:""}</span>`; // 색 설명: 한 쌍씩 안 끊기게, 개정 표시가 없으면 뺀다
   $("#status").innerHTML=(!q.trim()&&!favOnly?"전체 ":"결과 ")+`<b>${res.length.toLocaleString()}</b>건`;
   $("#status").hidden=useDate; // 허가일을 넣으면 위 파란 칸에 '적용 N건'이 나오니 같은 숫자를 두 번 보이지 않게 숨긴다 (인쇄 건수 확인용으로 글은 채워 둠)
   const rel=relTerms(res,q,rxs), rq=$("#relq");
@@ -1193,15 +1193,15 @@ function render(){
   const endFb=`<p class="endfb">원하는 조항을 못 찾았나요? <button type="button" class="linkbtn nofb">의견 남기기</button></p>`; // 결과를 다 본 뒤 맨 끝에 한 줄
   // 즐겨찾기 중 맞는 게 없을 때: 걸린 조건(허가일·검색어)만 짚고, 그 조건을 바로 푸는 버튼을 둔다 (2026-10-03 운영자)
   if(!res.length&&favOnly){ const hq=!!q.trim(), fc=favCount();
-    const qb=`<button class="chipbtn" type="button" data-act="qclear">검색어 지우기</button>`, db=`<button class="chipbtn" type="button" data-act="dclear">허가일 지우기</button>`;
+    const qb=`<button class="chipbtn" type="button" data-act="qclear">검색어 지우기</button>`, db=`<button class="chipbtn" type="button" data-act="dclear">검사기준일 지우기</button>`;
     const msg=!favs.size?"아직 즐겨찾기한 조항이 없어요. 조항 아래 ☆ 즐겨찾기를 누르면 여기 모여요."
       :!fc&&oc?`${isStd?"표준화 자료":"검사기준"}에는 즐겨찾기한 게 없어요. ${oName}에 ${oc}개 있어요.<br>${oBtn}`
-      :useDate&&!hq&&!revSel&&fc?`즐겨찾기한 조항 중 이 허가일에 적용되는 게 없어요. 허가일을 지우면 ${fc}개 다 보여요.<br>${db}`
+      :useDate&&!hq&&!revSel&&fc?`즐겨찾기한 조항 중 이 검사기준일에 적용되는 게 없어요. 검사기준일을 지우면 ${fc}개 다 보여요.<br>${db}`
       :hq&&!useDate?`즐겨찾기한 조항 중 이 검색어에 맞는 게 없어요.<br>${qb}`
-      :hq&&useDate?`즐겨찾기한 조항 중 지금 검색에 맞는 게 없어요. 검색어나 허가일을 지워 보세요.<br>${qb} ${db}`
+      :hq&&useDate?`즐겨찾기한 조항 중 지금 검색에 맞는 게 없어요. 검색어나 검사기준일을 지워 보세요.<br>${qb} ${db}`
       :"즐겨찾기한 조항 중 지금 검색에 맞는 게 없어요.";
     out.innerHTML=`<p class="empty-msg">${msg}</p>`+tail;return}
-  if(!res.length){out.innerHTML=`<p class="empty-msg">${useDate?"이 건축허가일에 모든 낱말이 맞는 조항은 없어요.":"모든 낱말이 맞는 조항이 없어요. 낱말을 줄이거나 다른 말로 찾아보세요 (예: \"상부\" 대신 \"지붕\")."}<br><span class="nofbl">찾는 조항이 없나요? <button type="button" class="linkbtn nofb">의견 남기기</button></span></p>`+tail;return}
+  if(!res.length){out.innerHTML=`<p class="empty-msg">${useDate?"이 검사기준일에 모든 낱말이 맞는 조항은 없어요.":"모든 낱말이 맞는 조항이 없어요. 낱말을 줄이거나 다른 말로 찾아보세요 (예: \"상부\" 대신 \"지붕\")."}<br><span class="nofbl">찾는 조항이 없나요? <button type="button" class="linkbtn nofb">의견 남기기</button></span></p>`+tail;return}
   const topics=!q.trim()&&!favOnly&&hasTopics(isStd)?topicPanel(isStd):""; // 항목으로 찾기: 종류마다 따로 만든 말로 (다른 종류의 표준화 자료는 분류가 엘리베이터 것이라 뺀다)
   out.innerHTML=topics+`<div class="list">${res.slice(0,limit).map(o=>card(o.x,rxs,isStd)).join("")}</div>`+
     (res.length>limit?`<button class="chipbtn more" type="button" data-act="more">${(res.length-limit).toLocaleString()}건 더 보기</button>`:"")+tail+endFb;
@@ -1304,7 +1304,10 @@ function radioKeys(box){box.addEventListener("keydown",e=>{
 
 let t; $("#q").addEventListener("input",()=>{clearTimeout(t);t=setTimeout(()=>{limit=40;render()},150)});
 var dHint=""; // 연도 없이 월·일만 친 글: 칸을 비우고 render가 안내를 한 번 보여 준다
-const dFix=t=>{dHint=dNoYear(t)?"연도까지 넣어 주세요. 예) 2024년 11월 3일":""; return dHint?"":dClean(t)};
+// [허가일입력 시작] 건축허가일 칸은 20자까지: 한글 날짜를 날짜로 바꾼 "뒤"의 값을 자른다 (maxlength는 바꾸기 전 붙여넣기를 먼저 자르므로 안 씀)
+const dNorm=t=>dNoYear(t)?"":dClean(t).slice(0,20);
+// [허가일입력 끝]
+const dFix=t=>{dHint=dNoYear(t)?"연도까지 넣어 주세요. 예) 2024년 11월 3일":""; return dNorm(t)};
 var dDone=false; let dt; // dDone: 붙여넣었거나 칸을 벗어나 "다 쳤다"고 볼 때 true → 덜 친 숫자도 바로 경고한다
 $("#d").addEventListener("input",e=>{ if(e.isComposing) return; /* 한글 조합 중에는 값을 건드리지 않는다 */ const dv=$("#d"), cl=dFix(dv.value); if(cl!==dv.value) dv.value=cl; /* 숫자와 . - / 띄어쓰기만 받는다 (년·월은 점으로) */ dDone=false; clearTimeout(dt);dt=setTimeout(()=>{limit=40;revSel="";render()},200)});
 // 붙여넣기: "2013년9월"처럼 한글이 섞인 글은 한글만 지우면 20139로 남아 경고가 숨으니, 년·월은 점으로 바꿔 날짜로 읽게 하고 바로 경고한다
@@ -1326,6 +1329,22 @@ document.querySelectorAll(".quick .qd[data-d]").forEach(b=>b.addEventListener("c
 // 승강기 종류: 누르면 그 종류 자료로 (검색어·허가일·보기는 그대로)
 document.querySelectorAll("[data-kind]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.kind!==kind){ $("#q").value=""; exQ=""; $("#qclear").hidden=true; } kind=b.dataset.kind; setSeg("kind",kind); limit=40; render(); showExample(); })); // 종류를 바꾸면 검색어는 비운다(부품 이름이 종류마다 달라 이어 찾으면 엉뚱함). 허가일은 그대로. 추천 검색어도 그 종류 것으로
 radioKeys(document.querySelector(".qs")); radioKeys(document.querySelector(".seg"));
+// 페이지 어디서든 ← →로 종류 바꾸기. 글 쓰는 칸·열린 창·가로로 미는 칸·다른 라디오/탭/슬라이더/메뉴에서는 키를 가로채지 않는다
+// [화살표종류 시작]
+function arrowKindOk(e,dlgOpen,hScroll){
+  if(e.defaultPrevented||e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||dlgOpen||hScroll) return false;
+  if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight") return false;
+  const t=e.target; return !(t&&t.closest&&t.closest("input,textarea,select,[contenteditable],[role=radio],[role=tab],[role=slider],[role=listbox],[role=menu],[role=menuitem]"));
+}
+// [화살표종류 끝]
+document.addEventListener("keydown",e=>{
+  const bs=[...document.querySelectorAll(".qs [data-kind]")], cur=bs.findIndex(x=>x.dataset.kind===kind);
+  if(cur<0||!bs[cur].offsetParent||bs[cur].disabled) return;
+  let hs=false; for(let n=e.target instanceof Element?e.target:null;n&&n!==document.body;n=n.parentElement) if(n.scrollWidth>n.clientWidth+2&&/auto|scroll/.test(getComputedStyle(n).overflowX)){hs=true;break;}
+  if(!arrowKindOk(e,document.querySelector("dialog[open]"),hs)) return;
+  const j=radioNext(cur,e.key==="ArrowRight"?1:-1,bs.length); if(j===cur) return;
+  e.preventDefault(); bs[j].click(); toast(bs[j].textContent,2500);
+});
 // 폰: 화면을 옆으로 밀면 옆 승강기 종류로 (왼쪽으로 밀면 다음, 오른쪽으로 밀면 앞, 끝에서는 멈춤)
 // 위아래 스크롤로 보이면(옆보다 위아래로 더 움직이면) 안 바꾸고, 글자 칸·창·옆으로 미는 줄(종류·바로 고르기·넓은 표)에서 시작해도 안 바꾼다
 // 화면 가장자리는 폰의 뒤로 가기 몸짓이라 뺀다. 바꾸면 새 종류를 처음부터 보게 맨 위로 올린다(종류 줄도 보이게)
@@ -1538,6 +1557,16 @@ addEventListener("touchmove",e=>{
   touchY=null; box.hidden=true;
   if(document.activeElement===$("#q")) $("#q").blur();
 },{passive:true});
+// 건축허가일 칸도 검색창처럼: 폰에서 12px 넘게 스크롤하거나 끌면 포커스를 풀어 자판을 내린다 (자판이 올라오며 생기는 스크롤 350ms는 봐줌)
+let dY=0, dAt=0, dTouch=null; const dEl=$("#d");
+dEl.addEventListener("focus",()=>{ dY=scrollY; dAt=Date.now(); });
+addEventListener("scroll",()=>{
+  if(document.activeElement!==dEl||!matchMedia("(pointer:coarse)").matches) return;
+  if(Date.now()-dAt<350){ dY=scrollY; return; }
+  if(Math.abs(scrollY-dY)>=12) dEl.blur();
+},{passive:true});
+addEventListener("touchstart",e=>{ dTouch=e.touches.length===1?e.touches[0].clientY:null; },{passive:true});
+addEventListener("touchmove",e=>{ if(dTouch!==null&&document.activeElement===dEl&&Math.abs(e.touches[0].clientY-dTouch)>=12){ dTouch=null; dEl.blur(); } },{passive:true});
 $("#q").addEventListener("focus",()=>{ if(!quietFocus) showRecent(); });
 $("#q").addEventListener("click",()=>{ if($("#recent").hidden) showRecent(); }); // 이미 커서가 있을 때 한 번 더 누르면 최근 검색어
 $("#q").addEventListener("input",showRecent);
@@ -1703,7 +1732,7 @@ function slider(qk){
 document.querySelectorAll(".quick .qs").forEach(slider); // 종류 줄·바로 고르기 줄
 // 결과 공유: 지금 검색어·허가일·보기 방식이 담긴 주소를 보낸다. 폰은 공유 창, PC는 주소 복사
 $("#share").addEventListener("click",async()=>{
-  const url=location.href, bits=[$("#q").value.trim(),$("#d").value.trim()&&"건축허가일 "+$("#d").value.trim()].filter(Boolean);
+  const url=location.href, bits=[$("#q").value.trim(),$("#d").value.trim()&&"검사기준일 "+$("#d").value.trim()].filter(Boolean);
   const text="ELISN 승강기 검사기준"+(bits.length?" · "+bits.join(" · "):"");
   if(navigator.share&&matchMedia("(pointer:coarse)").matches){ try{await navigator.share({title:text,url});}catch(e){} return; }
   let ok=false;
@@ -1730,7 +1759,7 @@ $("#qrbtn").addEventListener("click",async()=>{
     const cell=Math.max(3,Math.floor(260/(qr.getModuleCount()+4)));
     // 둘레 흰 여백(픽셀 단위)은 칸 3개 + 상자 안쪽 여백 10px ≈ 칸 4개: 폰 카메라가 QR 경계를 잘 잡게
     const img=new Image(); img.src=qr.createDataURL(cell,cell*3); img.alt="지금 화면 주소 QR"; box.appendChild(img);
-    const now=[q&&"‘"+q+"’ 검색",d&&"허가일 "+d].filter(Boolean).join(" · ");
+    const now=[q&&"‘"+q+"’ 검색",d&&"검사기준일 "+d].filter(Boolean).join(" · ");
     say.innerHTML="폰 카메라로 비추면 <b>지금 화면이 폰에서 그대로</b> 열려요."+(now?"<br>"+esc(now):"");
   }catch(e){ say.textContent="QR을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; }
 });
@@ -1836,7 +1865,7 @@ if(st.src)src=st.src; if(Object.prototype.hasOwnProperty.call(KIND,st.kind))kind
  // 주소에는 기본값(검사기준·목록)을 적지 않으므로, 주소로 들어왔으면 이 기기에 기억된 자료·보기가 아니라 기본값에서 시작한다
  if(["q","d","src","k"].some(k=>P.has(k))){src="c";kind="elev";}
  if(Object.prototype.hasOwnProperty.call(KIND,P.get("k")))kind=P.get("k");
- if(P.has("q"))$("#q").value=P.get("q"); if(P.has("d"))$("#d").value=P.get("d");
+ if(P.has("q"))$("#q").value=P.get("q"); if(P.has("d"))$("#d").value=dFix(P.get("d"));
  if(P.has("src"))src=P.get("src")==="s"?"s":"c";}
 setSeg("src",src); setSeg("kind",kind);
 showExample(); // 기억된 종류·공유 링크의 종류로 추천 검색어를 다시 보여 준다
