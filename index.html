@@ -524,7 +524,6 @@ footer a{color:var(--accent)}
   body{background:#fff;padding:0;font-size:12pt}
   .wrap{max-width:none;padding:0}
   .failbox{background:var(--fill)!important}
-  .fgx{display:none!important}
   .fgb{border:0!important;background:none!important;padding:0!important;min-height:0!important;white-space:normal!important;text-align:left}.fgt,.fgb .lnm{overflow:visible!important;text-overflow:clip!important;max-width:none!important}
   header,footer,.relq,.acts,.excl,.topics,.more,.minibar,.totop,.toast,.upd,.offline,.note,.resline,.endfb,dialog,#note,.noprint,.fcopy,.lcopy,.failbadge,#failonly{display:none!important}
   /* 페이지 본문(.wrap) 밖은 모두 빼기: 브라우저 확장 프로그램이 화면 가장자리에 붙이는 아이콘(흐린 빨간 그림)이 쪽마다 찍혔다 (2026-09-30) */
@@ -541,11 +540,18 @@ footer a{color:var(--accent)}
   #dateBanner[hidden]~#out>div.list>article:first-child{border-top:0} /* 허가일 안내가 없으면 머리글 밑줄 바로 아래라, 첫 카드 윗줄까지 두 줄로 찍혔다 */
   .pill,.label,mark,.imgs button,.imgs img,.banner{border-radius:0!important}
   .pill.hit{background:none;color:#000;border:1.5px solid #000} /* 배경색이 안 찍혀도 보이게 */
+  .pill.now,.pill.old,.pill.warn,.pill.rev{background:none;padding-left:0;padding-right:0} /* 날짜 칩: 배경 그래픽이 꺼지면 바탕은 안 찍히고 안쪽 여백만 남아 번호·제목보다 들어가 보였다 → 글자색만, 왼쪽 맞춤 (2026-10-18) */
   .rvb{background:none!important;color:#555!important;border:1px solid #bbb!important} /* 바탕색이 안 찍혀 흰 글씨가 사라지던 것 */
   .rvb.on{color:#000!important;border:2px solid #000!important;font-weight:800} /* 고른 개정일이 가장 눈에 띄게 (2026-10-01) */
   .rvb.all{display:none!important} /* "전체 보기"는 인쇄물에서 누를 일이 없어 뺌 */
   .banner .legend .li{align-items:baseline} /* 테두리 생긴 "✓ 기간"과 옆 설명 글자를 기준선끼리 맞춤(가운데 맞춤이면 인쇄에서 어긋나 보임) */
   article.off{display:none}
+  /* 인쇄 설정에서 '배경 그래픽'이 꺼지면 회색 바탕이 안 찍혀 안쪽 카드와 바깥 조항이 똑같아 보인다 → 바탕 대신 왼쪽 줄 (2026-10-18) */
+  .rel{gap:0;margin-top:8px}
+  .rel article{border-radius:0;border:0;border-left:3px solid var(--accent);padding:6px 0 6px 10px;margin:8px 0;background:none}
+  .fgx{margin-top:8px}.fgx>article{border-left-color:#777}
+  .failbox{border:0;border-left:3px solid #777;border-radius:0;padding:4px 0 4px 10px;margin:8px 0}
+  .fgitem .failbox{border-left:0;padding:0}
   .text{font-size:11pt;line-height:1.6;margin-top:6px}
   .text.clip{max-height:none;-webkit-mask-image:none;mask-image:none}
   .imgs img{max-height:60mm}
@@ -670,7 +676,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.18.13"</script>버전 v2026.10.18.13 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.18.14"</script>버전 v2026.10.18.14 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -755,6 +761,8 @@ const saveFavs=()=>{try{localStorage.setItem("elisn-fav",JSON.stringify([...favs
 let favOnly=false, failOnly=false;
 // 조항 안 '표준화 자료 N건'을 펼친 조항: 다시 그려도(인쇄·즐겨찾기 등) 펼친 채로 둔다 → 펼쳐 보던 그대로 함께 인쇄된다 (2026-10-04 운영자)
 const relOpen=new Set();
+// 불합격 기준 카드(.failpop)·불합격 목록의 관련 조항 카드(.fgx)도 같게: 다시 그려도 펼친 채 → 화면에서 연 것이 인쇄에도 나온다 (2026-10-18)
+const failOpen=new Set(), fgOpen=new Map();
 // 카드 글과 원문 보기 글의 관계(빌드가 미리 비교, data/fixes.json lawRel): "s" 같음, "p" 카드가 조항 일부 → 버튼 이름은 "원문" 하나, 관계는 title로만(2026-10-16) (2026-10-04 운영자)
 const LAWREL={};
 const favCount=()=>new Set((src==="s"?curS():cur()).map(x=>keyOf(x,src==="s")).filter(k=>favs.has(k))).size; // 지금 자료(검사기준/표준화)에서 별표한 수
@@ -979,6 +987,7 @@ function lawUrl(x){
   return "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2000000057076";
 }
 // 본문이 조항 번호로 시작하면(위 번호와 같으면) 한 번만 보이게 뺀다
+// [줄잇기 시작] 커밋검사.js가 이 사이를 잘라 검사한다: 화면(DOM)을 건드리지 않는 순수 함수만 둘 것
 // 원래 자료는 문서에서 옮기며 문장 중간에 줄이 바뀐 곳이 많다. 줄 끝이 띄어쓰기·쉼표·가운뎃점이면 문장 중간으로 보고 잇는다
 // (낱말 중간이나 제목 뒤에서 끊긴 곳은 구별이 안 돼 그대로 둔다. 다음 줄이 가) ① 1. - 비고 등 목록이면 잇지 않는다)
 // a. b. 같은 영문 소문자 목록과 "*" 주석 줄도 목록으로 본다 (표준화 자료 "①…⏎ a. …⏎ b. …"가 한 줄로 이어 붙던 것, 2026-09-30)
@@ -988,10 +997,14 @@ const LIST=/^\s*([가-하]\)|[가-하]\.\s|[a-z][.)]|[①-⑳]|\(?\d+[.)]|\d+(\.
 //  - 윗줄이 조사(를·을·는·의·에 …)로 끝나면 낱말이 끝난 것 → 띄어 잇기 ("장치를⏎설치하여야" → "장치를 설치하여야")
 //  - 그 밖(제목 뒤 줄바꿈 "환기⏎승강로는" 같은 곳)은 구별이 안 돼 그대로 둔다
 const PART=/^(어|어야|는|은|을|를|의|에|에서|에서도|에는|에게|으로|으로서|으로써|로|로서|로써|와|과|도|만|까지|부터|적인|적으로|야)$/; // 혼자 쓰일 수 없는 말: 늘 붙인다
-const VERB=/^(되어야|하여야|이어야|있어야|없어야|않아야|하여|되어|한다|된다|하는|되는|하고|되고|하며|되며|하지|되지|하기|되기|하도록|되도록|해야|돼야|할|될|함|됨|하게|되게)$/; // 붙일 수도 띄울 수도 있는 말
+const VERB=/^(되어야|하여야|이어야|있어야|없어야|않아야|하여|되어|한다|된다|하는|되는|하고|되고|하며|되며|하지|되지|하기|되기|하도록|되도록|해야|돼야|할|될|함|됨|하게|되게|된)$/; // 붙일 수도 띄울 수도 있는 말
 const PEND=/[을를은는에로야록며의와과고여서]$/; // 윗줄이 이미 조사·어미로 끝났으면 VERB는 띄운다 ("위치에⏎있어야" → "위치에 있어야")
 const WEND=/[를을는은의에고며서와과도면]$/;
 const HEADING=/^\s*(\d+(\.\d+)*|\(\d+\))\s/; // "6.5.4 환기"처럼 번호로 시작하는 짧은 줄은 제목일 수 있다
+const MARK=/^\s*([가-하]\)|[①-⑳]|\(?\d+\)|[a-z][.)])/; // 목록 머리 (제목 줄 판별용)
+const NOJOIN=/^(\s|다만|단,|또한|그러나|이 경우|이러한|따라서|기계실 없는 엘리베이터\(MRL\) 기준 ·|[★☆❶-❿○□■▶◆◇●>:：(])/; // 새 문단·구조 줄 머리: 들여쓴 줄, 접속 문장, MRL 출처 줄, 기호
+const BOUND=/^(이터|베이터|이크|이지|이도록|럽|지거나|치를|치하|리를|장문)/; // 낱말 중간에서 끊긴 걸로 자료에서 확인된 조각
+const ONE=/^[카문맨및등각이그전후중내외간때시수것값폭축비위또더총약매별상하좌우표도뜻곳]$/; // 혼자 낱말인 한 글자 (그 밖의 한 글자 끝은 낱말 조각)
 function joinLines(t){
   t=t.replace(/ \n (?=\S)/g," \n"); // 원래 자료가 줄마다 " ⏎ "로 나눠 둔 곳: 다음 줄 앞 빈칸 하나는 들여쓰기가 아니라 옮기며 생긴 것 → 빼서 ①② 줄 머리를 맞춘다
   const L=t.split("\n"); let out=L[0];
@@ -999,17 +1012,19 @@ function joinLines(t){
     const prev=out.replace(/[ \t]+$/,""), spaced=/[ \t]$/.test(out), next=L[i];
     const soft=/[·,]$/.test(prev)||(spaced&&!/[.:)\]]$/.test(prev));
     if(soft&&next.trim()&&!LIST.test(next)){ out=prev+(prev.endsWith("·")?"":" ")+next.trimStart(); continue; }
-    if(!spaced&&/[가-힣]$/.test(prev)&&/^[가-힣]/.test(next)&&!LIST.test(next)){
-      const w=next.split(/\s/)[0].replace(/[.,)·]+$/,"");
-      const line=prev.slice(prev.lastIndexOf("\n")+1);
-      const lastW=line.split(/\s/).pop(); // 윗줄 마지막 낱말. 한 글자면("고⏎정판") 낱말 중간일 수 있어 띄워 잇지 않는다
-      if(PART.test(w)||(VERB.test(w)&&!PEND.test(prev))){ out=prev+next; continue; }
-      if((VERB.test(w)||WEND.test(prev))&&lastW.length>=2&&!(HEADING.test(line)&&line.length<=40)){ out=prev+" "+next; continue; }
+    if(!spaced&&/^[가-힣]/.test(next)&&!LIST.test(next)&&!NOJOIN.test(next)){
+      const o=L[i-1].trim(), w=next.split(/\s/)[0].replace(/[.,)·]+$/,""), lastW=prev.split(/\s/).pop(); // lastW: 윗줄 마지막 낱말. 한 글자면("고⏎정판") 낱말 조각
+      const par=PART.test(w)||(VERB.test(w)&&!PEND.test(prev)); // 낱말 중간에서 끊긴 것이 확실한 경우
+      const end=/[.:;?!]$|[다함음]$/.test(prev)||(/[)\]”]$/.test(prev)&&!par); // 윗줄이 문장·항목을 끝맺음 (닫는 괄호는 다음이 조사일 때만 문장 중간)
+      const title=((HEADING.test(o)||MARK.test(o))&&o.length<=(HEADING.test(o)?40:30))||o.length<=12; // 번호 붙은 짧은 제목 줄, 또는 아주 짧은 줄
+      // 타협: 문장 중간이 확실하면 잇고, 낱말 중간 여부는 알 수 없어 기본은 한 칸 띄워 잇는다 ("엘리베⏎이터"는 알려진 조각만 붙이고 나머지는 "엘리베 이터"로 남을 수 있음)
+      if(!end&&!title){ out=prev+(par||BOUND.test(next)||(lastW.length===1&&/[가-힣]/.test(lastW)&&!ONE.test(lastW))?"":" ")+next; continue; }
     }
     out+="\n"+next;
   }
   return out;
 }
+// [줄잇기 끝]
 // 목록 들여쓰기: 줄 머리 표시(① 가) 1. a. - …)의 종류가 처음 나온 순서대로 한 단씩 안으로 (문서마다 쓰는 순서가 달라 순서로 정한다)
 //  같은 종류가 다시 나오면 그 단으로 돌아가고, 표시 없는 줄은 바로 윗줄 단을 따르며, * ※ 주석 줄은 윗줄보다 한 단 안으로
 //  "6.4.2 …" 같은 조항 번호 줄·비고·표·그림 줄은 맨 앞으로. 첫 줄부터 목록이면 그 단을 맨 앞으로 친다 (2026-09-30)
@@ -1224,7 +1239,8 @@ function card(x,rxs,isStd,upNote,why){
     ${rel.length?`<div class="rel"${relOpen.has(k)?"":" hidden"}>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
   </article>`;
 }
-function render(){
+function render(){ render0(); for(const a of $("#out").querySelectorAll("article[data-k]")) if(failOpen.has(a.dataset.k)) a.querySelector(".failbadge")?.click(); for(const a of $("#out").querySelectorAll("article.fgitem")){ const i=fgOpen.get(a.dataset.fk); if(i!=null) a.querySelector(`.fgb[data-i="${i}"]`)?.click(); } }
+function render0(){
   save(); syncUrl(); syncClear();
   if(!loaded) return;
   if(kind!=="elev"&&!K){ $("#status").textContent="자료 불러오는 중…"; loadKinds(); return; } // 자료를 다 불러오기 전에 누르거나 치면 "0건"으로 잘못 보이니, 불러온 뒤 한 번에 그린다
@@ -1286,7 +1302,7 @@ function render(){
     const items=all.filter(it=>(!favOnly||inv.has(it))&&fgHit(it,rx));
     fgN=items.length; fgM=items.filter(it=>inv.has(it)).length;
     fgHtml=items.map(it=>{ const c=(inv.get(it)||[]).sort((a,b)=>a.inh-b.inh), nm=it.nums.join(" · ");
-      return `<article class="fgitem">`+failHTML([{it,show:false}],`<span class="fgn">${esc(nm)}</span> ${esc(it.target||"")}`,"","",false,nm)+
+      return `<article class="fgitem" data-fk="${esc(nm)}">`+failHTML([{it,show:false}],`<span class="fgn">${esc(nm)}</span> ${esc(it.target||"")}`,"","",false,nm)+
         `<div class="fgrel">${c.length?`<span class="fgl">이 날짜의 관련 조항</span>`+c.map(o=>{ const lb=dotAll(shownLabel(o.x)||"번호 없음");
           return `<span class="fgc"><button type="button" class="chipbtn fgb" data-act="fgcard" data-i="${o.x.__i}" aria-expanded="false" title="${esc(lb+" "+(o.x.title||""))}"><b>${labelNum(o.x)}</b><span class="fgt">${esc(o.x.title||"")}</span><span class="fgp">(${per(o.x)})</span></button>${o.inh?`<span class="fgr">(참고)</span>`:""}</span>`; }).join("")+`<div class="rel fgx"></div>`
           :`<span class="fgl none">이 판에는 이어 둔 조항이 없어요</span>`}</div></article>`; }).join("");
@@ -1569,7 +1585,7 @@ function failCopy(a){ const one=a.dataset.act==="lcopy"; a._o||=a.textContent; c
     const ok=()=>{ if(!/Android/.test(navigator.userAgent)) toast("복사됨",1500); /* 안드로이드 13+는 폰이 "복사했어요" 알림을 띄워 두 개가 겹침 */ if(one) return; a.textContent="복사됨"; clearTimeout(a._t); a._t=setTimeout(()=>a.textContent=a._o,1500); };
     const old=()=>{ const ta=document.createElement("textarea"); ta.value=txt; ta.style.cssText="position:fixed;opacity:0"; document.body.append(ta); ta.select(); let g=false; try{g=document.execCommand("copy")}catch{} ta.remove(); g?ok():toast("복사하지 못했어요. 글을 길게 눌러 직접 복사해 주세요."); };
     (navigator.clipboard?navigator.clipboard.writeText(txt).then(ok,old):Promise.resolve(old())); }
-$("#out").addEventListener("keydown",e=>{ const o=e.key==="Escape"&&e.target.closest("article")?.querySelector(":scope>.failpop"); if(!o) return; const b=o.parentNode.querySelector(".failbadge"); o.remove(); b.setAttribute("aria-expanded","false"); b.focus(); });
+$("#out").addEventListener("keydown",e=>{ const o=e.key==="Escape"&&e.target.closest("article")?.querySelector(":scope>.failpop"); if(!o) return; const b=o.parentNode.querySelector(".failbadge"); failOpen.delete(o.parentNode.dataset.k); o.remove(); b.setAttribute("aria-expanded","false"); b.focus(); });
 $("#out").addEventListener("click",e=>{
   const tf=e.target.closest("[data-tfold]");
   if(tf){ const d=tf.closest(".topics"); d.open=false; scrollTo(0,0); d.querySelector("summary").focus({preventScroll:true}); return; } // 접으면 맨 위로(검색창이 바로 보이게, 자판·최근 검색어는 안 띄움. 키보드 자리는 접은 제목에). 뒤로가기·Esc 접기는 그 자리 그대로
@@ -1585,10 +1601,10 @@ $("#out").addEventListener("click",e=>{
   const art=a.closest("article");
   if(a.dataset.act==="open") foldText(art);
   else if(a.dataset.act==="rel"){const r=art.querySelector(":scope>.rel");r.hidden=!r.hidden;a.setAttribute("aria-expanded",!r.hidden);relOpen[r.hidden?"delete":"add"](art.dataset.k)} // 버튼 모양으로 열림·닫힘을 보여 준다
-  else if(a.dataset.act==="failgo"){ const o=art.querySelector(":scope>.failpop"); a.setAttribute("aria-expanded",!o); if(o) o.remove(); else { const x=byI(+a.dataset.i); (art.querySelector(":scope>.meta:not(:empty)")||art.querySelector(":scope>.head")).insertAdjacentHTML("afterend",failHTML(failOrInherit(x).items,"불합격 기준",failOrInherit(x).inherited?"지금 공단 기준이에요. 이 판의 조항 글과 다를 수 있어 참고로 보여 드려요.":"","failpop",false,dotAll(shownLabel(x)||"번호 없음"))); } } // 화면은 그대로, 적용 기간 아래에 불합격 기준 카드를 끼움
+  else if(a.dataset.act==="failgo"){ const o=art.querySelector(":scope>.failpop"); a.setAttribute("aria-expanded",!o); failOpen[o?"delete":"add"](art.dataset.k); if(o) o.remove(); else { const x=byI(+a.dataset.i); (art.querySelector(":scope>.meta:not(:empty)")||art.querySelector(":scope>.head")).insertAdjacentHTML("afterend",failHTML(failOrInherit(x).items,"불합격 기준",failOrInherit(x).inherited?"지금 공단 기준이에요. 이 판의 조항 글과 다를 수 있어 참고로 보여 드려요.":"","failpop",false,dotAll(shownLabel(x)||"번호 없음"))); } } // 화면은 그대로, 적용 기간 아래에 불합격 기준 카드를 끼움
   else if(a.dataset.act==="fcopy"||a.dataset.act==="lcopy") failCopy(a);
   else if(a.dataset.act==="fgcard"){ const row=a.closest(".fgrel"), x=row.querySelector(".fgx"), on=a.getAttribute("aria-expanded")!=="true"; // 불합격 목록의 관련 조항 칩: 항목 아래에 카드 한 장 펼침/접힘
-    row.querySelectorAll(".fgb").forEach(b=>b.setAttribute("aria-expanded",b===a&&on)); x.innerHTML=on?card(byI(+a.dataset.i),[],false):""; }
+    row.querySelectorAll(".fgb").forEach(b=>b.setAttribute("aria-expanded",b===a&&on)); x.innerHTML=on?card(byI(+a.dataset.i),[],false):""; const fk=row.closest(".fgitem").dataset.fk; if(on) fgOpen.set(fk,a.dataset.i); else fgOpen.delete(fk); }
   else if(a.dataset.act==="more"){limit+=40;render()}
   else if(a.dataset.act==="report") report(art);
   else if(a.dataset.act==="law") showLaw(+a.dataset.i);
@@ -1648,10 +1664,10 @@ document.querySelectorAll(".brand .home").forEach(el=>el.addEventListener("click
   render(); scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
 }));
 // 인쇄: 지금 결과를 모두 펼쳐 인쇄한다 (많으면 먼저 물어봄). 브라우저 인쇄(Ctrl+P)로 해도 같다
-// 인쇄 버튼(건수 확인을 거침)은 전부, 확인 없이 들어오는 Ctrl+P는 100건까지만 (2,018건 전부 그리다 폰이 멈칫하고 종이가 쏟아지지 않게)
+// 인쇄 버튼이든 Ctrl+P든 전부 인쇄한다 (Ctrl+P만 100건에서 끊겨 두 방법의 종이가 달랐다. 2026-10-18)
 let printLimit=null, printAll=false;
 const restorePrint=()=>{ printAll=false; if(printLimit!==null){limit=printLimit;printLimit=null;render();} };
-addEventListener("beforeprint",()=>{ if(printLimit===null){printLimit=limit;limit=printAll?1e9:Math.max(limit,100);render();} });
+addEventListener("beforeprint",()=>{ if(printLimit===null){printLimit=limit;limit=1e9;render();} });
 addEventListener("afterprint",restorePrint);
 // 폰(터치 화면): 인쇄할 사람은 거의 없고 PDF로 저장하려는 경우라, 버튼 이름을 'PDF 저장'으로 하고 처음 한 번 저장 방법을 알려 준다 (하는 일은 인쇄 창 열기로 같음)
 const IOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
