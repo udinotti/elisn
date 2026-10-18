@@ -217,7 +217,7 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
 /* 위쪽 도구 버튼(즐겨찾기만·인쇄·결과 공유): 밝은 모드에선 --fill이 페이지 바탕과 같아 박스가 안 보여 흰 바탕으로 */
 .mob #print{display:none} /* 폰에서는 PDF 저장을 거의 안 써서 버튼 줄만 차지한다 (2026-10-06 운영자) */
 #favonly,#failonly,#print,#share,#qrbtn,#fbtool,#note [data-act=favclear]{background:var(--chip)}
-/* 폰으로 보기·결과 공유: 글 앞에 작은 그림(폰, 위로 올리는 화살표 상자). [hidden]일 땐(폰 화면) 그대로 숨게 :not([hidden])에만 flex */
+/* 모바일로 보기·결과 공유: 글 앞에 작은 그림(폰, 위로 올리는 화살표 상자). [hidden]일 땐(폰 화면) 그대로 숨게 :not([hidden])에만 flex */
 #qrbtn:not([hidden]),#share,#fbtool{display:inline-flex;align-items:center;gap:3px}
 /* 가운데 맞춤만 하면 폰 그림이 글자보다 1px 높아 보여서(실측) 1px 내림.
    폰 그림 양옆에 빈 칸이 있어 왼쪽 여백이 2.5px 넓어 보여서(실측) 왼쪽으로 당기고, 글자와 사이(gap)도 줄임 */
@@ -365,7 +365,7 @@ html:has(dialog[open]){overflow:hidden}
 #ask .sh-foot button{flex:1;min-height:44px;font-size:15px;font-weight:700}
 #ask .sh-foot #askok{background:var(--accent);color:var(--on-accent)}
 #ask .sh-foot #askok.danger{background:var(--fb-red);color:var(--surface)} /* 펼친 불합격 버튼과 같은 빨강: 글자 대비 밝게 6.2·어둡게 8.4 */
-/* 폰으로 이어 보기(PC에서만): 지금 화면 주소를 QR로. QR은 어두운 화면에서도 읽히게 흰 바탕 */
+/* 모바일로 이어 보기(PC에서만): 지금 화면 주소를 QR로. QR은 어두운 화면에서도 읽히게 흰 바탕 */
 #qrdlg{width:min(380px,calc(100vw - 24px))}
 .qr-body{padding:4px 20px 22px;display:flex;flex-direction:column;align-items:center;gap:14px}
 .qr-box{background:#fff;border-radius:16px;padding:10px;line-height:0;min-height:120px;min-width:120px;display:flex;align-items:center;justify-content:center}
@@ -656,7 +656,7 @@ footer a{color:var(--accent)}
     <div class="tools">
     <button type="button" class="chipbtn" id="print">인쇄</button>
     <button type="button" class="chipbtn" id="share" aria-label="결과 공유"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 11v7.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V11"/></svg><span class="shtxt">결과 공유</span></button>
-    <button type="button" class="chipbtn" id="qrbtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3.5"/><path d="M10.5 5.5h3"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg>폰으로 보기</button>
+    <button type="button" class="chipbtn" id="qrbtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3.5"/><path d="M10.5 5.5h3"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg>모바일로 보기</button>
     <button type="button" class="chipbtn" id="fbtool" data-act="feedback" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbtxt">의견 남기기</span></button>
     </div>
   </div>
@@ -675,9 +675,9 @@ footer a{color:var(--accent)}
     <section><h3>적용 기간</h3><p>기준적용일(또는 시행일) 기준입니다. 끝 날짜가 없는 조항은 현재까지 적용되는 것으로 봅니다. 기준적용일을 넣으면 적용되지 않는 조항은 맨 아래에 이유와 함께 따로 모아 보여 줍니다.</p></section>
     <section><h3>자료 출처</h3><p>근거 원문: <a href="https://www.law.go.kr/행정규칙/승강기안전부품안전기준및승강기안전기준" target="_blank" rel="noopener">국가법령정보센터 행정안전부 고시</a><br>불합격 기준: 한국승강기안전공단 「설치검사 및 안전검사 검사항목별 불합격 내용」(2024.10.30. 개정) · <a href="https://www.data.go.kr/data/15138138/fileData.do" target="_blank" rel="noopener">공공데이터포털</a><br>표에 없어도 주요 안전장치가 없거나 카를 운행할 수 없으면 불합격이고, 경과조치 항목은 경과조치 규정에 따라요.</p></section>
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
-    <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> → <b>더 보기</b> → <b>홈 화면에 추가</b> · 안드로이드: 크롬에서 <b>설치</b> (삼성 인터넷에서 「안전하지 않은 앱 차단됨」이 뜨면 <b>세부정보 더보기</b> → <b>무시하고 설치하기</b>)</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
+    <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> → <b>더 보기</b> → <b>홈 화면에 추가</b> · 안드로이드: 메뉴(<b>⋮</b> 또는 <b>≡</b>) → <b>홈 화면에 추가</b>(또는 <b>앱 설치</b>) → <b>설치</b><br>브라우저에 따라 「안전하지 않은 앱 차단됨」이 뜨면 <b>세부정보 더보기</b> → <b>무시하고 설치하기</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.19.1"</script>버전 v2026.10.19.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.19.2"</script>버전 v2026.10.19.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -707,7 +707,7 @@ footer a{color:var(--accent)}
 </dialog>
 <dialog id="qrdlg" aria-labelledby="qrttl">
   <div class="sheet">
-    <div class="sh-head"><div><div class="sh-src">ELISN</div><h2 id="qrttl">폰으로 이어 보기</h2></div><button type="button" class="chipbtn" id="qrclose" aria-label="닫기">닫기</button></div>
+    <div class="sh-head"><div><div class="sh-src">ELISN</div><h2 id="qrttl">모바일로 이어 보기</h2></div><button type="button" class="chipbtn" id="qrclose" aria-label="닫기">닫기</button></div>
     <div class="qr-body"><div class="qr-box" id="qrbox"></div><div class="qr-say" id="qrsay"></div></div>
   </div>
 </dialog>
@@ -1966,8 +1966,8 @@ $("#share").addEventListener("click",async()=>{
     document.body.appendChild(ta); ta.select(); try{ ok=document.execCommand("copy"); }catch(_){} ta.remove(); }
   toast(ok?"링크를 복사했어요. 붙여 넣어 보내면 같은 화면이 열려요.":"주소창의 주소를 복사해 보내 주세요.",ok?3000:4000);
 });
-// 폰으로 이어 보기(2026-10-01 운영자): PC에서만 버튼을 보이고, 누르면 지금 화면 주소(검색어·허가일·종류 포함)를 QR로 띄운다.
-// 폰 카메라로 비추면 같은 화면이 폰에서 열린다. QR 그리는 파일(lib/qrcode.js, MIT)은 처음 누를 때만 받는다
+// 모바일로 이어 보기(2026-10-01 운영자): PC에서만 버튼을 보이고, 누르면 지금 화면 주소(검색어·허가일·종류 포함)를 QR로 띄운다.
+// 폰·태블릿 카메라로 비추면 같은 화면이 모바일에서 열린다. QR 그리는 파일(lib/qrcode.js, MIT)은 처음 누를 때만 받는다
 if(!MOB) $("#qrbtn").hidden=false;
 let qrLib=null;
 const loadQr=()=>qrLib||(qrLib=new Promise((ok,no)=>{ if(window.qrcode) return ok();
@@ -1984,7 +1984,7 @@ $("#qrbtn").addEventListener("click",async()=>{
     // 둘레 흰 여백(픽셀 단위)은 칸 3개 + 상자 안쪽 여백 10px ≈ 칸 4개: 폰 카메라가 QR 경계를 잘 잡게
     const img=new Image(); img.src=qr.createDataURL(cell,cell*3); img.alt="지금 화면 주소 QR"; box.appendChild(img);
     const now=[q&&"‘"+q+"’ 검색",d&&"기준적용일 "+d,new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean).join(" · ");
-    say.innerHTML="폰 카메라로 비추면 <b>지금 화면이 폰에서 그대로</b> 열려요."+(now?"<br>"+esc(now):"");
+    say.innerHTML="폰·태블릿 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요."+(now?"<br>"+esc(now):"");
   }catch(e){ say.textContent="QR을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; }
 });
 $("#qrclose").addEventListener("click",()=>$("#qrdlg").close());
@@ -2014,13 +2014,13 @@ if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostnam
     imgRun=true; for(const u of l){ try{ await fetch(u); }catch(_){} } imgRun=false; if(++imgTry<2) getImgs(); }); /* 한 번 더 물어 그 사이 빠진 그림을 채운다(늘 실패하는 그림 때문에 끝없이 돌지 않게 한 번만) */
 }
 // 홈 화면에 추가 버튼: 늘 보이고, 누르면 기기에 맞게 반응한다
-//  설치 창을 띄울 수 있는 브라우저(안드로이드 크롬, PC 크롬·엣지)는 바로 설치 창(삼성 인터넷은 Play Protect 경고 대처 안내를 함께), 아이폰은 공유 → 더 보기 → 홈 화면에 추가 안내,
+//  설치 창을 띄울 수 있는 브라우저(안드로이드, PC 크롬·엣지)는 바로 설치 창(안드로이드는 Play Protect 차단 창 대처 안내를 함께), 아이폰은 공유 → 더 보기 → 홈 화면에 추가 안내,
 //  카카오톡 등 앱 안 브라우저는 다른 브라우저로 열기 안내, 이미 앱으로 여는 중이면 버튼 대신 안내 글
 let installEv=null;
 const ua=navigator.userAgent;
 const isApp=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
 const isIOS=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
-const isSamsung=/SamsungBrowser/.test(ua);
+const isAndroid=/Android/.test(ua);
 const inApp=/KAKAOTALK|NAVER\(|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp|band\//i.test(ua);
 const shareIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
 function installHow(html){ const p=$("#installhow"); p.innerHTML=html; p.hidden=false; }
@@ -2030,12 +2030,12 @@ function showInstall(){
   b.hidden=false;
 }
 $("#install").addEventListener("click",async()=>{
-  const samsungHow=isSamsung?"「안전하지 않은 앱 차단됨」이 뜨면 <b>세부정보 더보기</b> → <b>무시하고 설치하기</b>를 누르고 본인 인증을 하면 설치돼요. 구글 보안 검사가 웹 앱을 잘못 막는 것이라 괜찮아요.":"";
-  if(installEv){ installEv.prompt(); if(isSamsung) installHow(samsungHow); try{ await installEv.userChoice; }catch(_){} installEv=null; return; }
+  const blockHow=isAndroid?"브라우저에 따라 「안전하지 않은 앱 차단됨」이 뜨면 <b>세부정보 더보기</b> → <b>무시하고 설치하기</b>를 눌러 주세요. 구글 보안 검사가 웹 앱을 잘못 막는 것이라 괜찮아요.":"";
+  if(installEv){ installEv.prompt(); if(blockHow) installHow(blockHow); try{ await installEv.userChoice; }catch(_){} installEv=null; return; }
   if(inApp) installHow(`지금은 ${/KAKAOTALK/i.test(ua)?"카카오톡":"앱"} 안에서 열려 있어 추가할 수 없어요. 오른쪽 위(또는 아래) <b>⋮ 메뉴 → 다른 브라우저로 열기</b>를 누른 뒤, 거기서 다시 이 버튼을 눌러 주세요.`);
   else if(isIOS) installHow(`사파리 아래(아이패드는 위) <b class="ico">${shareIco}공유</b> 버튼 → <b>더 보기</b> → <b>홈 화면에 추가</b>를 눌러 주세요. 크롬에서 열었다면 주소창 옆 공유 버튼에서도 돼요.`);
   else if(/Edg\//.test(ua)) installHow(`오른쪽 위 <b>…</b> 메뉴 → <b>기타 도구</b> → <b>앱</b> → <b>이 사이트를 앱으로 설치</b>를 눌러 주세요. 이미 설치했다면 같은 자리에 「…에서 열기」가 보여요.`); // PC 엣지: 이미 설치했으면 설치 창이 안 떠서 메뉴 길을 알려 준다
-  else installHow(`브라우저 메뉴(<b>⋮</b> 또는 <b>…</b>) → <b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 눌러 주세요. 메뉴에 없으면 크롬으로 열어 주세요.`+(samsungHow&&"<br>"+samsungHow));
+  else installHow(`인터넷 창 메뉴(<b>⋮</b> 또는 <b>≡</b>) → <b>홈 화면에 추가</b>(또는 <b>앱 설치</b>) → <b>설치</b>를 눌러 주세요.`+(blockHow&&"<br>"+blockHow));
 });
 addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); installEv=e; });
 addEventListener("appinstalled",()=>{ installEv=null; toast("홈 화면에 추가했어요.",2500); installHow("✓ 홈 화면에 추가했어요. 이제 앱처럼 바로 열려요."); $("#install").hidden=true; });
