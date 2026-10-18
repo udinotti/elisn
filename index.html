@@ -277,6 +277,8 @@ article.warn{box-shadow:inset 0 0 0 1.5px var(--warn)}
 /* 허가일 직전 개정일에 바뀐 조항 표시 (누르면 시기별 비교) */
 .pill.rev{background:var(--warn-soft);color:var(--warn);border:0;font-size:12.5px;font-weight:800} /* 개정·신설 표시: 글자만. 비교는 아래 시기별 비교 버튼 하나로 (2026-10-16) */
 .pill.sum{background:var(--fill);color:var(--sub);border:1px dashed var(--muted);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer} /* 원래 자료가 원문을 줄여 적은 조항(원문이 길어 요약을 남긴 것): 눌러서 원문 보기 */
+/* 칩 안 글자 세로 가운데: 한글 웹글꼴(Noto Sans KR)은 글줄 상자에서 글자 위 빈 공간이 아래보다 훨씬 커서 "✓ 기간"·날짜 글자가 상자 가운데보다 1~2px 아래로 처져 보였다 → 글줄 위아래 빈 공간을 잘라내고(text-box-trim) 그만큼 안쪽 여백으로 채워 칩 높이는 그대로. 지원 안 하는 브라우저는 전처럼 (2026-10-18) */
+@supports (text-box:trim-both cap alphabetic){.pill{text-box:trim-both cap alphabetic;padding-top:8px;padding-bottom:8px}.banner .legend .pill{padding-top:6px;padding-bottom:6px}} /* 글줄 상자를 숫자 높이(cap)로 잘라 위아래 같은 여백: 4배 확대로 글자 하나하나 재어 숫자 0, 한글 ±0.25px 안(전엔 숫자 0.5px·범례 0.75px·인쇄 범례 1.5px 아래로 처짐). 칩 높이는 1px 작아짐. 여백 8.5·7 같은 반 px 는 자리 맞춤에서 반올림돼 안 먹음 (2026-10-18) */
 /* 허가일 칸의 개정일 목록: 누르면 그 날 개정만 */
 .banner .revs{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
 .banner .revs .rl{flex-basis:100%;display:flex;align-items:center;gap:8px;min-height:28px;font-size:13px;font-weight:700;color:var(--muted)} /* 제목은 한 줄 따로, 개정일 버튼은 그 아래 한데 모아 */
@@ -676,7 +678,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p>한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 홈 화면에 두면 앱처럼 바로 열려요.<br>아이폰: 사파리 아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b> · 안드로이드: 크롬 <b>⋮</b> 메뉴 → <b>홈 화면에 추가</b></p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.18.14"</script>버전 v2026.10.18.14 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.18.15"</script>버전 v2026.10.18.15 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
