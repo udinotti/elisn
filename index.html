@@ -357,6 +357,10 @@ html:has(dialog[open]){overflow:hidden}
 .sh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 20px 12px}
 .sh-src{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.5}
 .sh-head h2{margin:4px 0 0;font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
+.cref{margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid var(--fill)} /* 조항 번호 링크 창: 같은 번호 카드마다 제목·기간·글 */
+.cref:last-child{border-bottom:0;margin-bottom:0}
+.cref .ct{display:block;font-size:16px;font-weight:800;color:var(--ink);line-height:1.5}
+.cref .cp{display:inline-block;margin:4px 0 6px;font-size:13px;font-weight:700;color:var(--now);background:var(--now-soft);border-radius:999px;padding:2px 10px}
 #lawbody.ref{white-space:normal;color:var(--ink);line-height:1.6} /* 참조 원문: 번호 머리줄(.rh1~3)과 본문 줄(.ln, --lv 들여쓰기)로 위계를 보인다 */
 #lawbody.ref .ln{padding-left:calc(var(--lv,0)*1.4em);margin:2px 0}
 #lawbody.ref .rh{font-weight:700;margin-top:8px}
@@ -702,7 +706,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.21.1"</script>버전 v2026.10.21.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.21.2"</script>버전 v2026.10.21.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -928,7 +932,7 @@ function refLinker(x){
     const tk=(h.match(/<[^>]+>|[^<]+/g)||[]); let plain=""; tk.forEach(s=>{ if(s[0]!=="<") plain+=s; });
     const hits=[]; let m;
     while((m=rx.exec(plain))){ const a=m.index, e=a+m[0].length, p=plain.charAt(a-1), n=plain.slice(e,e+2);
-      if((p&&/[가-힣A-Za-z0-9]/.test(p))||(/\d$/.test(m[0])?/^(\d|\.\d|-\d)/.test(n):/^[IVXⅠ-Ⅻ]/.test(n))) continue;
+      if((p&&/[가-힣A-Za-z0-9.]/.test(p))||(/\d$/.test(m[0])?/^(\d|\.\d|-\d)/.test(n):/^[IVXⅠ-Ⅻ]/.test(n))) continue;
       hits.push([a,e,m[0]]); }
     if(!hits.length) return h;
     let out="", depth=0, pos=0, hi=0, cur=null, had=false;
@@ -1545,7 +1549,6 @@ function setSeg(attr,val){document.querySelectorAll(`[data-${attr}]`).forEach(b=
 // 다음·앞 칸 번호(끝에서는 반대 끝으로 돌아감, 폰 쓸어 넘기기·← → 키 모두 같게 2026-10-18 운영자)
 const radioNext=(i,d,n)=>(i+d+n)%n;
 // 끝을 넘어 돌아갔을 때 알림 앞말: 앞으로 가다 처음으로, 뒤로 가다 끝으로
-const wrapLbl=(i,j,d)=>(j-i)*d<0?(d>0?"처음으로 → ":"끝으로 → "):"";
 // 라디오 줄 키보드: →↓ 다음, ←↑ 앞, Home·End 처음·끝. 옮기면 클릭과 똑같이 고르고(click) 포커스도 따라간다
 function radioKeys(box){box.addEventListener("keydown",e=>{
   if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||!e.target.matches("[role=radio]")) return;
@@ -1600,10 +1603,10 @@ document.addEventListener("keydown",e=>{
   let hs=false; for(let n=e.target instanceof Element?e.target:null;n&&n!==document.body;n=n.parentElement) if(n.scrollWidth>n.clientWidth+2&&/auto|scroll/.test(getComputedStyle(n).overflowX)){hs=true;break;}
   if(!arrowKindOk(e,document.querySelector("dialog[open]"),hs)) return;
   const j=radioNext(cur,e.key==="ArrowRight"?1:-1,bs.length); if(j===cur) return;
-  e.preventDefault(); bs[j].click(); toast(wrapLbl(cur,j,e.key==="ArrowRight"?1:-1)+bs[j].textContent,2500);
+  e.preventDefault(); bs[j].click(); toast(bs[j].textContent,2500);
 });
 // 폰: 화면을 옆으로 밀면 옆 승강기 종류로 (왼쪽으로 밀면 다음, 오른쪽으로 밀면 앞)
-// 끝에서 밀면 바로 반대 끝으로 넘어가고 "처음으로 → ○○"·"끝으로 → ○○" 짧은 알림 (← → 키와 같게, 2026-10-18 운영자)
+// 끝에서 밀면 바로 반대 끝으로 넘어간다. 알림은 띄우지 않는다(시선만 흩뜨려서 2026-10-21 뺌)
 // 위아래 스크롤로 보이면(옆보다 위아래로 더 움직이면) 안 바꾸고, 글자 칸·창·옆으로 미는 줄(종류·바로 고르기·넓은 표)에서 시작해도 안 바꾼다
 // 화면 가장자리는 폰의 뒤로 가기 몸짓이라 뺀다. 바꾸면 새 종류를 처음부터 보게 맨 위로 올린다(종류 줄도 보이게)
 let swX=null,swY=0,swT=0;
@@ -1618,8 +1621,8 @@ addEventListener("touchstart",e=>{ swX=null;
 addEventListener("touchend",e=>{ if(swX===null) return;
   const p=e.changedTouches[0], dx=p.clientX-swX, dy=p.clientY-swY; swX=null;
   if(Date.now()-swT>800||Math.abs(dx)<45||Math.abs(dx)<1.5*Math.abs(dy)||String(getSelection()||"")) return;
-  const bs=[...document.querySelectorAll("[data-kind]")], d=dx<0?1:-1, i=bs.findIndex(x=>x.dataset.kind===kind), j=radioNext(i,d,bs.length), b=bs[j], w=wrapLbl(i,j,d);
-  b.click(); if(w) toast(w+b.textContent,1500); else $("#toast").hidden=true; /* 앞서 뜬 "처음으로 →" 알림이 다른 종류 위에 남지 않게 */
+  const bs=[...document.querySelectorAll("[data-kind]")], d=dx<0?1:-1, i=bs.findIndex(x=>x.dataset.kind===kind), j=radioNext(i,d,bs.length), b=bs[j];
+  b.click(); $("#toast").hidden=true; /* 밀어서 넘길 땐 알림 없음, 앞서 뜬 알림도 지운다 */
   const qs=b.parentElement, br=b.getBoundingClientRect(), qr=qs.getBoundingClientRect();
   qs.scrollBy({left:br.left+br.width/2-(qr.left+qr.width/2),behavior:"smooth"});
   scrollTo(0,0); },{passive:true});
@@ -1883,7 +1886,7 @@ const dropNum=(t,n)=>{ t=String(t||""); return n&&t.startsWith(n)&&/\s/.test(t.c
 // 장의 마지막 조항은 원문 조각 끝에 다음 장 제목(8.18.2 끝의 "9. 현수, 보상, …")이 딸려 와서 뺀다. 다음 장 번호로 시작하고 문장으로 끝나지 않는 마지막 줄만 (2026-10-04, 35곳)
 const dropNextHead=(t,n)=>{ const N=parseInt(n,10)+1; if(!N) return t; const m=t.match(new RegExp("\\n[ \\t]*"+N+"\\.?[ \\t]+([^\\n]{1,60})$")); return m&&!/다\.?$/.test(m[1])?t.slice(0,m.index):t; };
 // 원문 창 아래 버튼·안내: 국가법령정보센터에 없는 옛 고시(기술표준원 게시글)는 그렇게 알린다 (2026-10-17)
-const lawFoot=k=>{ $("#lawfull").textContent=k?"고시 게시글 보기":"고시 전체 보기"; $("#lawnote").textContent=k?"기술표준원 고시 게시글의 첨부 파일에서 옮긴 글이에요. 표·그림은 게시글 첨부에서 확인하세요.":"국가법령정보센터 고시 원문에서 옮긴 글이에요. 빠진 표·그림이 있으면 고시 전체 보기에서 확인하세요."; };
+const lawFoot=k=>{ delete $("#lawfull").dataset.go; $("#lawfull").target="_blank"; $("#lawfull").textContent=k?"고시 게시글 보기":"고시 전체 보기"; $("#lawnote").textContent=k?"기술표준원 고시 게시글의 첨부 파일에서 옮긴 글이에요. 표·그림은 게시글 첨부에서 확인하세요.":"국가법령정보센터 고시 원문에서 옮긴 글이에요. 빠진 표·그림이 있으면 고시 전체 보기에서 확인하세요."; };
 async function showLaw(i){
   const x=byI(i); const dlg=$("#lawdlg"), my=++lawSeq; $("#lawbody").classList.remove("ref");
   $("#lawttl").textContent=x.label&&/^\d/.test(x.label)?dotAll(x.label):(x.title||"");
@@ -1974,7 +1977,21 @@ function refHTML(text,name,id,rxs=[]){
     if(/^\[\s*표\s/.test(o.l)) return `<div class="ln tcap">${hl(o.l,rxs)}</div>`; // 표 제목은 들여쓰지 않고 굵게
     return `<div class="ln" style="--lv:${Math.max(0,k-1)+ll[i]}">${hl(o.l,rxs)}</div>`; }).join("");
 }
+// 조항 번호 링크 (2026-10-21): 같은 번호 카드 중 기준적용일(하루로 넣었을 때) 또는 이 카드 기간에 걸치는 것을 한 창에 모두 보여 주고, 아래 단추로 그 번호를 찾는다
+function showCardRef(b){
+  const x=byI(+b.dataset.i), dlg=$("#lawdlg"), n=b.textContent, pd=parseLoose($("#d").value), d=pd&&pd.from===pd.to?pd.from:"";
+  const ys=b.dataset.ref.slice(1).split(",").map(k=>byI(+k)).filter(Boolean), on=(y,a,z)=>(y.from||"")<=z&&(y.to||"9999-12-31")>=a;
+  let pick=d?ys.filter(y=>on(y,d,d)):[]; if(!pick.length) pick=ys.filter(y=>on(y,x.from||"",x.to||"9999-12-31")); if(!pick.length) pick=ys;
+  ++lawSeq; lawFoot(false); const body=$("#lawbody"); body.classList.remove("ref"); body.scrollTop=0;
+  $("#lawttl").textContent=n; $("#lawsrc").textContent="ELISN 카드"+(pick.length>1?" "+pick.length+"장":"");
+  const rxs=terms($("#q").value);
+  body.innerHTML=pick.map(y=>`<div class="cref"><span class="ct">${hl(y.title||"",rxs)}</span><span class="cp">${y.from?dot(y.from):"?"} ~ ${y.to?dot(y.to):"현재"}</span>\n${hl(bodyText(y),rxs)}</div>`).join("");
+  $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+n+"’이에요."+(d&&pick.some(y=>on(y,d,d))?" 기준적용일에 적용되는 카드만 보여요.":""); $("#lawwarn").hidden=false;
+  const a=$("#lawfull"); a.textContent="이 조항으로 가기"; a.removeAttribute("target"); a.href="?q="+encodeURIComponent(n); a.dataset.go=n; $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
+  if(!dlg.open) dlg.showModal();
+}
 async function showRef(b){
+  if(b.dataset.ref[0]==="c") return showCardRef(b);
   const x=byI(+b.dataset.i), my=++lawSeq, dlg=$("#lawdlg"); let id=b.dataset.ref;
   // 기준적용일을 하루로 넣었고 카드 기간 안이면 그날 시행 중인 판(빌드가 정한 alt: {시작일: 대상})을 연다. 아니면 카드 시작일 기준 그대로
   const alt=((REFC[x.__i]||[]).find(o=>o.id===id)||{}).alt, pd=parseLoose($("#d").value), d=pd&&pd.from===pd.to?pd.from:"";
@@ -1994,6 +2011,7 @@ async function showRef(b){
   }catch(e){ if(my===lawSeq) $("#lawsrc").textContent=navigator.onLine?"원문을 불러오지 못했어요. 다시 눌러 주세요.":"인터넷이 될 때 한 번 열면 다음부터는 인터넷 없이도 열려요."; }
 }
 $("#lawclose").addEventListener("click",()=>$("#lawdlg").close());
+$("#lawfull").addEventListener("click",e=>{ const g=e.currentTarget.dataset.go; if(!g) return; e.preventDefault(); $("#lawdlg").close(); $("#q").value=g; goSearch(); }); // 조항 번호 창: 그 번호로 찾기
 document.addEventListener("keydown",e=>{ if(!$("#lawdlg").open) return; const b=$("#lawbody"), h=b.clientHeight*0.9, k={PageDown:h,PageUp:-h,ArrowDown:40,ArrowUp:-40,Home:-b.scrollHeight,End:b.scrollHeight}[e.key];
   if(k===undefined||e.altKey||e.ctrlKey||e.metaKey||e.target.closest("input,textarea,select")) return; e.preventDefault(); b.scrollBy({top:k}); /* 바로 옮김: 부드럽게 움직이면 가려진 창에서 멈춰 있기도 함 */ });
 $("#lawbody").addEventListener("click",e=>{ const g=e.target.closest(".reftoc button"); if(g) $("#lawbody").querySelectorAll(".ln")[+g.dataset.go].scrollIntoView({block:"start",behavior:"smooth"}); });
