@@ -360,6 +360,7 @@ html:has(dialog[open]){overflow:hidden}
 .sh-head h2{margin:4px 0 0;font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
 .cref{margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid var(--fill)} /* 조항 번호 링크 창: 같은 번호 카드마다 제목·기간·글 */
 .cref:last-child{border-bottom:0;margin-bottom:0}
+article.gocard{scroll-margin-top:84px;box-shadow:0 0 0 2px var(--accent);transition:box-shadow .4s} /* "이 조항으로 가기"로 찾은 그 번호 카드: 그 자리로 가서 잠깐 파란 테두리 */
 .cref .ct{display:block;font-size:16px;font-weight:800;color:var(--ink);line-height:1.5}
 .cref .cp{display:inline-block;margin:4px 0 6px;font-size:13px;font-weight:700;color:var(--now);background:var(--now-soft);border-radius:999px;padding:2px 10px}
 #lawbody.ref{white-space:normal;color:var(--ink);line-height:1.6} /* 참조 원문: 번호 머리줄(.rh1~3)과 본문 줄(.ln, --lv 들여쓰기)로 위계를 보인다 */
@@ -707,7 +708,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.21.4"</script>버전 v2026.10.21.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.21.5"</script>버전 v2026.10.21.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">© 2026 ELISN. All rights reserved.</p>
 </footer>
@@ -1841,16 +1842,17 @@ addEventListener("touchmove",e=>{
   touchY=null; box.hidden=true;
   if(document.activeElement===$("#q")) $("#q").blur();
 },{passive:true});
-// 건축허가일 칸도 검색창처럼: 폰에서 12px 넘게 스크롤하거나 끌면 포커스를 풀어 자판을 내린다 (자판이 올라오며 생기는 스크롤 350ms는 봐줌)
-let dY=0, dAt=0, dTouch=null; const dEl=$("#d");
-dEl.addEventListener("focus",()=>{ dY=scrollY; dAt=Date.now(); });
+// 검색창·건축허가일 칸: 폰에서 12px 넘게 스크롤하거나 끌면 포커스를 풀어 자판을 내린다 (자판이 올라오며 생기는 스크롤 350ms는 봐줌).
+// 검색창은 최근 검색어 창이 없어도("지우기"를 누른 뒤 등) 풀린다 (2026-10-21)
+let kY=0, kAt=0, kTouch=null; const kbEls=[$("#q"),$("#d")];
+kbEls.forEach(el=>el.addEventListener("focus",()=>{ kY=scrollY; kAt=Date.now(); }));
 addEventListener("scroll",()=>{
-  if(document.activeElement!==dEl||!matchMedia("(pointer:coarse)").matches) return;
-  if(Date.now()-dAt<350){ dY=scrollY; return; }
-  if(Math.abs(scrollY-dY)>=12) dEl.blur();
+  const a=document.activeElement; if(!kbEls.includes(a)||!matchMedia("(pointer:coarse)").matches) return;
+  if(Date.now()-kAt<350){ kY=scrollY; return; }
+  if(Math.abs(scrollY-kY)>=12) a.blur();
 },{passive:true});
-addEventListener("touchstart",e=>{ dTouch=e.touches.length===1?e.touches[0].clientY:null; },{passive:true});
-addEventListener("touchmove",e=>{ if(dTouch!==null&&document.activeElement===dEl&&Math.abs(e.touches[0].clientY-dTouch)>=12){ dTouch=null; dEl.blur(); } },{passive:true});
+addEventListener("touchstart",e=>{ kTouch=e.touches.length===1?e.touches[0].clientY:null; },{passive:true});
+addEventListener("touchmove",e=>{ const a=document.activeElement; if(kTouch!==null&&kbEls.includes(a)&&Math.abs(e.touches[0].clientY-kTouch)>=12){ kTouch=null; a.blur(); } },{passive:true});
 $("#q").addEventListener("focus",()=>{ if(!quietFocus) showRecent(); });
 $("#q").addEventListener("click",()=>{ if($("#recent").hidden) showRecent(); }); // 이미 커서가 있을 때 한 번 더 누르면 최근 검색어
 $("#q").addEventListener("input",showRecent);
@@ -1988,7 +1990,7 @@ function showCardRef(b){
   const rxs=terms($("#q").value);
   body.innerHTML=pick.map(y=>`<div class="cref"><span class="ct">${hl(y.title||"",rxs)}</span><span class="cp">${y.from?dot(y.from):"?"} ~ ${y.to?dot(y.to):"현재"}</span>\n${hl(bodyText(y),rxs)}</div>`).join("");
   $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+n+"’이에요."+(d&&pick.some(y=>on(y,d,d))?" 기준적용일에 적용되는 카드만 보여요.":""); $("#lawwarn").hidden=false;
-  const a=$("#lawfull"); a.textContent="이 조항으로 가기"; a.removeAttribute("target"); a.href="?q="+encodeURIComponent(n); a.dataset.go=n; $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
+  const a=$("#lawfull"); a.textContent="이 조항으로 가기"; a.removeAttribute("target"); a.href="?q="+encodeURIComponent(n); a.dataset.go=n; a.dataset.goi=pick.map(y=>y.__i).join(","); $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
   if(!dlg.open) dlg.showModal();
 }
 async function showRef(b){
@@ -2012,7 +2014,10 @@ async function showRef(b){
   }catch(e){ if(my===lawSeq) $("#lawsrc").textContent=navigator.onLine?"원문을 불러오지 못했어요. 다시 눌러 주세요.":"인터넷이 될 때 한 번 열면 다음부터는 인터넷 없이도 열려요."; }
 }
 $("#lawclose").addEventListener("click",()=>$("#lawdlg").close());
-$("#lawfull").addEventListener("click",e=>{ const g=e.currentTarget.dataset.go; if(!g) return; e.preventDefault(); $("#lawdlg").close(); $("#q").value=g; goSearch(); }); // 조항 번호 창: 그 번호로 찾기
+$("#lawfull").addEventListener("click",e=>{ const g=e.currentTarget.dataset.go; if(!g) return; e.preventDefault(); const ids=(e.currentTarget.dataset.goi||"").split(","); $("#lawdlg").close(); $("#q").value=g; goSearch();
+  // 그 번호로 찾은 뒤, 번호가 글에 들어 있기만 한 카드가 아니라 그 번호 카드 자체로 간다(못 찾으면 맨 위). 창을 닫으면 눌렀던 아래 카드 자리로 돌아가 있어서 바로 + 잠깐 뒤 두 번
+  const go=()=>{ const t=[...document.querySelectorAll("#out article")].find(a=>!a.parentElement.closest("article")&&ids.some(i=>a.querySelector(':scope [data-i="'+i+'"]'))); if(t){ t.classList.add("gocard"); t.scrollIntoView({block:"start"}); setTimeout(()=>t.classList.remove("gocard"),1800); } else scrollTo(0,0); };
+  go(); setTimeout(go,80); }); // 조항 번호 창: 그 번호 카드로 가기
 document.addEventListener("keydown",e=>{ if(!$("#lawdlg").open) return; const b=$("#lawbody"), h=b.clientHeight*0.9, k={PageDown:h,PageUp:-h,ArrowDown:40,ArrowUp:-40,Home:-b.scrollHeight,End:b.scrollHeight}[e.key];
   if(k===undefined||e.altKey||e.ctrlKey||e.metaKey||e.target.closest("input,textarea,select")) return; e.preventDefault(); b.scrollBy({top:k}); /* 바로 옮김: 부드럽게 움직이면 가려진 창에서 멈춰 있기도 함 */ });
 $("#lawbody").addEventListener("click",e=>{ const g=e.target.closest(".reftoc button"); if(g) $("#lawbody").querySelectorAll(".ln")[+g.dataset.go].scrollIntoView({block:"start",behavior:"smooth"}); });
