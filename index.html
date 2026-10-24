@@ -727,7 +727,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.24.2"</script>버전 v2026.10.24.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.24.3"</script>버전 v2026.10.24.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -956,7 +956,8 @@ function refLinker(x){
     while((m=rx.exec(plain))){ const a=m.index, e=a+m[0].length, p=plain.charAt(a-1), n=plain.slice(e,e+2);
       if((p&&/[가-힣A-Za-z0-9.]/.test(p))||(/\d$/.test(m[0])?/^(\d|\.\d|-\d)/.test(n):/^[IVXⅠ-Ⅻ]/.test(n))) continue;
       const sx=/[IVXⅠ-Ⅻ]$/.test(m[0])&&plain.slice(e).match(/^(?:\.\d+)+/), e2=sx?e+sx[0].length:e; // 부속서 Ⅵ.1: 붙은 안쪽 번호까지 밑줄 (2026-10-21)
-      hits.push([a,e2,plain.slice(a,e2),m[0]]); rx.lastIndex=e2; }
+      let e3=e2; const ss=(L.find(o=>o.t===m[0])||{}).s, so=ss&&plain.slice(e2).match(/^\s*의\s*(?:표\s*)?([Ⅰ-Ⅻ]+(?:\.\d+)+|\d+(?:\.\d+)+)/); if(so&&ss.includes(so[1])) e3=e2+so[0].length; // 별표 2의 4.8: 빌드가 원문에서 그 번호 줄을 확인한 것만 번호까지 밑줄 (2026-10-24)
+      hits.push([a,e3,plain.slice(a,e3),m[0]]); rx.lastIndex=e3; }
     if(!hits.length) return h;
     let out="", depth=0, pos=0, hi=0, cur=null, had=false, nw=false;
     const tagDepth=s=>/^<mark/.test(s)?1:/^<\/mark/.test(s)?-1:0;
@@ -2061,13 +2062,13 @@ async function showRef(b){
   if(alt&&d&&d>=(x.from||"")&&d<=(x.to||"9999-12-31")) for(const k of Object.keys(alt).sort()) if(d>=k) id=alt[k];
   // 문구 바로 뒤에 안쪽 번호가 붙어 있으면(별표 5의 5.1.2.3.1, 부속서 Ⅸ의 Ⅸ.2.2.1.1, 부속서 Ⅲ.2.3) 그 단락으로 간다
   let tail="", nx=b.nextSibling; while(nx&&tail.length<30){ tail+=nx.textContent; nx=nx.nextSibling; }
-  const own=b.textContent.match(/\s([IVXⅠ-Ⅻ]+(?:\.\d+)+)$/), sm=tail.match(/^(?:\s*의\s*([Ⅰ-Ⅻ]+(?:\.\d+)+|\d+(?:\.\d+)+)|(?:\.\d+)+)/), sub=own?own[1]:sm?(sm[1]||b.textContent.split(" ").pop()+sm[0]):""; // 숫자는 "의" 뒤일 때만 ("표 3 2.5배" 같은 글을 번호로 읽지 않게)
+  const own=b.textContent.match(/(?:\s(?=[IVXⅠ-Ⅻ])|의\s*(?:표\s*)?)([IVXⅠ-Ⅻ\d]+(?:\.\d+)+)$/), sm=tail.match(/^(?:\s*의\s*([Ⅰ-Ⅻ]+(?:\.\d+)+|\d+(?:\.\d+)+)|(?:\.\d+)+)/), sub=own?own[1]:sm?(sm[1]||b.textContent.split(" ").pop()+sm[0]):""; // 숫자는 "의" 뒤일 때만 ("표 3 2.5배" 같은 글을 번호로 읽지 않게)
   $("#lawbody").classList.remove("ref"); $("#lawttl").textContent=b.textContent; $("#lawsrc").textContent="원문 불러오는 중…"; $("#lawbody").textContent=""; $("#lawwarn").hidden=true; $("#lawfull").removeAttribute("href"); lawFoot(false);
   if(!dlg.open) dlg.showModal();
   try{
     const R=await loadRefs(); if(my!==lawSeq) return; const t=R.targets[id]; if(!t) throw new Error("ref");
     $("#lawttl").textContent=t.name; $("#lawsrc").textContent=t.src; $("#lawfull").href=t.url; const body=$("#lawbody"); body.classList.add("ref"); body.innerHTML=refHTML(t.text,t.name,id,terms($("#q").value)); body.scrollTop=0;
-    const lns=[...body.querySelectorAll(".ln")], at=sub?lns.findIndex(e=>e.textContent.startsWith(sub+" ")):-1;
+    const lns=[...body.querySelectorAll(".ln")], at=sub?lns.findIndex(e=>e.textContent.replace(/^표\s*/,"").startsWith(sub+" ")):-1;
     if(at>=0){ for(let j=at;j<lns.length&&(j===at||!lns[j].classList.contains("rh"));j++) lns[j].classList.add("hit"); lns[at].scrollIntoView({block:"start"}); }
     else{ const hs=lns.filter(e=>e.classList.contains("rh1")); if(hs.length>=3) body.insertAdjacentHTML("afterbegin",'<nav class="reftoc" aria-label="바로 가기">'+hs.map(e=>'<button type="button" data-go="'+lns.indexOf(e)+'">'+esc(e.textContent.slice(0,24))+"</button>").join("")+"</nav>"); }
     $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+b.textContent+"’이에요."; $("#lawwarn").hidden=false;
