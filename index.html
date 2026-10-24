@@ -252,6 +252,7 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
 .banner .legend .pill{font-size:11.5px;padding:2px 7px}
 .banner[hidden]{display:none}
 .note{font-size:13px;color:var(--muted);margin:10px 2px 0}
+.note.typo{margin:10px 0 0}
 .note .chipbtn{font-size:12.5px;padding:2px 9px 4px;margin-left:4px}
 .relq{display:flex;gap:6px;align-items:center;margin:10px 0 0}
 .relq[hidden]{display:none}
@@ -604,6 +605,7 @@ footer a{color:var(--accent)}
   .failbox{border:0;border-left:3px solid #777;border-radius:0;padding:4px 0 4px 10px;margin:8px 0}
   .fgitem .failbox{border-left:0;padding:0}
   .text{font-size:11pt;line-height:1.6;margin-top:6px}
+  .note.typo{font-size:9.5pt;margin-top:4px}
   .text.clip{max-height:none;-webkit-mask-image:none;mask-image:none}
   .imgs img{max-height:60mm}
   .imgs figure{break-inside:avoid}
@@ -727,7 +729,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.24.4"</script>버전 v2026.10.24.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.24.5"</script>버전 v2026.10.24.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -945,7 +947,7 @@ function hl(text,rxs){
 // 참조 링크 (2026-10-20): 빌드가 정한 카드별 문구(fixes.json refCards)를 글자 부분에서만 버튼으로 바꾼다 (태그·속성은 건드리지 않음)
 // 앞 글자가 한글·영문·숫자이거나(도표 3) 숫자 뒤에 숫자가 이어지면(표 13, 표 3.1) 다른 말이라 그대로 둔다 — 빌드 규칙과 같다
 let LABF=false; // lab 빌드만 fixes.json lab:true → 새 기능은 여기서만 켬
-const REFC={}, HAE=new Set(); // HAE: 해설이 있는 카드 번호(lab 빌드만 fixes.json haeCards 를 냄)
+const REFC={}, TYPO={}, HAE=new Set(); // TYPO: 고시 원문 숫자·참조 오타가 든 카드 번호 → 표시 글(fixes.json typo, 원본/원문오타.json) // HAE: 해설이 있는 카드 번호(lab 빌드만 fixes.json haeCards 를 냄)
 function refLinker(x){
   const L=REFC[x.__i]; if(!L||!L.length) return null;
   const by=Object.fromEntries(L.map(o=>[o.t,o.id])), rx=new RegExp(L.map(o=>o.t.replace(/[.*+?^$()|[\]\{}]/g,"\\$&")).sort((a,b)=>b.length-a.length).join("|"),"g");
@@ -1330,6 +1332,7 @@ function card(x,rxs,isStd,upNote,why){
     <div class="meta">${x.summary?`<button type="button" class="pill sum" data-act="law" data-i="${x.__i}" title="원래 자료가 원문을 줄여 적은 조항이에요. 눌러서 고시 원문을 확인하세요.">요약 · 원문 확인 ›</button>`:""}${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<span class="pill rev">${dot(x.from)} 개정</span>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
     <div class="text${long?` clip fold" title="눌러서 전체 보기`:""}">${textHTML(bT,rxs,figAt,x.tables,refLinker(x))}</div>
     ${fp.rest.length?`<div class="imgs">${fp.rest.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`:""}
+    ${!isStd&&TYPO[x.__i]?`<div class="note typo">※ 원문 오타로 보임: ${esc(TYPO[x.__i])}</div>`:""}
     <div class="acts">${long?`<button class="chipbtn foldkb" type="button" data-act="open" aria-expanded="false">본문 펼치기</button>`:""}<button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${nv>1?`<button class="chipbtn cntbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교<span class="cnt">${nv}</span></button>`:""}${rel.length?`<button class="chipbtn cntbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료<span class="cnt">${rel.length}건</span></button>`:""}<span class="acts-r"><button class="linkbtn fbico" type="button" data-act="report" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbt">의견 남기기</span></button>${isStd?"":(HAE.has(x.__i)?`<button class="chipbtn" type="button" data-act="hae" data-i="${x.__i}">선배의 조언</button>`:"")+lawBtn(x)}</span></div>
     ${rel.length?`<div class="rel"${relOpen.has(k)?"":" hidden"}>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
   </article>`;
@@ -2360,7 +2363,7 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    for(const [k,list] of Object.entries(f.lineJoins||{})){ const x=k[0]==="s"?S[+k.slice(1)-1]:C[+k.slice(1)-1]; if(!x||!x.text) continue;
      let t=x.text.replace(/<br\s*\/?>/gi,"\n"); for(const [p,m] of list){ const [ta,hb]=p.split("\n"); t=t.replace(ta+"\n"+hb,ta+(m==="s"?" ":"")+hb); } x.text=t; }
    for(const [t,ids] of Object.entries(f.lawRel||{})) for(const i of ids) LAWREL[i]=t;
-   Object.assign(REFC,f.refCards||{}); (f.haeCards||[]).forEach(i=>HAE.add(i)); LABF=!!f.lab;
+   Object.assign(REFC,f.refCards||{}); Object.assign(TYPO,f.typo||{}); (f.haeCards||[]).forEach(i=>HAE.add(i)); LABF=!!f.lab;
    // 번호 칸에 날짜·이름만 있어("2019-03-28 이후(건축허가분)") 조항 번호로 못 찾던 카드: 원문 조항 번호(lawNum)도 검색에 넣는다. 화면엔 안 보임 (2026-10-05 운영자)
    for(const [i,n] of Object.entries(f.lawNum||{})){ const x=C[i-1]; if(x) x.num=n; }
    for(const a of f.additions||[]){const x={...a,added:true}; x.__i=C.length+1; x.__k=keyOf(x,false); C.push(x);}
