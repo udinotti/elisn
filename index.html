@@ -419,6 +419,7 @@ article.gocard{scroll-margin-top:84px;box-shadow:0 0 0 2px var(--accent);transit
 .qr-box img{image-rendering:pixelated;border-radius:0;max-width:none;max-height:none}
 .qr-say{font-size:14px;line-height:1.65;color:var(--sub);text-align:center;word-break:keep-all}
 .qr-say b{color:var(--ink)}
+.qr-act{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.qr-act .chipbtn{min-height:44px;font-size:15px;font-weight:700;white-space:nowrap}
 /* 시기별 비교 창: 옛 판부터 차례로, 앞 판보다 새로 생긴 말은 초록 밑줄, 빠진 말은 빨간 줄 */
 #cmpdlg{width:min(760px,calc(100vw - 24px));max-height:88vh}
 .cmp-body{padding:4px 20px 16px;overflow:auto;display:flex;flex-direction:column;gap:12px}
@@ -727,7 +728,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.25.5"</script>버전 v2026.10.25.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.25.6"</script>버전 v2026.10.25.6 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -758,7 +759,8 @@ footer a{color:var(--accent)}
 <dialog id="qrdlg" aria-labelledby="qrttl">
   <div class="sheet">
     <div class="sh-head"><div><div class="sh-src">ELISN</div><h2 id="qrttl">모바일로 이어 보기</h2></div><button type="button" class="chipbtn" id="qrclose" aria-label="닫기">닫기</button></div>
-    <div class="qr-body"><div class="qr-box" id="qrbox"></div><div class="qr-say" id="qrsay"></div></div>
+    <div class="qr-body"><div class="qr-box" id="qrbox"></div><div class="qr-say" id="qrsay"></div>
+      <div class="qr-act" id="qract" hidden><button type="button" class="chipbtn" id="qrshare" hidden>다른 앱으로 보내기</button><button type="button" class="chipbtn" id="qrcopy">링크 복사</button></div></div>
   </div>
 </dialog>
 <dialog id="cmpdlg" aria-labelledby="cmpttl">
@@ -947,6 +949,7 @@ function hl(text,rxs){
 }
 // 참조 링크 (2026-10-20): 빌드가 정한 카드별 문구(fixes.json refCards)를 글자 부분에서만 버튼으로 바꾼다 (태그·속성은 건드리지 않음)
 // 앞 글자가 한글·영문·숫자이거나(도표 3) 숫자 뒤에 숫자가 이어지면(표 13, 표 3.1) 다른 말이라 그대로 둔다 — 빌드 규칙과 같다
+let LABF=false; // lab 빌드에서만 켜지는 새 기능 스위치(fixes.json lab)
 const REFC={}, TYPO={}, HAE=new Set(); // TYPO: 고시 원문 숫자·참조 오타가 든 카드 번호 → 표시 글(fixes.json typo, 원본/원문오타.json) // HAE: 해설이 있는 카드 번호(lab 빌드만 fixes.json haeCards 를 냄)
 function refLinker(x){
   const L=REFC[x.__i]; if(!L||!L.length) return null;
@@ -2188,17 +2191,22 @@ function slider(qk){
     qk.scrollBy({left:(r.left+r.width/2)-(q.left+q.width/2),behavior:"smooth"})},true);
 }
 document.querySelectorAll(".quick .qs").forEach(slider); // 종류 줄·바로 고르기 줄
-// 결과 공유: 지금 검색어·허가일·보기 방식이 담긴 주소를 보낸다. 폰은 공유 창, PC는 주소 복사
-$("#share").addEventListener("click",async()=>{
-  const url=location.href, bits=[$("#q").value.trim(),$("#d").value.trim()&&"기준적용일 "+$("#d").value.trim(),new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean);
-  const text="ELISN 승강기 검사기준"+(bits.length?" · "+bits.join(" · "):"");
-  if(navigator.share&&matchMedia("(pointer:coarse)").matches){ try{await navigator.share({title:text,url});}catch(e){} return; }
-  let ok=false;
+// 결과 공유: 지금 검색어·허가일·보기 방식이 담긴 주소를 보낸다. PC는 주소 복사, 폰(lab)은 QR 창, 폰(운영)은 공유 창
+const shareText=url=>{ const bits=[$("#q").value.trim(),$("#d").value.trim()&&"기준적용일 "+$("#d").value.trim(),new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean);
+  return "ELISN 승강기 검사기준"+(bits.length?" · "+bits.join(" · "):""); };
+const copyLink=async()=>{ const url=location.href; let ok=false;
   try{ await navigator.clipboard.writeText(url); ok=true; }
   catch(e){ // 새 방식이 막힌 환경: 숨은 칸에 넣고 옛 방식으로 복사
     const ta=document.createElement("textarea"); ta.value=url; ta.setAttribute("readonly",""); ta.style.cssText="position:fixed;opacity:0;top:0";
     document.body.appendChild(ta); ta.select(); try{ ok=document.execCommand("copy"); }catch(_){} ta.remove(); }
   toast(ok?"링크를 복사했어요. 붙여 넣어 보내면 같은 화면이 열려요.":"주소창의 주소를 복사해 보내 주세요.",ok?3000:4000);
+};
+const phoneShare=()=>navigator.share&&matchMedia("(pointer:coarse)").matches;
+$("#share").addEventListener("click",async()=>{
+  if(phoneShare()){
+    if(LABF) return openQr(true);
+    const url=location.href; try{await navigator.share({title:shareText(url),url});}catch(e){} return; }
+  copyLink();
 });
 // 모바일로 이어 보기(2026-10-01 운영자): PC에서만 버튼을 보이고, 누르면 지금 화면 주소(검색어·허가일·종류 포함)를 QR로 띄운다.
 // 폰·태블릿 카메라로 비추면 같은 화면이 모바일에서 열린다. QR 그리는 파일(lib/qrcode.js, MIT)은 처음 누를 때만 받는다
@@ -2206,9 +2214,11 @@ if(!MOB) $("#qrbtn").hidden=false;
 let qrLib=null;
 const loadQr=()=>qrLib||(qrLib=new Promise((ok,no)=>{ if(window.qrcode) return ok();
   const s=document.createElement("script"); s.src="lib/qrcode.js"; s.onload=()=>ok(); s.onerror=()=>{qrLib=null;no();}; document.head.appendChild(s); }));
-$("#qrbtn").addEventListener("click",async()=>{
+// 한 창을 두 곳이 쓴다: PC "모바일로 보기"와 폰(lab) 공유. 폰이면 안내 문구가 바뀌고 보내기·복사 단추가 붙는다
+async function openQr(phone){
   syncUrl(); const url=location.href, box=$("#qrbox"), say=$("#qrsay");
   const q=$("#q").value.trim(), d=$("#d").value.trim();
+  $("#qrttl").textContent=phone?"이 화면 보내기":"모바일로 이어 보기"; $("#qract").hidden=!phone; $("#qrshare").hidden=!navigator.share;
   box.textContent=""; say.textContent="QR 만드는 중…"; $("#qrdlg").showModal();
   try{
     await loadQr();
@@ -2218,9 +2228,12 @@ $("#qrbtn").addEventListener("click",async()=>{
     // 둘레 흰 여백(픽셀 단위)은 칸 3개 + 상자 안쪽 여백 10px ≈ 칸 4개: 폰 카메라가 QR 경계를 잘 잡게
     const img=new Image(); img.src=qr.createDataURL(cell,cell*3); img.alt="지금 화면 주소 QR"; box.appendChild(img);
     const now=[q&&"‘"+q+"’ 검색",d&&"기준적용일 "+d,new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean).join(" · ");
-    say.innerHTML="폰·태블릿 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요."+(now?"<br>"+esc(now):"");
-  }catch(e){ say.textContent="QR을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; }
-});
+    say.innerHTML=(phone?"옆 사람 폰 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요.":"폰·태블릿 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요.")+(now?"<br>"+esc(now):"");
+  }catch(e){ say.textContent=phone?"QR을 불러오지 못했어요. 아래 단추로 보내 주세요.":"QR을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; }
+}
+$("#qrbtn").addEventListener("click",()=>openQr(false));
+$("#qrshare").addEventListener("click",async()=>{ const url=location.href; try{await navigator.share({title:shareText(url),url});}catch(e){} });
+$("#qrcopy").addEventListener("click",copyLink);
 $("#qrclose").addEventListener("click",()=>$("#qrdlg").close());
 $("#qrdlg").addEventListener("click",e=>{ if(e.target.id==="qrdlg") $("#qrdlg").close(); });
 $("#mtop").addEventListener("click",()=>topBtn.click());
@@ -2359,7 +2372,7 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    for(const [k,list] of Object.entries(f.lineJoins||{})){ const x=k[0]==="s"?S[+k.slice(1)-1]:C[+k.slice(1)-1]; if(!x||!x.text) continue;
      let t=x.text.replace(/<br\s*\/?>/gi,"\n"); for(const [p,m] of list){ const [ta,hb]=p.split("\n"); t=t.replace(ta+"\n"+hb,ta+(m==="s"?" ":"")+hb); } x.text=t; }
    for(const [t,ids] of Object.entries(f.lawRel||{})) for(const i of ids) LAWREL[i]=t;
-   Object.assign(REFC,f.refCards||{}); Object.assign(TYPO,f.typo||{}); (f.haeCards||[]).forEach(i=>HAE.add(i));
+   LABF=!!f.lab; Object.assign(REFC,f.refCards||{}); Object.assign(TYPO,f.typo||{}); (f.haeCards||[]).forEach(i=>HAE.add(i));
    // 번호 칸에 날짜·이름만 있어("2019-03-28 이후(건축허가분)") 조항 번호로 못 찾던 카드: 원문 조항 번호(lawNum)도 검색에 넣는다. 화면엔 안 보임 (2026-10-05 운영자)
    for(const [i,n] of Object.entries(f.lawNum||{})){ const x=C[i-1]; if(x) x.num=n; }
    for(const a of f.additions||[]){const x={...a,added:true}; x.__i=C.length+1; x.__k=keyOf(x,false); C.push(x);}
