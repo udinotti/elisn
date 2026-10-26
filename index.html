@@ -363,10 +363,10 @@ html:has(dialog[open]){overflow:hidden}
 .cref .csub{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)} /* 아래 조항 목록 (2026-10-21): 큰 묶음마다 옅은 칸, 줄 전체가 누르는 자리 */
 .cref .csh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--sub);margin-bottom:8px}
 .cref .csh b{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:1px 8px}
-.cref .cgrp{background:var(--fill);border-radius:12px;padding:2px 4px;margin-bottom:8px}
-.cref .csl{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;margin:0;padding:5px 8px 5px calc(8px + var(--sd,0)*14px);font:inherit;font-size:14px;line-height:1.35;text-align:left;color:var(--ink);background:none;border:0;border-top:1px solid var(--line);border-radius:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cref .cgrp{background:var(--fill);border-radius:12px;overflow:hidden;margin-bottom:8px} /* 안쪽 여백 없이 줄이 상자 끝까지 차서, 누르는 자리가 회색 상자 그대로 (2026-10-27) */
+.cref .csl{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;margin:0;padding:7px 12px 7px calc(12px + var(--sd,0)*14px);font:inherit;font-size:14px;line-height:1.35;text-align:left;color:var(--ink);background:none;border:0;border-top:1px solid var(--line);border-radius:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cref .cgrp .csl:first-child{border-top:0}
-.cref .csl:hover,.cref .csl:active{background:var(--surface)}
+.cref .csl:hover,.cref .csl:active{background:color-mix(in srgb,var(--fill),var(--ink) 7%)}
 .cref .csl .cb{flex:1;min-width:0;display:flex;flex-direction:column;gap:0}
 .cref .csl .cn{font-size:12px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
 .cref .csl[style*="--sd:0"] .cx{font-weight:700}
@@ -728,7 +728,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.1"</script>버전 v2026.10.27.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.2"</script>버전 v2026.10.27.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -2387,6 +2387,9 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    // 번호 칸에 날짜·이름만 있어("2019-03-28 이후(건축허가분)") 조항 번호로 못 찾던 카드: 원문 조항 번호(lawNum)도 검색에 넣는다. 화면엔 안 보임 (2026-10-05 운영자)
    for(const [i,n] of Object.entries(f.lawNum||{})){ const x=C[i-1]; if(x) x.num=n; }
    for(const a of f.additions||[]){const x={...a,added:true}; x.__i=C.length+1; x.__k=keyOf(x,false); C.push(x);}
+   // 카드 본문에 줄글로 풀린 표: 빌드가 짝을 맞춘 줄(cut)을 "[표:N]" 줄로 바꾸고 표를 붙인다 (표 그리기·검색·인쇄는 tables 쓰는 기존 길). 글이 안 맞으면 그대로 (2026-10-27)
+   for(const [i,l] of Object.entries(f.cardTabs||{})){ const x=C[i-1]; if(!x||!x.text) continue;
+     for(const {cut,tab} of l){ if(!x.text.includes(cut)) continue; for(const r of tab.rows) for(const c of r) c.t=tidy(c.t); (x.tables||=[]).push(tab); x.text=x.text.replace(cut,()=>"[표:"+x.tables.length+"]"); } }
    // 즐겨찾기 이어받기: 예전 카드 키(옛 글이 든 "c|…")는 같은 해시(__h)를 가진 지금 카드의 키로 바꿔 한 번만 저장. "s|"·종류 카드 키는 그대로
    {const H=new Map(), cur=new Set(); for(const x of C){cur.add(x.__k); if(x.__h) H.set(x.__h,x.__k);} let ch=false;
     for(const k of [...favs]){ if(!k.startsWith("c|")||cur.has(k)) continue; const n=H.get(fnvHex(k)); if(n){favs.delete(k); favs.add(n); ch=true;} }
