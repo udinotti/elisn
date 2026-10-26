@@ -728,7 +728,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.26.5"</script>버전 v2026.10.26.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.26.6"</script>버전 v2026.10.26.6 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1229,6 +1229,8 @@ const lWords=l=>new Set(vName(l).split(/[\s/·,()]+/).filter(w=>w.length>1&&!/\d
 const dice=(a,b)=>{let n=0;for(const t of a)if(b.has(t))n++;return 2*n/((a.size+b.size)||1)};
 const vName=l=>(l||"").replace(/\s*\([^)]*\)\s*$/,"").trim();
 const dateName=k=>!k||/\d{4}|이후|이전|종전|미표기|^기준$/.test(k);
+// 짧은 글은 낱말 3개 이상이 모두 상대(12낱말 이하) 안에 들면 같은 조항으로 본다("승강로는 누수가 없는 구조" ↔ "승강로는 누수가 없고 청결상태가 유지되는 구조") (모자란 곳 16번, 2026-10-26)
+const vIn=(a,b)=>{const[s,l]=a.size<=b.size?[a,b]:[b,a];if(s.size<3||l.size>12)return false;for(const t of s)if(!l.has(t))return false;return true;};
 let SAMEM=new Set(); // 뜻이 같은 쌍 "앞판순번>뒤판순번"
 function buildVersions(){
   const g={}; CV.forEach(x=>{x.__t=vToks(bodyText(x));(g[x.vg||x.t0||x.title]=g[x.vg||x.t0||x.title]||[]).push(x)}); // 묶음은 핵심 말 전 제목(t0)으로
@@ -1237,7 +1239,7 @@ function buildVersions(){
     for(const y of g[x.vg||x.t0||x.title]){ if(y===x||(y.from===x.from&&y.to===x.to)) continue;
       const nameSame=named?vName(gl(y))===k:dateName(vName(gl(y)));
       const sc=dice(x.__t,y.__t), short=Math.min(x.__t.size,y.__t.size)<6;
-      if(!(nameSame||(!short&&sc>=0.4)||(short&&sc>=0.7))) continue;
+      if(!(nameSame||(!short&&sc>=0.4)||(short&&(sc>=0.7||vIn(x.__t,y.__t))))) continue;
       // 같은 기간 후보가 여럿이면 이름에 같은 낱말(예: "기계실")이 든 쪽을 먼저
       const per=y.from+"|"+y.to, score=(nameSame?1:0)+(sc+overlap(x.__t,y.__t))/2+0.5*overlap(lWords(x.label),lWords(y.label));
       if(!best.has(per)||best.get(per).score<score) best.set(per,{y,score}); }
@@ -2010,7 +2012,7 @@ function refHTML(text,name,id,rxs=[],tabs){ // tabs: 칸 구조를 되살린 표
   // 괄호가 닫히기 전에 끊긴 줄("도표에 따라 계산된⏎값)")은 닫는 괄호가 있는 다음 줄과 잇는다 (상자 표·머리줄은 그대로)
   const openP=l=>(l.match(/[(\[]/g)||[]).length-(l.match(/[)\]]/g)||[]).length, BOXL=/^[┌│├└]/;
   L=L.reduce((o,l)=>{ const p=o[o.length-1]; if(p!==undefined&&openP(p)>0&&/[)\]]/.test(l)&&!BOXL.test(p)&&!BOXL.test(l)&&(!REFH.test(l)||/[의(]s*$/.test(p))) o[o.length-1]=p+" "+l; /* "(별표 5의⏎5.1.2 …)"처럼 번호로 시작해도 앞줄이 "의"·"("로 끝나면 잇는다 */ else o.push(l); return o; },[]);
-  if(id[0]==="t"){ L=L.filter(Boolean); const b0=L.findIndex(l=>/^┌/.test(l)), b1=L.findIndex(l=>/^└/.test(l)), bt=b0>=0&&b1>b0?boxTab(L.slice(b0,b1+1)):null; if(bt) return L.slice(0,b0).map(l=>`<div class="ln rh rh3">${hl(l,rxs)}</div>`).join("")+tabHTML(bt,rxs)+L.slice(b1+1).map(l=>`<div class="ln">${hl(l,rxs)}</div>`).join(""); const hd=L.findIndex(l=>/^\d/.test(l)), h0=hd<0?1:Math.min(hd,3); L=[...L.slice(0,h0),...packShort(L.slice(h0))]; return L.map((l,i)=>`<div class="ln${i<(hd<0?1:Math.min(hd,3))?" rh rh3":""}">${hl(l,rxs)}</div>`).join(""); }
+  if(id[0]==="t"){ L=L.filter(Boolean); if(tabs&&L.some(l=>TABMARK.test(l))) return L.map(l=>{ const m=l.match(TABMARK); return m&&tabs[m[1]-1]?tabHTML(tabs[m[1]-1],rxs):`<div class="ln">${hl(l,rxs)}</div>`; }).join(""); /* 손으로 옮긴 표(MRL 표 창, 모자란 곳 8번)는 [표:N] 자리에 표로 */ const b0=L.findIndex(l=>/^┌/.test(l)), b1=L.findIndex(l=>/^└/.test(l)), bt=b0>=0&&b1>b0?boxTab(L.slice(b0,b1+1)):null; if(bt) return L.slice(0,b0).map(l=>`<div class="ln rh rh3">${hl(l,rxs)}</div>`).join("")+tabHTML(bt,rxs)+L.slice(b1+1).map(l=>`<div class="ln">${hl(l,rxs)}</div>`).join(""); const hd=L.findIndex(l=>/^\d/.test(l)), h0=hd<0?1:Math.min(hd,3); L=[...L.slice(0,h0),...packShort(L.slice(h0))]; return L.map((l,i)=>`<div class="ln${i<(hd<0?1:Math.min(hd,3))?" rh rh3":""}">${hl(l,rxs)}</div>`).join(""); }
   const isH=l=>l.length<=40&&!/[다음함.:]$/.test(l)&&REFH.test(l), items=[]; let seg=[]; // 머리줄은 따로 두고 그 사이 본문 줄만 이어 붙인다
   const flush=()=>{ if(seg.length) items.push(...joinKeep(packShort(seg).join("\n")).split("\n").map(l=>({l}))); seg=[]; };
   let top=0; // 마지막 큰 절 번호
