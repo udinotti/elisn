@@ -728,7 +728,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.26.4"</script>버전 v2026.10.26.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.26.5"</script>버전 v2026.10.26.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -801,7 +801,7 @@ const KIND={elev:"엘리베이터",esc:"에스컬레이터·무빙워크",wlv:"�
 // 표준화 자료는 대부분 엘리베이터 것이라, 다른 종류는 이름이 들어간 것만
 const KIND_STD={esc:/에스컬레이터|무빙워크/,wlv:/^(?![\s\S]*경사형\s*휠체어\s*리프트)[\s\S]*휠체어\s*리프트/,wli:/^(?![\s\S]*수직형\s*휠체어\s*리프트)[\s\S]*휠체어\s*리프트/,dumb:/소형\s*화물|덤웨이터/,ince:/경사형\s*엘리베이터/};
 // CV: 중복 카드(보정 fixes의 dup)와 제목 카드(생성기가 dup로 표시, 링크·아래 조항 목록용)를 뺀 엘리베이터 조항. C는 순번(__i)으로 찾아야 해서 그대로 둔다 (2026-10-02)
-const KS={}, cur=()=>kind==="elev"?CV:(KS[kind]||(KS[kind]=(K||[]).filter(x=>x.kind===kind)));
+const KS={}, cur=()=>kind==="elev"?CV:(KS[kind]||(KS[kind]=(K||[]).filter(x=>x.kind===kind&&!x.dup))); // 제목 카드(dup)는 종류도 검색·건수에서 뺌 (2026-10-26)
 const curS=()=>kind==="elev"?S:S.filter(x=>KIND_STD[kind].test((x.title||"")+" "+(x.keyword||"")+" "+(x.text||"")));
 const byI=i=>i<=C.length?C[i-1]:K[i-C.length-1]; // 카드의 번호(__i)로 조항 찾기: 엘리베이터 다음에 종류 자료가 이어진다 // lastHits: 마지막 검색에서 찾은 조항 수(일부만 맞는 것 포함). 0건 오타는 최근 검색어에 안 남긴다 // exQ: 돋보기로 넣은 예시 검색어 (직접 친 말과 구분해 안내하려고)
 const st={}; try{Object.assign(st,JSON.parse(localStorage.getItem("elev-find")||"{}"))}catch(e){}
@@ -810,7 +810,7 @@ const st={}; try{Object.assign(st,JSON.parse(localStorage.getItem("elev-find")||
 // 나중에 날짜 보정을 더해도 즐겨찾기가 풀리지 않게
 // (본문은 앞부분이 같고 뒤만 다른 조항이 있어 전체로 짧은 지문을 만든다)
 const textSig=t=>{let h=5381; for(const ch of (t||"").replace(/\s+/g,"")) h=(h*33+ch.charCodeAt(0))>>>0; return h.toString(36);};
-const keyOf=(x,isStd)=>x.__k||((isStd?"s|":"c|")+[x.title,x.label,x.from,x.to,textSig(x.text)].join("|"));
+const keyOf=(x,isStd)=>x.__k||((isStd?"s|":"c|")+[x.t0||x.title,x.label,x.from,x.to,textSig(x.text)].join("|")); // t0: 핵심 말로 바꾸기 전 제목(lab, 2026-10-26) → 즐겨찾기 열쇠는 그대로
 const fnvHex=k=>{let h=2166136261; for(let i=0;i<k.length;i++) h=Math.imul(h^k.charCodeAt(i),16777619)>>>0; return h.toString(16);}; // 32비트 FNV-1a (사이트만들기가 낸 __h 와 같은 식: 엘리베이터옮기기.js 짧은해시)
 const favs=new Set(); try{JSON.parse(localStorage.getItem("elisn-fav")||"[]").forEach(k=>favs.add(k))}catch(e){}
 const saveFavs=()=>{try{localStorage.setItem("elisn-fav",JSON.stringify([...favs]))}catch(e){}};
@@ -922,6 +922,7 @@ function periodPills(x,isStd){
 const unitFix=s=>s.replace(/[㎀-㏿]/g,c=>c.normalize("NFKC").replace(/∕/g,"/").replace(/([a-z])([23])$/,(m,a,n)=>a+(n==="2"?"²":"³")));
 function terms(q){
   q=unitFix(q);
+  q=q.replace(/[\u119E\u2027\u318D\u30FB]/g,"\u00B7").replace(/([가-힣])\u2219(?=[가-힣])/g,"$1\u00B7"); // 가운뎃점 통일 (2026-10-26)
   // "카 지붕", "카 상부", "카 위"는 한 낱말로 묶어 서로 같은 말로 찾는다 (옛 기준은 "카 위"라고 씀)
   q=q.replace(/카\s*(지붕|상부|위(?![치험]))/g,"카지붕");
   return q.trim().split(/\s+/).filter(Boolean).map(w=>{
@@ -981,7 +982,7 @@ function refLinker(x){
     return out.replace(/<mark><\/mark>/g,"");
   };
 }
-function hay(x){return [x.label||"",x.num||"",x.title||"",x.keyword||"",x.text||"",tabFlat(x)].join("\n")}
+function hay(x){return [x.label||"",x.num||"",x.title||"",x.t0||"",x.keyword||"",x.text||"",tabFlat(x)].join("\n")} // t0: 줄이기 전 제목(lab)도 찾기·순위에 씀
 // 표준화 회의 차수 키: "YY년 제N차"(제·띄어쓰기 변형, 여럿이면 가장 늦은 것) → [2000+YY,N], ISO 날짜 → [해,99,날짜], 그 밖·빈 값 → 맨 뒤
 function stdKey(f){ f=String(f||""); let m,best=null; const re=/(?:^|\D)(\d{2})년\s*제?\s*(\d+)\s*차/g;
   while(m=re.exec(f)){ const k=[2000+ +m[1],+m[2],""]; if(!best||k[0]>best[0]||k[0]===best[0]&&k[1]>best[1]) best=k; }
@@ -996,7 +997,7 @@ function search(arr,q){
   if(!rxs.length) return {rxs,res:arr.map((x,i)=>({x,i,s:0})),part:[]};
   const res=[], part=[]; // part: 낱말 몇 개만 맞는 조항 (모두 맞는 조항만 보이면 "작업등"만 적힌 옛 조항처럼 꼭 봐야 할 게 빠질 수 있어서)
   arr.forEach((x,i)=>{
-    const h=hay(x), head=(x.label||"")+" "+(x.num||"")+" "+(x.title||"")+" "+(x.keyword||""); let s=0, m=0, hd=0, pf=0;
+    const h=hay(x), head=(x.label||"")+" "+(x.num||"")+" "+(x.t0||x.title||"")+" "+(x.keyword||""); let s=0, m=0, hd=0, pf=0;
     for(const r of rxs){ r.lastIndex=0; if(!r.test(h)) continue; m++;
       r.lastIndex=0; if(r.test(head)){ s+=10; hd++; }
       if(r.lit) s+=r.lit.test(head)?8:r.lit.test(h)?3:0;
@@ -1021,7 +1022,7 @@ const failNo=s=>String(s||"").replace(/^부속서\s*/,"").replace(/^I(?=\.)/,"�
 // 카드 번호: 번호 칸 앞 번호를 먼저, 없으면 글 앞 번호. 원문 조항 번호(num)가 있으면 그것도
 const failCardNos=x=>{ const l=(x.label||"").match(FAIL_NO), t=(x.text||"").match(/^\s*(\S+)/), tn=t&&t[1].match(FAIL_NO), nm=(x.num||"").match(FAIL_NO);
   return [...new Set([l?l[0]:tn?tn[0]:null,nm?nm[0]:null].filter(Boolean))]; };
-// 공단 번호가 카드 번호와 안 맞는데 원문상 내용이 그 카드에 있음이 확인된 것만 하나씩: {별표:{공단 번호:[카드 번호,…]}}. 일반 규칙("부모면 첫 자식")은 두지 않는다
+// 공단 번호가 카드 번호와 안 맞는데 원문상 내용이 그 카드에 있음이 확인된 것만 하나씩: {별표:{공단 번호:[카드 번호,…]}}. 일반 규칙("부모면 첫 자식")은 두지 않고, 다른 방법으로 못 찾으면 맨 끝에 아래 번호 카드 모두에 붙인다(failPair)
 const FAIL_ALIAS={
   별표22:{"13.1":["13.1.1"]}, // 구동기: 13.1 아래 설치 조항은 13.1.1 "자체 구동기가 있어야" 뿐(2019-04-04 별표22 13.1.1)
   별표25:{"12.3.12":["12.3.12.1"]}, // 공회전 방지장치 = 12.3.12 전동기 구동시간 제한장치, 설치·정지는 12.3.12.1
@@ -1044,6 +1045,7 @@ function failPair(cards,items,alias){
     if(!hit&&alias&&alias[n]){ hit=alias[n].flatMap(a=>by.get(a)||[]); up=!!hit.length; if(!up) hit=null; }
     if(!hit){ const p=n.split(".").slice(0,-1).join("."); hit=p.includes(".")?by.get(p):null; up=!!hit; }
     if(!hit){ const rx=new RegExp("(?:^|\\n)"+n.replace(/\./g,"\\.")+"(?=[ \\t])"); hit=cards.filter(c=>isDate(c.from)&&c.from>=FAIL_FROM&&rx.test(String(c.text||"").replace(/<br\s*\/?>/gi,"\n"))); up=!!hit.length; if(!up) hit=null; } // 마지막으로: 같은 종류 카드 본문에 그 번호가 조항 머리로 나오는 카드(9.3이 9.3.1에 붙지 않고 "7.8.1에 따른" 같은 인용 줄도 아니게, 번호 바로 뒤가 공백일 때만)
+    if(!hit){ const d=n.split(".").length+1, kids=[...by.entries()].filter(([k])=>k.startsWith(n+".")), one=kids.filter(([k])=>k.split(".").length===d); hit=[...new Set((one.length?one:kids).flatMap(([,l])=>l))]; up=!!hit.length; if(!up) hit=null; } // 제목만 있는 번호(경사형 6.2.2 등): 바로 아래 번호 카드(6.2.2.1, 6.2.2.2…) 모두에, 없으면 더 아래 번호 카드 모두에 (2026-10-26 찬호님 결정)
     if(!hit){ miss.push(raw); continue; }
     const shown=raw.replace(/\.$/,"");
     for(const c of hit){ const l=map.get(c)||[]; if(!l.some(o=>o.it===it)) l.push({n:shown,it,show:up||shown!==n}); map.set(c,l); } }
@@ -1229,10 +1231,10 @@ const vName=l=>(l||"").replace(/\s*\([^)]*\)\s*$/,"").trim();
 const dateName=k=>!k||/\d{4}|이후|이전|종전|미표기|^기준$/.test(k);
 let SAMEM=new Set(); // 뜻이 같은 쌍 "앞판순번>뒤판순번"
 function buildVersions(){
-  const g={}; CV.forEach(x=>{x.__t=vToks(bodyText(x));(g[x.vg||x.title]=g[x.vg||x.title]||[]).push(x)});
+  const g={}; CV.forEach(x=>{x.__t=vToks(bodyText(x));(g[x.vg||x.t0||x.title]=g[x.vg||x.t0||x.title]||[]).push(x)}); // 묶음은 핵심 말 전 제목(t0)으로
   for(const x of CV){
     const gl=y=>y.label, k=vName(gl(x)), named=!dateName(k), best=new Map();
-    for(const y of g[x.vg||x.title]){ if(y===x||(y.from===x.from&&y.to===x.to)) continue;
+    for(const y of g[x.vg||x.t0||x.title]){ if(y===x||(y.from===x.from&&y.to===x.to)) continue;
       const nameSame=named?vName(gl(y))===k:dateName(vName(gl(y)));
       const sc=dice(x.__t,y.__t), short=Math.min(x.__t.size,y.__t.size)<6;
       if(!(nameSame||(!short&&sc>=0.4)||(short&&sc>=0.7))) continue;
@@ -1681,13 +1683,13 @@ addEventListener("touchend",e=>{ if(swX===null) return;
 // 엘리베이터 밖 종류 자료(data/kinds.json): 처음 고를 때 한 번 불러와 번호·즐겨찾기 키·시기별 묶음을 붙인다
 function loadKinds(){ if(KP) return KP;
   return KP=fetch("data/kinds.json").then(r=>{ if(!r.ok) throw new Error("kinds"); return r.json(); }).then(j=>{
-    K=j.items||[]; K.forEach((x,n)=>{ x.__i=C.length+n+1; x.__k=x.kind+"|"+[x.title,x.label,x.from,x.to,textSig(x.text)].join("|"); if(x.text) x.text=tidy(x.text); if(x.tables) for(const t of x.tables) for(const r of t.rows) for(const c of r) c.t=tidy(c.t); });
+    K=j.items||[]; K.forEach((x,n)=>{ x.__i=C.length+n+1; x.__k=x.kind+"|"+[x.t0||x.title,x.label,x.from,x.to,textSig(x.text)].join("|"); if(x.text) x.text=tidy(x.text); if(x.tables) for(const t of x.tables) for(const r of t.rows) for(const c of r) c.t=tidy(c.t); });
     const g={}; for(const x of K) (g[x.kind+"|"+x.label]=g[x.kind+"|"+x.label]||[]).push(x);
     // 같은 번호라도 기준 체계(2009 / 2013~2019 / 2019~)가 다르면 내용이 다를 수 있어, 다른 체계끼리는 글이 비슷할 때만(엘리베이터와 같은 기준) 한 묶음으로
     const era=x=>!x.from?0:x.from<"2019-03-28"?1:2;
     for(const v of Object.values(g)){ v.sort((a,b)=>(a.from||"0000").localeCompare(b.from||"0000")); v.forEach(x=>x.__t=vToks((x.text||"")+" "+tabFlat(x)));
       for(const x of v){ const w=v.filter(y=>y===x||era(y)===era(x)||dice(x.__t,y.__t)>=0.3); x.__v=w.length>1?w:null; } }
-    if(FAILD) for(const k of Object.keys(j.kinds)) failBuild(k,K.filter(x=>x.kind===k)); FAILI.clear();
+    if(FAILD) for(const k of Object.keys(j.kinds)) failBuild(k,K.filter(x=>x.kind===k&&!x.dup)); FAILI.clear();
     render();
   }).catch(()=>{ KP=null; $("#status").textContent="자료를 불러오지 못했어요. 다시 눌러 주세요."; });
 }
@@ -2366,7 +2368,7 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    // 예전 키를 만들 때의 값과 맞춰 봐야 하니, 이후 보정(checked)·번호 칸 교체보다 먼저 한다
    {const old=[...favs].filter(k=>k.split("|").length===5);
     if(old.length){const o=new Set(old);
-      for(const [arr,s] of [[C,false],[S,true]]) for(const x of arr) if(o.has((s?"s|":"c|")+[x.title,x.label,x.from,x.to].join("|"))) favs.add(x.__k);
+      for(const [arr,s] of [[C,false],[S,true]]) for(const x of arr) if(o.has((s?"s|":"c|")+[x.t0||x.title,x.label,x.from,x.to].join("|"))) favs.add(x.__k);
       old.forEach(k=>favs.delete(k)); saveFavs();}}
    // 카드 글에 섞여 들어간, 고시 원문이 아닌 메모를 뺀다 (뺄 글이 그대로 있을 때만)
    // replace가 있으면 카드 글을 법령 원문 글로 통째로 바꾼다
