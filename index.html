@@ -728,7 +728,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.26.3"</script>버전 v2026.10.26.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.26.4"</script>버전 v2026.10.26.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1325,10 +1325,17 @@ function foldText(art){
 // 원문 버튼: 이름·모양은 하나("원문"), 카드 글과 원문의 관계는 title로만 알린다 (2026-10-16 운영자: 출처·원문 전체·원문 보기가 섞여 헷갈림)
 const lawBtn=x=>{ const r=x.kind||x.added?"s":LAWREL[x.__i], t=r==="s"?"카드 글이 고시 원문과 같아요. 눌러서 어느 고시의 몇 년 판인지 봐요.":r==="p"?"카드는 조항의 일부예요. 눌러서 조항 전체 원문을 봐요.":"";
   return `<button class="chipbtn primary" type="button" data-act="law" data-i="${x.__i}"${t?` title="${t}"`:""}>원문</button>`; };
+// 표준화 자료 글의 " | "로 나뉜 줄이 칸 수 같게 2줄 넘게 이어지면 첫 줄을 머리로 한 표로 (2026-10-26, 플랫벨트 9.1). 자리는 "[표:N]" 줄, 표는 tables. 해당 없으면 null (고시 조항 글은 건드리지 않음)
+function pipeTab(text){
+  const L=String(text||"").split("\n"), tables=[], out=[];
+  for(let i=0;i<L.length;){ const n=L[i].split(" | ").length; let e=i+1; while(n>1&&e<L.length&&L[e].split(" | ").length===n) e++;
+    if(n>1&&e-i>=2){ tables.push({h:1,rows:L.slice(i,e).map(l=>l.split(" | ").map(t=>({t:t.trim()})))}); out.push("[표:"+tables.length+"]"); i=e; } else out.push(L[i++]); }
+  return tables.length?{text:out.join("\n"),tables}:null;
+}
 function card(x,rxs,isStd,upNote,why){
   const r=!isStd&&range(x);
   const rel=isStd?[]:relStd(x), fo=isStd?{items:[]}:failOrInherit(x), fl=fo.items, fn=failCount(fl), fbt=fo.inherited?"불합격 기준 · 지금 기준(참고)":"불합격 "+fn;
-  const imgs=[].concat(x.image||[]), bT=bodyText(x), fp=placeFigs(x,bT,imgs.length);
+  const pt=isStd?pipeTab(x.text):null, imgs=[].concat(x.image||[]), bT=bodyText(pt?{...x,text:pt.text}:x), fp=placeFigs(x,bT,imgs.length);
   const figAt=Object.keys(fp.at).length?Object.fromEntries(Object.entries(fp.at).map(([i,a])=>[i,`<div class="imgs inl">${a.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`])):null;
   const long=(x.text||"").length+tabFlat(x).length>600;
   const k=keyOf(x,isStd), faved=favs.has(k), nv=isStd?0:(x.__v||[]).length;
@@ -1336,7 +1343,7 @@ function card(x,rxs,isStd,upNote,why){
     ${why?`<div class="why">적용 안 됨 · ${esc(why)}</div>`:""}
     <div class="head">${fn?`<div class="hrow">`:""}${shownLabel(x)||!x.label?`<span class="label">${labelHTML(x)}</span>`:""}${fn?`<button type="button" class="failbadge" data-act="failgo" data-i="${x.__i}" aria-expanded="false" aria-label="${fo.inherited?"불합격 기준 지금 기준(참고) ":"불합격 기준 "}${fn}개 보기">${fbt}</button></div>`:""}<span class="title">${hl(x.title||"",rxs)}</span></div>
     <div class="meta">${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<span class="pill rev">${dot(x.from)} 개정</span>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
-    <div class="text${long?` clip fold" title="눌러서 전체 보기`:""}">${textHTML(bT,rxs,figAt,x.tables,refLinker(x))}</div>
+    <div class="text${long?` clip fold" title="눌러서 전체 보기`:""}">${textHTML(bT,rxs,figAt,pt?pt.tables:x.tables,refLinker(x))}</div>
     ${fp.rest.length?`<div class="imgs">${fp.rest.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`:""}
     ${!isStd&&TYPO[x.__i]?`<div class="note typo">※ 원문 오타로 보임: ${esc(TYPO[x.__i])}</div>`:""}
     <div class="acts">${long?`<button class="chipbtn foldkb" type="button" data-act="open" aria-expanded="false">본문 펼치기</button>`:""}<button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${nv>1?`<button class="chipbtn cntbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교<span class="cnt">${nv}</span></button>`:""}${rel.length?`<button class="chipbtn cntbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료<span class="cnt">${rel.length}건</span></button>`:""}<span class="acts-r"><button class="linkbtn fbico" type="button" data-act="report" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbt">의견 남기기</span></button>${isStd?"":(HAE.has(x.__i)?`<button class="chipbtn" type="button" data-act="hae" data-i="${x.__i}">선배의 조언</button>`:"")+lawBtn(x)}</span></div>
@@ -1995,7 +2002,7 @@ function boxTab(lines){
 const packShort=ls=>{ const o=[]; for(let i=0;i<ls.length;){ let e=i; while(e<ls.length&&ls[e].length<=3) e++; if(e-i>=3){ o.push(ls.slice(i,e).join(" · ")); i=e; } else o.push(ls[i++]); } return o; };
 const SYMROW=/^([^\s가-힣](?:[^\s가-힣]|\s(?!\s)){0,14}?)\s{2,}(?!=)(\S.*)$/, EQGAP=/^\((?:m|mm|㎜|N|kN|J|kg|㎏|s|m\/s|㎧|㎨)\)$/;
 const REFH=/^(?:[Ⅰ-Ⅻ]+\.)?(\d+(?:\.\d+)*)\s+(?![0-9]|(?:mm|cm|m|kN|N|kg|s|Hz|V|A|%)(?![A-Za-z가-힣]))[가-힣A-Za-z(]/;
-function refHTML(text,name,id,rxs=[]){
+function refHTML(text,name,id,rxs=[],tabs){ // tabs: 칸 구조를 되살린 표(target.tabs), 글에는 "[표:N]" 줄 (표살리기.js)
   const cp=s=>s.replace(/[\s\[\]]/g,""), nm=cp(name||""); let L=eqTxt(String(text||"")).split("\n").map(l=>l.replace(/\s*-\s*\d{1,3}\s*-\s*$/,"").replace(/([가-힣])\?(?=[가-힣])/g,"$1·").trim()).filter((l,i,a)=>l||(i>0&&a[i-1])), acc=""; // 빈 줄은 하나만 남겨 문단 나눔으로 쓴다
   while(L.length&&acc.length<nm.length&&nm.startsWith(acc+cp(L[0]))){ acc+=cp(L[0]); L.shift(); }
   // 괄호가 닫히기 전에 끊긴 줄("도표에 따라 계산된⏎값)")은 닫는 괄호가 있는 다음 줄과 잇는다 (상자 표·머리줄은 그대로)
@@ -2011,8 +2018,9 @@ function refHTML(text,name,id,rxs=[]){
     if(SYMROW.test(l)&&!isH(l)){ flush(); const m=l.match(SYMROW); items.push({l,sym:[m[1],m[2]]}); continue; }
     if(EQGAP.test(l)){ flush(); items.push({l,gap:1}); continue; }
     if(/(?:위|아래|다음) 식으로부터$|다음으로 간주된다\.?$/.test(l)){ const nx=L.slice(j+1).find(Boolean)||""; if(/^여기서/.test(nx)||SYMROW.test(nx)){ seg.push(l); flush(); items.push({l:"",gap:1}); continue; } } // 수식은 그림이라 빠지고 단위만 남은 줄
+    const mt=tabs&&l.match(TABMARK); if(mt&&tabs[mt[1]-1]){ flush(); items.push({l:"",rt:tabs[mt[1]-1]}); continue; }
     if(/^┌/.test(l)){ let e=j; while(e<L.length-1&&!/^└/.test(L[e])) e++; flush(); items.push({l:"",box:L.slice(j,e+1)}); j=e; continue; }
-    if(/^\[\s*표\s/.test(l)){ let e=j+1; while(e<L.length&&!REFH.test(L[e])&&!/다\.?$/.test(L[e])&&!/^\[\s*(?:표|그림)\s/.test(L[e])&&!/^┌/.test(L[e])) e++; // 표 제목 뒤 칸 글(문장·머리줄 전까지)
+    if(/^\[\s*표\s/.test(l)){ let e=j+1; while(e<L.length&&!REFH.test(L[e])&&!/다\.?$/.test(L[e])&&!/^\[\s*(?:표|그림)\s/.test(L[e])&&!/^┌/.test(L[e])&&!TABMARK.test(L[e])) e++; // 표 제목 뒤 칸 글(문장·머리줄 전까지)
       if(e-j-1>=6){ flush(); items.push({l,tb:L.slice(j+1,e).filter(Boolean)}); j=e-1; continue; } }
     seg.push(l); } flush();
   const ll=lineLevels(items.map(o=>o.h>=4?"0.0 ":o.l)); let k=0; /* 4단 이상 로마자 머리줄(Ⅲ.7.1.1.1)은 새 절이라 목록 단계를 처음으로: 안 하면 앞 절 목록 단계가 쌓여 폰에서 너무 깊게 들어간다 */
@@ -2022,6 +2030,7 @@ function refHTML(text,name,id,rxs=[]){
     if(eqNote) return eqNote+one(o,i); return one(o,i); }).join("");
   function one(o,i){ if(o.sym) return `<div class="ln sym" style="--lv:${Math.min(1,Math.max(0,k-1))}"><b>${hl(o.sym[0],rxs)}</b><span>${hl(o.sym[1],rxs)}</span></div>`;
     if(o.gap) return `<div class="ln eqgap" style="--lv:${Math.min(1,Math.max(0,k-1))}">[수식${o.l?" "+esc(o.l):""}: 원문에 그림으로만 있어요. 아래 고시 전체 보기에서 확인하세요]</div>`;
+    if(o.rt) return tabHTML(o.rt,rxs);
     if(o.box){ const t=boxTab(o.box); return t?tabHTML(t,rxs):tbNote("상자 표",`<pre class="boxraw">${hl(o.box.join("\n"),rxs)}</pre>`); }
     if(o.tb) return `<div class="ln rh rh3">${hl(o.l,rxs)}</div>`+tbNote(o.tb.length+"칸",`<p>${o.tb.map(c=>hl(c,rxs)).join(" · ")}</p>`);
     if(o.h){ k=o.h; return `<div class="ln rh rh${Math.min(k,3)}">${hl(o.l,rxs)}</div>`; }
@@ -2076,7 +2085,7 @@ async function showRef(b){
   if(!dlg.open) dlg.showModal();
   try{
     const R=await loadRefs(); if(my!==lawSeq) return; const t=R.targets[id]; if(!t) throw new Error("ref");
-    $("#lawttl").textContent=t.name; $("#lawsrc").textContent=t.src; $("#lawfull").href=t.url; const body=$("#lawbody"); body.classList.add("ref"); body.innerHTML=(t.figs||[]).map(g=>`<figure class="refimg"><button type="button" data-img="${esc(g.img)}" data-cap="${esc(g.cap||t.name)}" aria-label="그림 크게 보기"><img src="${esc(g.img)}" alt="${esc(g.cap||t.name)}"></button>${g.cap?`<figcaption>${esc(g.cap)}</figcaption>`:""}</figure>`).join("")+refHTML(t.text,t.name,id,terms($("#q").value)); body.scrollTop=0;
+    $("#lawttl").textContent=t.name; $("#lawsrc").textContent=t.src; $("#lawfull").href=t.url; const body=$("#lawbody"); body.classList.add("ref"); body.innerHTML=(t.figs||[]).map(g=>`<figure class="refimg"><button type="button" data-img="${esc(g.img)}" data-cap="${esc(g.cap||t.name)}" aria-label="그림 크게 보기"><img src="${esc(g.img)}" alt="${esc(g.cap||t.name)}"></button>${g.cap?`<figcaption>${esc(g.cap)}</figcaption>`:""}</figure>`).join("")+refHTML(t.text,t.name,id,terms($("#q").value),t.tabs); body.scrollTop=0;
     const lns=[...body.querySelectorAll(".ln")], at=sub?lns.findIndex(e=>e.textContent.replace(/^\[?\s*표\s*/,"").startsWith(sub+" ")):-1;
     if(at>=0){ for(let j=at;j<lns.length&&(j===at||!lns[j].classList.contains("rh"));j++) lns[j].classList.add("hit"); lns[at].scrollIntoView({block:"start"}); }
     else{ const hs=lns.filter(e=>e.classList.contains("rh1")); if(hs.length>=3) body.insertAdjacentHTML("afterbegin",'<nav class="reftoc" aria-label="바로 가기">'+hs.map(e=>'<button type="button" data-go="'+lns.indexOf(e)+'">'+esc(e.textContent.slice(0,24))+"</button>").join("")+"</nav>"); }
