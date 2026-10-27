@@ -721,7 +721,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.27)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.28)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -737,7 +737,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.12"</script>버전 v2026.10.27.12 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.28.1"</script>버전 v2026.10.28.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1225,6 +1225,9 @@ function figHTML(x,p,n){
   const tbl=(rows,c)=>`<table class="${c}">${rows.map(r=>`<tr><th scope="row">${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>`;
   const capHtml=cap||nt?`<figcaption>${cap?`<div class="fc-t">${esc(cap)}</div>`:""}${nt&&nt.legend?tbl(nt.legend,"fc-leg"):""}${nt&&nt.facts?tbl(nt.facts,"fc-facts"):""}${nt&&nt.note?`<div class="fc-note">${esc(nt.note)}</div>`:""}</figcaption>`:"";
   return `<figure><button type="button" data-img="${esc(p)}" data-cap="${esc(flat||x.title||"")}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(cap||x.title||"그림")}"></button>${capHtml}</figure>`; }
+// 그림이 없는 카드가 글에서 부르는 그림(figRef: 같은 종류·판의 다른 카드 그림): 펼친 채로 보인다
+const figRefHTML=x=>{const f=x.figRef;
+  return `<div class="imgs">${f.map((g,n)=>figHTML({imageCap:f.map(h=>h.cap),title:x.title},g.img,n)).join("")}</div>`;};
 // 줄 잇기는 조항 번호를 떼기 전에 한다: 번호가 붙어 있어야 "10.2.1.3 감속도"가 제목 줄로 알아봐져 본문과 붙지 않는다
 // 글자로 남은 <br>은 줄바꿈으로 바꾼다
 // 번호 칸에 번호 대신 "1997-08-18 이후(건축허가분)"처럼 날짜 설명만 적은 곳: 기간은 옆에 따로 보이니
@@ -1375,6 +1378,7 @@ function card(x,rxs,isStd,upNote,why){
     <div class="head">${fn?`<div class="hrow">`:""}${shownLabel(x)||!x.label?`<span class="label">${labelHTML(x)}</span>`:""}${fn?`<button type="button" class="failbadge" data-act="failgo" data-i="${x.__i}" aria-expanded="false" aria-label="${fo.inherited?"불합격 기준 지금 기준(참고) ":"불합격 기준 "}${fn}개 보기">${fbt}</button></div>`:""}<span class="title">${hl(x.title||"",rxs)}</span></div>
     <div class="meta">${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<span class="pill rev">${dot(x.from)} 개정</span>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
     <div class="text${long?` clip fold" title="눌러서 전체 보기`:""}">${textHTML(bT,rxs,figAt,pt?pt.tables:x.tables,linkers(x))}</div>
+    ${x.figRef?figRefHTML(x):""}
     ${fp.rest.length?`<div class="imgs">${fp.rest.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`:""}
     ${!isStd&&TYPO[x.__i]?`<div class="note typo">※ 원문 오타로 보임: ${esc(TYPO[x.__i])}</div>`:""}
     <div class="acts">${long?`<button class="chipbtn foldkb" type="button" data-act="open" aria-expanded="false">본문 펼치기</button>`:""}<button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${nv>1?`<button class="chipbtn cntbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교<span class="cnt">${nv}</span></button>`:""}${rel.length?`<button class="chipbtn cntbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료<span class="cnt">${rel.length}건</span></button>`:""}<span class="acts-r"><button class="linkbtn fbico" type="button" data-act="report" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg><span class="fbt">의견 남기기</span></button>${isStd?"":(HAE.has(x.__i)?`<button class="chipbtn" type="button" data-act="hae" data-i="${x.__i}">선배의 조언</button>`:"")+lawBtn(x)}</span></div>
