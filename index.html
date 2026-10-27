@@ -359,6 +359,9 @@ dialog{border:0;padding:0;background:transparent;max-width:96vw;max-height:94vh}
 html{scrollbar-gutter:stable} /* 스크롤바 자리를 늘 남겨 둔다: 창이 떠서 스크롤바가 사라져도(아래) 뒤 화면이 좌우로 움직이지 않게 (창이 뜰 때만 남기면 브라우저에 따라 한 번 움직였음) */
 html:has(dialog[open]){overflow:hidden}
 #lawdlg{width:min(760px,calc(100vw - 24px));max-height:88vh}
+/* 원문 창은 모달이 아니다: 모달이면 크롬이 폰 뒤로가기를 창 닫기(CloseWatcher)로 먼저 받아 앞 조항으로 못 돌아감. 모달 때 모양(가운데·뒤 가림)은 직접 맞춤: 그림 창 등 모달은 늘 이 위에 뜸 (2026-10-27) */
+#lawdlg[open]{position:fixed;inset:0;margin:auto;height:fit-content;z-index:1000}
+#lawdlg[open]::before{content:"";position:fixed;inset:0;z-index:-1;background:rgba(0,0,0,.78)} /* 뒤 가림: 눌리면 dialog 자신이 target 이라 아래 click 이 닫음 */
 .sheet{background:var(--surface);color:var(--ink);border-radius:24px;display:flex;flex-direction:column;max-height:88vh;overflow:hidden;border:1px solid var(--edge)}
 .sh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:20px 20px 12px}
 .sh-src{font-size:12.5px;font-weight:700;color:var(--muted);line-height:1.5}
@@ -734,7 +737,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.11"</script>버전 v2026.10.27.11 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.12"</script>버전 v2026.10.27.12 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1779,10 +1782,8 @@ $("#dlgzoom").addEventListener("click",()=>zoomViewer());
 // 창이 열릴 때 기록을 하나 쌓고, 뒤로가기면 맨 위 창을 닫는다. 닫기 버튼·Esc로 닫으면 쌓은 기록을 되돌린다
 let dlgPop=false, lawStk=[], lawCur=null; // lawStk: 원문 창 안에서 조항을 옮기기 직전 상태 [다시 열 함수, 스크롤] (lab, 2026-10-26)
 document.querySelectorAll("dialog").forEach(d=>{
-  new MutationObserver(()=>{ if(d.open&&!d._h){ d._h=1; history.pushState(history.state,"",location.href); } }).observe(d,{attributes:true,attributeFilter:["open"]});
-  const c0=d.close.bind(d); d.close=(...x)=>{ if(d.open) d._mine=1; c0(...x); }; // 우리 코드가 닫은 것만 표시 (브라우저가 cancel 없이 닫은 것과 구분)
-  d.addEventListener("close",()=>{ if(!d._h){ d._mine=0; return; } if(d.id==="lawdlg"&&lawStk.length&&!d._mine){ d.showModal(); return; } d._mine=0; /* 크롬이 cancel 없이 닫으면 바로 다시 연다: 이어서 오는 크롬 자체의 뒤로 이동(popstate)이 앞 조항으로 (2026-10-27) */ d._h=0; const n=d.id==="lawdlg"?lawStk.length:0; lawStk=[]; if(dlgPop) dlgPop=false; else { backSkip++; history.go(-1-n); } }); // 원문 창 안에서 쌓은 기록도 한꺼번에 되돌림
-  d.addEventListener("cancel",e=>{ if(d.id==="lawdlg"&&lawStk.length){ e.preventDefault(); history.back(); } }); // 안드로이드 뒤로가기·Esc는 기록보다 창 닫기(cancel)가 먼저라, 원문 창 안에서 옮겼으면 닫지 말고 앞 조항으로 (2026-10-27)
+  new MutationObserver(()=>{ if(d.open&&!d._h){ d._h=1; history.pushState(history.state,"",location.href); } if(d.id==="lawdlg") document.querySelectorAll("body>:not(dialog):not(script)").forEach(e=>{ e.inert=d.open; }); /* 비모달이라 뒤 화면을 직접 막음 */ }).observe(d,{attributes:true,attributeFilter:["open"]});
+  d.addEventListener("close",()=>{ if(!d._h) return; d._h=0; const n=d.id==="lawdlg"?lawStk.length:0; lawStk=[]; if(dlgPop) dlgPop=false; else { backSkip++; history.go(-1-n); } }); // 원문 창 안에서 쌓은 기록도 한꺼번에 되돌림
 });
 addEventListener("popstate",()=>{
   if(backSkip){ backSkip--; return; } // 버튼으로 닫으며 되돌린 기록이면 다른 창은 그대로
@@ -1986,7 +1987,7 @@ async function showLaw(i){
   $("#lawttl").textContent=x.label&&/^\d/.test(x.label)?dotAll(x.label):(x.title||"");
   $("#lawsrc").textContent="원문 불러오는 중…"; $("#lawbody").textContent=""; $("#lawwarn").hidden=true;
   $("#lawfull").href=lawUrl(x); lawFoot(false);
-  if(!dlg.open) dlg.showModal();
+  if(!dlg.open) dlg.show();
   if(x.kind||x.added){ // 종류 자료·보충한 옛 판 글은 고시 원문에서 바로 옮긴 글이라 그대로 보여 준다
     $("#lawsrc").textContent=x.srcName||""; $("#lawttl").textContent=x.label||x.title||""; $("#lawfull").href=x.srcUrl||lawUrl(x); lawFoot(/kats.go.kr/.test(x.srcUrl||""));
     if(x.tables) $("#lawbody").innerHTML=plainWithTables(dropNum(x.text,x.label),x.tables); else $("#lawbody").textContent=dropNum(x.text,x.label); return; }
@@ -2118,7 +2119,7 @@ function showCardRef(b){ lawCur=()=>showCardRef(b);
   body.innerHTML=pick.map(y=>`<div class="cref"><span class="ct">${hl(y.title||"",rxs)}</span><span class="cp">${y.from?dot(y.from):"?"} ~ ${y.to?dot(y.to):"현재"}</span>\n${hl(bodyText(y),rxs)}${subs(y)}</div>`).join("");
   $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+n+"’이에요."+(d&&pick.some(y=>on(y,d,d))?" 기준적용일에 적용되는 카드만 보여요.":""); $("#lawwarn").hidden=false;
   const a=$("#lawfull"); a.textContent="이 조항으로 가기"; a.removeAttribute("target"); a.href="?q="+encodeURIComponent(n); a.dataset.go=n; a.dataset.goi=pick.map(y=>y.__i).join(","); $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
-  if(!dlg.open) dlg.showModal();
+  if(!dlg.open) dlg.show();
 }
 // 선배의 조언 (lab, 2026-10-21): 기준 해설(전 승강기기술원장 비공식 해설집, 카드에 이미 있는 기준 문장은 뺀 것) + 현장 경험(현장경험.md). data/hae.json 은 처음 누를 때만 받는다
 let HAEP=null;
@@ -2128,7 +2129,7 @@ async function showHae(i){
   $("#lawttl").textContent="선배의 조언"; $("#lawsrc").textContent="불러오는 중…";
   $("#lawwarn").textContent="선배들이 남긴 비공식 조언이에요. 공단 공식 입장이 아니니, 판단은 고시 원문으로 하세요."; $("#lawwarn").hidden=false;
   $("#lawnote").textContent="기준 해설은 ‘승강기안전부품 안전기준 및 승강기 안전기준 해설’(전 승강기기술원장, 개인 지식과 AI로 쓴 글)에서 이 조항 부분만 옮겼어요. 현장 경험은 의견 남기기로 보내 주세요.";
-  if(!dlg.open) dlg.showModal();
+  if(!dlg.open) dlg.show();
   try{ const H=await loadHae(); if(my!==lawSeq) return; const h=H[i]; if(!h) throw new Error("hae");
     const rxs=terms($("#q").value); $("#lawttl").textContent=h.n+" 선배의 조언"; $("#lawsrc").textContent="선배의 조언 (비공식)";
     body.innerHTML=`<div class="adv"><span class="advh">기준 해설<small>전 승강기기술원장 해설집</small></span>${h.t?hl(h.t,rxs):'<span class="advn">이 조항 해설은 없어요.</span>'}</div><div class="adv"><span class="advh">현장 경험</span>${(h.x||[]).length?h.x.map(e=>`<div class="advx">${hl(e.t,rxs)}<span class="advw">${esc(e.w?e.w+" · ":"")}${dot(e.d)}</span></div>`).join(""):'<span class="advn">아직 없어요. 알려 주실 경험이 있으면 카드의 의견 남기기(말풍선)로 보내 주세요.</span>'}</div>`; }
@@ -2145,7 +2146,7 @@ async function showRef(b){
   let tail="", nx=b.nextSibling; while(nx&&tail.length<30){ tail+=nx.textContent; nx=nx.nextSibling; }
   const own=b.textContent.match(/(?:\s(?=[IVXⅠ-Ⅻ])|의\s*(?:표\s*)?)([IVXⅠ-Ⅻ\d]+(?:\.\d+)+)$/), sm=tail.match(/^(?:\s*의\s*([Ⅰ-Ⅻ]+(?:\.\d+)+|\d+(?:\.\d+)+)|(?:\.\d+)+)/), sub=own?own[1]:sm?(sm[1]||b.textContent.split(" ").pop()+sm[0]):""; // 숫자는 "의" 뒤일 때만 ("표 3 2.5배" 같은 글을 번호로 읽지 않게)
   $("#lawbody").classList.remove("ref"); $("#lawttl").textContent=b.textContent; $("#lawsrc").textContent="원문 불러오는 중…"; $("#lawbody").textContent=""; $("#lawwarn").hidden=true; $("#lawfull").removeAttribute("href"); lawFoot(false);
-  if(!dlg.open) dlg.showModal();
+  if(!dlg.open) dlg.show();
   try{
     const R=await loadRefs(); if(my!==lawSeq) return; const t=R.targets[id]; if(!t) throw new Error("ref");
     $("#lawttl").textContent=t.name; $("#lawsrc").textContent=t.src; $("#lawfull").href=t.url; const body=$("#lawbody"); body.classList.add("ref"); body.innerHTML=(t.figs||[]).map(g=>`<figure class="refimg"><button type="button" data-img="${esc(g.img)}" data-cap="${esc(g.cap||t.name)}" aria-label="그림 크게 보기"><img src="${esc(g.img)}" alt="${esc(g.cap||t.name)}"></button>${g.cap?`<figcaption>${esc(g.cap)}</figcaption>`:""}</figure>`).join("")+refHTML(t.text,t.name,id,terms($("#q").value),t.tabs); body.scrollTop=0;
@@ -2160,7 +2161,7 @@ $("#lawfull").addEventListener("click",e=>{ const g=e.currentTarget.dataset.go; 
   // 그 번호로 찾은 뒤, 번호가 글에 들어 있기만 한 카드가 아니라 그 번호 카드 자체로 간다(못 찾으면 맨 위). 창을 닫으면 눌렀던 아래 카드 자리로 돌아가 있어서 바로 + 잠깐 뒤 두 번
   const go=()=>{ const t=[...document.querySelectorAll("#out article")].find(a=>!a.parentElement.closest("article")&&ids.some(i=>a.querySelector(':scope [data-i="'+i+'"]'))); if(t){ t.classList.add("gocard"); t.scrollIntoView({block:"start"}); setTimeout(()=>t.classList.remove("gocard"),1800); } else scrollTo(0,0); };
   go(); setTimeout(go,80); }); // 조항 번호 창: 그 번호 카드로 가기
-document.addEventListener("keydown",e=>{ if(!$("#lawdlg").open) return; const b=$("#lawbody"), h=b.clientHeight*0.9, k={PageDown:h,PageUp:-h,ArrowDown:40,ArrowUp:-40,Home:-b.scrollHeight,End:b.scrollHeight}[e.key];
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&$("#lawdlg").open&&!document.querySelector("dialog:modal")){ e.preventDefault(); if(lawStk.length) history.back(); else $("#lawdlg").close(); return; } /* Esc: 앞 조항, 없으면 닫기 */ if(!$("#lawdlg").open) return; const b=$("#lawbody"), h=b.clientHeight*0.9, k={PageDown:h,PageUp:-h,ArrowDown:40,ArrowUp:-40,Home:-b.scrollHeight,End:b.scrollHeight}[e.key];
   if(k===undefined||e.altKey||e.ctrlKey||e.metaKey||e.target.closest("input,textarea,select")) return; e.preventDefault(); b.scrollBy({top:k}); /* 바로 옮김: 부드럽게 움직이면 가려진 창에서 멈춰 있기도 함 */ });
 $("#lawbody").addEventListener("click",e=>{ const g=e.target.closest(".reftoc button"); if(g) $("#lawbody").querySelectorAll(".ln")[+g.dataset.go].scrollIntoView({block:"start",behavior:"smooth"}); const rb=e.target.closest("button.csl"); if(rb){ if(lawCur&&$("#lawdlg").open){ lawStk.push([lawCur,$("#lawbody").scrollTop]); history.pushState(history.state,"",location.href); } showRef(rb); } }); // 아래 조항으로 옮기기 전 상태를 쌓아 뒤로가기가 앞 조항으로 가게
 $("#lawdlg").addEventListener("click",e=>{ if(e.target.id==="lawdlg") $("#lawdlg").close(); });
