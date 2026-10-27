@@ -210,10 +210,14 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
   .dmsg{margin-top:6px}
 }
 .seg[hidden]{display:none}
-.seg{display:inline-flex;gap:2px;background:var(--track);border-radius:12px;padding:3px}
-.seg button{font:inherit;font-size:14px;font-weight:600;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
+.seg{position:relative;display:inline-flex;gap:2px;background:var(--track);border-radius:12px;padding:3px}
+.seg::before{content:"";position:absolute;top:3px;bottom:3px;left:0;width:var(--w,0);transform:translateX(var(--x,0));background:var(--surface);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,.08);opacity:0}
+.seg.on::before{opacity:1}
+.seg.go::before{transition:transform .2s ease,width .2s ease}.seg.go button{transition:color .2s ease} /* 고른 바탕(알약)이 옆으로 미끄러짐. 첫 그림·새로 고침엔 .go 가 아직 없어 안 움직임(segPill) */
+.seg button{position:relative;font:inherit;font-size:14px;font-weight:600;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
 .seg button[aria-disabled=true]{opacity:.4;text-decoration:line-through;text-decoration-thickness:1.5px;cursor:not-allowed} /* 원래 연한 글자라 흐림만으론 구분이 약해 가운뎃줄로 '없음'을 보임 */
-.seg button[aria-checked=true]{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.seg button[aria-checked=true]{color:var(--ink);font-weight:700}
+.seg:not(.on) button[aria-checked=true]{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.08)} /* 알약을 못 잼(숨김 중)이면 예전처럼 단추 바탕 */
 .chipbtn{font:inherit;font-size:13.5px;font-weight:600;border:0;background:var(--fill);color:var(--sub);border-radius:10px;padding:7.5px 12px 8.5px;cursor:pointer} /* 프리텐다드 한글이 줄 안에서 약간 아래로 앉아, 위 0.5px 줄이고 아래 0.5px 늘려 가운데로 (높이는 그대로, 1px은 너무 올라감) */
 /* 위쪽 도구 버튼(즐겨찾기만·인쇄·결과 공유): 밝은 모드에선 --fill이 페이지 바탕과 같아 박스가 안 보여 흰 바탕으로 */
 .mob #print{display:none} /* 폰에서는 PDF 저장을 거의 안 써서 버튼 줄만 차지한다 (2026-10-06 운영자) */
@@ -620,7 +624,7 @@ footer a{color:var(--accent)}
   /* 일부만 맞는 결과가 펼쳐져 있으면(모두 맞는 조항이 없을 때) 그 목록을 찍는다. 접힌 칸은 버튼·안내 없이 비어 있음 */
   .excl.part{display:block!important;margin:0}.excl.part>.chipbtn,.excl.part .note{display:none!important}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}.failpop{animation:none!important}button:active{transform:none}}
+@media (prefers-reduced-motion:reduce){*,.seg::before{transition:none!important}.failpop{animation:none!important}button:active{transform:none}}
 @media (max-width:370px){.brand h1{font-size:17px!important}.brand .mark{width:38px!important;height:38px!important}} /* 더 좁은 폰: 제목이 한 줄에 들어가게 */
 /* 좁은 폰 화면(폴드 앞화면 등): 머리를 줄여 첫 조항이 빨리 보이게, 카드 여백·글씨를 조금 줄임 */
 @media (max-width:480px){
@@ -730,7 +734,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.4"</script>버전 v2026.10.27.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.5"</script>버전 v2026.10.27.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -984,6 +988,23 @@ function refLinker(x){
     return out.replace(/<mark><\/mark>/g,"");
   };
 }
+// 그림 번호 누르기 (lab, 모자란 곳 24번, 2026-10-26): 카드 글의 "그림 4"가 다른 카드에 붙은 그림이면 눌러서 크게 본다(같은 카드 그림은 이미 글 사이에 있어 그대로).
+// 같은 판 묶음(엘리베이터 2009·2013~2018·2019~ / MRL / 종류별 2013~2018·2019~) 안에서만 찾는다. 번호는 그림 제목(imageCap) 또는 글 속 캡션 줄("[ 그림 4 - …]")에서 읽는다
+let FIGX=null;
+const figEra=x=>(x.kind?x.kind+"|":/^MRL/.test(x.label||"")?"mrl|":"")+((x.from||"")>="2019-03-28"?"22":((x.from||"")>="2013-09-15"||(x.to||"")>="2013-09-15")?"12":"9");
+function figIndex(){ if(FIGX) return FIGX; FIGX=new Map();
+  for(const x of [...C,...(K||[])]){ const im=[].concat(x.image||[]); if(!im.length) continue;
+    const tc=[...String(x.text||"").matchAll(/\[\s*((?:표\s*\d+\s*·\s*)?그림[^\]]*)\]/g)].map(m=>m[1].trim());
+    im.forEach((p,n)=>{ const cap=(x.imageCap||[])[n]||"", ids=cap?figNums(cap):im.length===1?tc.flatMap(figNums):figNums(tc[n]);
+      for(const id of ids){ const k=figEra(x)+"|"+id; if(!FIGX.has(k)) FIGX.set(k,{p,cap:cap||tc[n]||tc[0]||""}); } }); }
+  return FIGX; }
+function figLinker(x){
+  if(!/그림/.test(x.text||"")) return null;
+  const own=new Set([].concat(x.image||[])), era=figEra(x), ty=TYPO[x.__i]||"", re=new RegExp(String.raw`(^|[^가-힣A-Za-z0-9\[])(\s*)그림\s?(${FID})(?![\d.]*\d)`,"g");
+  return h=>{ let inb=0; return (h.match(/<[^>]+>|[^<]+/g)||[]).map(s=>{ if(s[0]==="<"){ if(/^<button/.test(s)) inb++; else if(/^<\/button/.test(s)) inb--; return s; } if(inb>0) return s;
+    return s.replace(re,(all,pre,sp,id)=>{ const f=figIndex().get(era+"|"+id); if(!f||own.has(f.p)||ty.includes("그림 "+id)) return all; // 원문 오타로 보이는 그림 번호(15.2.3.3 "그림 20")는 잇지 않는다
+      return pre+sp+`<button type="button" class="refbtn figref" data-img="${esc(f.p)}" data-cap="${esc(f.cap)}" aria-label="그림 ${esc(id)} 크게 보기">그림 ${id}</button>`; }); }).join(""); }; }
+const linkers=x=>{ const a=refLinker(x), b=figLinker(x); return a&&b?h=>b(a(h)):a||b; };
 function hay(x){return [x.label||"",x.num||"",x.title||"",x.t0||"",x.keyword||"",x.text||"",tabFlat(x)].join("\n")} // t0: 줄이기 전 제목(lab)도 찾기·순위에 씀
 // 표준화 회의 차수 키: "YY년 제N차"(제·띄어쓰기 변형, 여럿이면 가장 늦은 것) → [2000+YY,N], ISO 날짜 → [해,99,날짜], 그 밖·빈 값 → 맨 뒤
 function stdKey(f){ f=String(f||""); let m,best=null; const re=/(?:^|\D)(\d{2})년\s*제?\s*(\d+)\s*차/g;
@@ -1350,7 +1371,7 @@ function card(x,rxs,isStd,upNote,why){
     ${why?`<div class="why">적용 안 됨 · ${esc(why)}</div>`:""}
     <div class="head">${fn?`<div class="hrow">`:""}${shownLabel(x)||!x.label?`<span class="label">${labelHTML(x)}</span>`:""}${fn?`<button type="button" class="failbadge" data-act="failgo" data-i="${x.__i}" aria-expanded="false" aria-label="${fo.inherited?"불합격 기준 지금 기준(참고) ":"불합격 기준 "}${fn}개 보기">${fbt}</button></div>`:""}<span class="title">${hl(x.title||"",rxs)}</span></div>
     <div class="meta">${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?`<span class="pill rev">${dot(x.from)} 개정</span>`:`<span class="pill rev">${dot(x.from)} 신설</span>`):""}</div>
-    <div class="text${long?` clip fold" title="눌러서 전체 보기`:""}">${textHTML(bT,rxs,figAt,pt?pt.tables:x.tables,refLinker(x))}</div>
+    <div class="text${long?` clip fold" title="눌러서 전체 보기`:""}">${textHTML(bT,rxs,figAt,pt?pt.tables:x.tables,linkers(x))}</div>
     ${fp.rest.length?`<div class="imgs">${fp.rest.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`:""}
     ${!isStd&&TYPO[x.__i]?`<div class="note typo">※ 원문 오타로 보임: ${esc(TYPO[x.__i])}</div>`:""}
     <div class="acts">${long?`<button class="chipbtn foldkb" type="button" data-act="open" aria-expanded="false">본문 펼치기</button>`:""}<button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${nv>1?`<button class="chipbtn cntbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별 비교<span class="cnt">${nv}</span></button>`:""}${rel.length?`<button class="chipbtn cntbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화 자료<span class="cnt">${rel.length}건</span></button>`:""}<span class="acts-r"><button class="linkbtn fbico" type="button" data-act="report" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.7 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z"/></svg><span class="fbt">의견 남기기</span></button>${isStd?"":(HAE.has(x.__i)?`<button class="chipbtn" type="button" data-act="hae" data-i="${x.__i}">선배의 조언</button>`:"")+lawBtn(x)}</span></div>
@@ -1604,7 +1625,7 @@ function relTerms(res,q,rxs){
   }
   return pick;
 }
-function setSeg(attr,val){document.querySelectorAll(`[data-${attr}]`).forEach(b=>{const on=b.dataset[attr]===val;b.setAttribute("aria-checked",on);b.tabIndex=on?0:-1})} // 라디오 줄: 고른 것만 Tab 자리(로빙 tabindex)
+function setSeg(attr,val){document.querySelectorAll(`[data-${attr}]`).forEach(b=>{const on=b.dataset[attr]===val;b.setAttribute("aria-checked",on);b.tabIndex=on?0:-1}); const g=document.querySelector(`.seg [data-${attr}]`)?.parentElement; if(g) segPill(g,true)} // 라디오 줄: 고른 것만 Tab 자리(로빙 tabindex)
 // 다음·앞 칸 번호(끝에서는 반대 끝으로 돌아감, 폰 쓸어 넘기기·← → 키 모두 같게 2026-10-18 운영자)
 const radioNext=(i,d,n)=>(i+d+n)%n;
 // 끝을 넘어 돌아갔을 때 알림 앞말: 앞으로 가다 처음으로, 뒤로 가다 끝으로
@@ -1646,6 +1667,10 @@ $("#qdays").addEventListener("click",e=>{ const b=e.target.closest(".qd[data-d]"
   limit=40;render();
 });
 // 승강기 종류: 누르면 그 종류 자료로 (검색어·허가일·보기는 그대로)
+// 자료 고르기(.seg) 알약: 고른 단추의 자리·너비를 재서 옮긴다. anim=false(처음·크기 바뀜)는 미끄러짐 없이 바로, true(누를 때)만 미끄러짐. 숨김 중(너비 0)엔 안 잼
+function segPill(g,anim){ const b=g.querySelector('[aria-checked="true"]'); if(!b||!b.offsetWidth) return; const was=g.classList.contains("on"), x=b.offsetLeft+"px", w=b.offsetWidth+"px"; if(!anim&&was&&g.style.getPropertyValue("--x")===x&&g.style.getPropertyValue("--w")===w) return; // 이미 그 자리면 가만히(미끄러지는 중 크기 감시가 끊지 않게)
+  g.classList.toggle("go",anim&&was); g.style.setProperty("--x",x); g.style.setProperty("--w",w); g.classList.add("on"); g.offsetWidth; g.classList.add("go"); }
+document.querySelectorAll(".seg").forEach(g=>new ResizeObserver(()=>segPill(g,false)).observe(g));
 document.querySelectorAll("[data-kind]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.kind!==kind&&exQ&&$("#q").value===exQ){ $("#q").value=""; exQ=""; $("#qclear").hidden=true; } kind=b.dataset.kind; setSeg("kind",kind); drawQuick(); limit=40; render(); showExample(); })); // 종류를 바꿔도 직접 친 검색어·허가일은 그대로(2026-10-21 찬호님). 자동으로 넣은 예시 검색어만 비우고 그 종류 예시로
 radioKeys(document.querySelector(".qs")); radioKeys(document.querySelector(".seg"));
 // 페이지 어디서든 ← →로 종류 바꾸기. 글 쓰는 칸·열린 창·가로로 미는 칸·다른 라디오/탭/슬라이더/메뉴에서는 키를 가로채지 않는다
@@ -1688,7 +1713,7 @@ addEventListener("touchend",e=>{ if(swX===null) return;
 // 엘리베이터 밖 종류 자료(data/kinds.json): 처음 고를 때 한 번 불러와 번호·즐겨찾기 키·시기별 묶음을 붙인다
 function loadKinds(){ if(KP) return KP;
   return KP=fetch("data/kinds.json").then(r=>{ if(!r.ok) throw new Error("kinds"); return r.json(); }).then(j=>{
-    K=j.items||[]; K.forEach((x,n)=>{ x.__i=C.length+n+1; x.__k=x.kind+"|"+[x.t0||x.title,x.label,x.from,x.to,textSig(x.text)].join("|"); if(x.text) x.text=tidy(x.text); if(x.tables) for(const t of x.tables) for(const r of t.rows) for(const c of r) c.t=tidy(c.t); });
+    K=j.items||[]; FIGX=null; K.forEach((x,n)=>{ x.__i=C.length+n+1; x.__k=x.kind+"|"+[x.t0||x.title,x.label,x.from,x.to,textSig(x.text)].join("|"); if(x.text) x.text=tidy(x.text); if(x.tables) for(const t of x.tables) for(const r of t.rows) for(const c of r) c.t=tidy(c.t); });
     const g={}; for(const x of K) (g[x.kind+"|"+x.label]=g[x.kind+"|"+x.label]||[]).push(x);
     // 같은 번호라도 기준 체계(2009 / 2013~2019 / 2019~)가 다르면 내용이 다를 수 있어, 다른 체계끼리는 글이 비슷할 때만(엘리베이터와 같은 기준) 한 묶음으로
     const era=x=>!x.from?0:x.from<"2019-03-28"?1:2;
@@ -1752,17 +1777,23 @@ $("#dlgimg").addEventListener("click",e=>{ e.stopPropagation(); zoomViewer(e.cli
 $("#dlgzoom").addEventListener("click",()=>zoomViewer());
 // 폰 뒤로가기: 창(원문·시기별 비교·그림·QR·의견)이 떠 있으면 앱을 나가지 말고 그 창만 닫는다 (2026-10-02)
 // 창이 열릴 때 기록을 하나 쌓고, 뒤로가기면 맨 위 창을 닫는다. 닫기 버튼·Esc로 닫으면 쌓은 기록을 되돌린다
-let dlgPop=false;
+let dlgPop=false, lawStk=[], lawCur=null; // lawStk: 원문 창 안에서 조항을 옮기기 직전 상태 [다시 열 함수, 스크롤] (lab, 2026-10-26)
 document.querySelectorAll("dialog").forEach(d=>{
   new MutationObserver(()=>{ if(d.open&&!d._h){ d._h=1; history.pushState(history.state,"",location.href); } }).observe(d,{attributes:true,attributeFilter:["open"]});
-  d.addEventListener("close",()=>{ if(!d._h) return; d._h=0; if(dlgPop) dlgPop=false; else { backSkip++; history.back(); } });
+  d.addEventListener("close",()=>{ if(!d._h) return; d._h=0; const n=d.id==="lawdlg"?lawStk.length:0; lawStk=[]; if(dlgPop) dlgPop=false; else { backSkip++; history.go(-1-n); } }); // 원문 창 안에서 쌓은 기록도 한꺼번에 되돌림
 });
 addEventListener("popstate",()=>{
   if(backSkip){ backSkip--; return; } // 버튼으로 닫으며 되돌린 기록이면 다른 창은 그대로
   const top=[...document.querySelectorAll("dialog[open]")].filter(d=>d._h).pop();
+  if(top&&top.id==="lawdlg"&&lawStk.length){ const [re,sc]=lawStk.pop(); Promise.resolve(re()).then(()=>{ $("#lawbody").scrollTop=sc; }); return; } // 원문 창은 앞 조항으로
   if(top){ dlgPop=true; top.close(); }
   else if(topicsH){ topicsH=false; const d=$("#out .topics"); if(d) d.open=false; } // 창이 없으면 항목으로 찾기를 접는다
+  else if(guardH){ guardH=false; syncUrl(); /* 맨 아래 기록의 주소가 옛것이라 지금 검색 주소로 되돌림 */ if(Date.now()-guardAt<2000) history.back(); else { guardAt=Date.now(); toast("한 번 더 누르면 ELISN이 닫혀요",2000); guardH=true; history.pushState({guard:1},"",location.href); } } // 첫 화면: 2초 안에 또 누르면 나감
 });
+// 첫 화면 뒤로가기 안내 (lab): 첫 누름 뒤 '지킴' 기록 하나를 깔아 둠. 창·항목 기록이 없을 때만
+let guardH=false, guardAt=0;
+const guardOn=()=>{ if(guardH||!navigator.userActivation?.isActive||document.querySelector("dialog[open]")||topicsH) return; guardH=true; history.pushState({guard:1},"",location.href); removeEventListener("pointerdown",guardOn,true); removeEventListener("keydown",guardOn,true); };
+addEventListener("pointerdown",guardOn,true); addEventListener("keydown",guardOn,true);
 $("#dlgx").addEventListener("click",()=>$("#dlg").close());
 $("#dlgbox").addEventListener("click",e=>{ if(e.target.id==="dlgbox") $("#dlg").close(); });
 $("#cmpclose").addEventListener("click",()=>$("#cmpdlg").close());
@@ -1949,7 +1980,7 @@ const dropNextHead=(t,n)=>{ const N=parseInt(n,10)+1; if(!N) return t; const m=t
 // 원문 창 아래 버튼·안내: 국가법령정보센터에 없는 옛 고시(기술표준원 게시글)는 그렇게 알린다 (2026-10-17)
 const lawFoot=k=>{ $("#lawfull").hidden=false; delete $("#lawfull").dataset.go; $("#lawfull").target="_blank"; $("#lawfull").textContent=k?"고시 게시글 보기":"고시 전체 보기"; $("#lawnote").textContent=k?"기술표준원 고시 게시글의 첨부 파일에서 옮긴 글이에요. 표·그림은 게시글 첨부에서 확인하세요.":"국가법령정보센터 고시 원문에서 옮긴 글이에요. 빠진 표·그림이 있으면 고시 전체 보기에서 확인하세요."; };
 async function showLaw(i){
-  const x=byI(i); const dlg=$("#lawdlg"), my=++lawSeq; $("#lawbody").classList.remove("ref");
+  lawCur=()=>showLaw(i); const x=byI(i); const dlg=$("#lawdlg"), my=++lawSeq; $("#lawbody").classList.remove("ref");
   $("#lawttl").textContent=x.label&&/^\d/.test(x.label)?dotAll(x.label):(x.title||"");
   $("#lawsrc").textContent="원문 불러오는 중…"; $("#lawbody").textContent=""; $("#lawwarn").hidden=true;
   $("#lawfull").href=lawUrl(x); lawFoot(false);
@@ -2066,7 +2097,7 @@ function refHTML(text,name,id,rxs=[],tabs){ // tabs: 칸 구조를 되살린 표
     return `<div class="ln" style="--lv:${Math.min(1,Math.max(0,k-1))+ll[i]}">${hl(o.l,rxs)}</div>`; } // 본문 들여쓰기는 머리줄 깊이와 상관없이 한 단까지: 폰에서 Ⅲ.7.1.1.1 아래 줄이 화면 가운데까지 밀리던 것 (2026-10-22)
 }
 // 조항 번호 링크 (2026-10-21): 같은 번호 카드 중 기준적용일(하루로 넣었을 때) 또는 이 카드 기간에 걸치는 것을 한 창에 모두 보여 주고, 아래 단추로 그 번호를 찾는다
-function showCardRef(b){
+function showCardRef(b){ lawCur=()=>showCardRef(b);
   const x=byI(+b.dataset.i), dlg=$("#lawdlg"), n=b.dataset.n||b.textContent, pd=parseLoose($("#d").value), d=pd&&pd.from===pd.to?pd.from:"";
   const ys=b.dataset.ref.slice(1).split(",").map(k=>byI(+k)).filter(y=>y&&(y.kind||"elev")===(x.kind||"elev")), on=(y,a,z)=>(y.from||"")<=z&&(y.to||"9999-12-31")>=a;
   let pick=d?ys.filter(y=>on(y,d,d)):[]; if(!pick.length) pick=ys.filter(y=>on(y,x.from||"",x.to||"9999-12-31")); if(!pick.length) pick=ys;
@@ -2090,7 +2121,7 @@ function showCardRef(b){
 let HAEP=null;
 const loadHae=()=>HAEP||(HAEP=fetch("data/hae.json").then(r=>{ if(!r.ok) throw new Error("hae"); return r.json(); }).catch(e=>{ HAEP=null; throw e; }));
 async function showHae(i){
-  const x=byI(i), dlg=$("#lawdlg"), my=++lawSeq, body=$("#lawbody"); lawFoot(false); $("#lawfull").hidden=true; body.classList.remove("ref"); body.textContent=""; body.scrollTop=0;
+  lawCur=()=>showHae(i); const x=byI(i), dlg=$("#lawdlg"), my=++lawSeq, body=$("#lawbody"); lawFoot(false); $("#lawfull").hidden=true; body.classList.remove("ref"); body.textContent=""; body.scrollTop=0;
   $("#lawttl").textContent="선배의 조언"; $("#lawsrc").textContent="불러오는 중…";
   $("#lawwarn").textContent="선배들이 남긴 비공식 조언이에요. 공단 공식 입장이 아니니, 판단은 고시 원문으로 하세요."; $("#lawwarn").hidden=false;
   $("#lawnote").textContent="기준 해설은 ‘승강기안전부품 안전기준 및 승강기 안전기준 해설’(전 승강기기술원장, 개인 지식과 AI로 쓴 글)에서 이 조항 부분만 옮겼어요. 현장 경험은 의견 남기기로 보내 주세요.";
@@ -2102,6 +2133,7 @@ async function showHae(i){
 }
 async function showRef(b){
   if(b.dataset.ref[0]==="c") return showCardRef(b);
+  lawCur=()=>showRef(b);
   const x=byI(+b.dataset.i), my=++lawSeq, dlg=$("#lawdlg"); let id=b.dataset.ref;
   // 기준적용일을 하루로 넣었고 카드 기간 안이면 그날 시행 중인 판(빌드가 정한 alt: {시작일: 대상})을 연다. 아니면 카드 시작일 기준 그대로
   const alt=((REFC[x.__i]||[]).find(o=>o.id===id)||{}).alt, pd=parseLoose($("#d").value), d=pd&&pd.from===pd.to?pd.from:"";
@@ -2127,7 +2159,7 @@ $("#lawfull").addEventListener("click",e=>{ const g=e.currentTarget.dataset.go; 
   go(); setTimeout(go,80); }); // 조항 번호 창: 그 번호 카드로 가기
 document.addEventListener("keydown",e=>{ if(!$("#lawdlg").open) return; const b=$("#lawbody"), h=b.clientHeight*0.9, k={PageDown:h,PageUp:-h,ArrowDown:40,ArrowUp:-40,Home:-b.scrollHeight,End:b.scrollHeight}[e.key];
   if(k===undefined||e.altKey||e.ctrlKey||e.metaKey||e.target.closest("input,textarea,select")) return; e.preventDefault(); b.scrollBy({top:k}); /* 바로 옮김: 부드럽게 움직이면 가려진 창에서 멈춰 있기도 함 */ });
-$("#lawbody").addEventListener("click",e=>{ const g=e.target.closest(".reftoc button"); if(g) $("#lawbody").querySelectorAll(".ln")[+g.dataset.go].scrollIntoView({block:"start",behavior:"smooth"}); const rb=e.target.closest("button.csl"); if(rb) showRef(rb); });
+$("#lawbody").addEventListener("click",e=>{ const g=e.target.closest(".reftoc button"); if(g) $("#lawbody").querySelectorAll(".ln")[+g.dataset.go].scrollIntoView({block:"start",behavior:"smooth"}); const rb=e.target.closest("button.csl"); if(rb){ if(lawCur&&$("#lawdlg").open){ lawStk.push([lawCur,$("#lawbody").scrollTop]); history.pushState(history.state,"",location.href); } showRef(rb); } }); // 아래 조항으로 옮기기 전 상태를 쌓아 뒤로가기가 앞 조항으로 가게
 $("#lawdlg").addEventListener("click",e=>{ if(e.target.id==="lawdlg") $("#lawdlg").close(); });
 // 제보 창구: 노션 "ELISN 제보함" 폼 (공개 링크). 비어 있으면 조항 정보만 복사해 카톡 등으로 보내게 한다
 const FORM_URL="https://udinotti.notion.site/e30c46d4f15e41b0a49a84906d9b55ff";
