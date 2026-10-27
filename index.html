@@ -734,7 +734,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.10"</script>버전 v2026.10.27.10 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.11"</script>버전 v2026.10.27.11 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1781,14 +1781,14 @@ let dlgPop=false, lawStk=[], lawCur=null; // lawStk: 원문 창 안에서 조항
 document.querySelectorAll("dialog").forEach(d=>{
   new MutationObserver(()=>{ if(d.open&&!d._h){ d._h=1; history.pushState(history.state,"",location.href); } }).observe(d,{attributes:true,attributeFilter:["open"]});
   const c0=d.close.bind(d); d.close=(...x)=>{ if(d.open) d._mine=1; c0(...x); }; // 우리 코드가 닫은 것만 표시 (브라우저가 cancel 없이 닫은 것과 구분)
-  d.addEventListener("close",()=>{ if(!d._h) return; if(d.id==="lawdlg"&&lawStk.length&&!d._mine){ d.showModal(); return; } d._mine=0; /* 크롬이 cancel 없이 닫으면 바로 다시 연다: 이어서 오는 크롬 자체의 뒤로 이동(popstate)이 앞 조항으로 (2026-10-27) */ d._h=0; const n=d.id==="lawdlg"?lawStk.length:0; lawStk=[]; if(dlgPop) dlgPop=false; else { backSkip++; history.go(-1-n); } }); // 원문 창 안에서 쌓은 기록도 한꺼번에 되돌림
+  d.addEventListener("close",()=>{ if(!d._h){ d._mine=0; return; } if(d.id==="lawdlg"&&lawStk.length&&!d._mine){ d.showModal(); return; } d._mine=0; /* 크롬이 cancel 없이 닫으면 바로 다시 연다: 이어서 오는 크롬 자체의 뒤로 이동(popstate)이 앞 조항으로 (2026-10-27) */ d._h=0; const n=d.id==="lawdlg"?lawStk.length:0; lawStk=[]; if(dlgPop) dlgPop=false; else { backSkip++; history.go(-1-n); } }); // 원문 창 안에서 쌓은 기록도 한꺼번에 되돌림
   d.addEventListener("cancel",e=>{ if(d.id==="lawdlg"&&lawStk.length){ e.preventDefault(); history.back(); } }); // 안드로이드 뒤로가기·Esc는 기록보다 창 닫기(cancel)가 먼저라, 원문 창 안에서 옮겼으면 닫지 말고 앞 조항으로 (2026-10-27)
 });
 addEventListener("popstate",()=>{
   if(backSkip){ backSkip--; return; } // 버튼으로 닫으며 되돌린 기록이면 다른 창은 그대로
-  const top=[...document.querySelectorAll("dialog[open]")].filter(d=>d._h).pop();
+  const top=[...document.querySelectorAll("dialog[open]")].pop(); /* _h 없는 창도 이 뒤로가기의 몫: 열린 창이 있으면 안내 알림은 절대 안 띄움 (2026-10-27) */
   if(top&&top.id==="lawdlg"&&lawStk.length){ const [re,sc]=lawStk.pop(); Promise.resolve(re()).then(()=>{ $("#lawbody").scrollTop=sc; }); return; } // 원문 창은 앞 조항으로
-  if(top){ dlgPop=true; top.close(); }
+  if(top){ dlgPop=!!top._h; top.close(); }
   else if(topicsH){ topicsH=false; const d=$("#out .topics"); if(d) d.open=false; } // 창이 없으면 항목으로 찾기를 접는다
   else if(guardH){ guardH=false; syncUrl(); /* 맨 아래 기록의 주소가 옛것이라 지금 검색 주소로 되돌림 */ guardAt=Date.now(); toast("한 번 더 누르면 ELISN이 닫혀요",2000); setTimeout(guardOn,2100); } // 첫 화면: 안내만 띄움. 기록은 여기서 다시 쌓지 않음(사용자 누름 없는 pushState 는 크롬이 건너뜀): 2초 안에 또 누르면 그냥 나가고, 다시 쌓기는 2초 뒤·다음 누름(guardOn)
 });
