@@ -210,8 +210,8 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
   .dmsg{margin-top:6px}
 }
 .seg[hidden]{display:none}
-.seg{position:relative;display:inline-flex;gap:2px;background:var(--track);border-radius:12px;padding:3px}
-.seg::before{content:"";position:absolute;top:3px;bottom:3px;left:0;width:var(--w,0);transform:translateX(var(--x,0));background:var(--surface);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,.08);opacity:0}
+.seg{position:relative;display:inline-flex;gap:2px;background:var(--track);border-radius:13px;padding:4px}
+.seg::before{content:"";position:absolute;top:4px;bottom:4px;left:0;width:var(--w,0);transform:translateX(var(--x,0));background:var(--surface);border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,.08);opacity:0}
 .seg.on::before{opacity:1}
 .seg.go::before{transition:transform .2s ease,width .2s ease}.seg.go button{transition:color .2s ease} /* 고른 바탕(알약)이 옆으로 미끄러짐. 첫 그림·새로 고침엔 .go 가 아직 없어 안 움직임(segPill) */
 .seg button{position:relative;font:inherit;font-size:14px;font-weight:600;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:9px;cursor:pointer}
@@ -734,7 +734,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.9"</script>버전 v2026.10.27.9 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.27.10"</script>버전 v2026.10.27.10 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1668,7 +1668,7 @@ $("#qdays").addEventListener("click",e=>{ const b=e.target.closest(".qd[data-d]"
 });
 // 승강기 종류: 누르면 그 종류 자료로 (검색어·허가일·보기는 그대로)
 // 자료 고르기(.seg) 알약: 고른 단추의 자리·너비를 재서 옮긴다. anim=false(처음·크기 바뀜)는 미끄러짐 없이 바로, true(누를 때)만 미끄러짐. 숨김 중(너비 0)엔 안 잼
-function segPill(g,anim){ const b=g.querySelector('[aria-checked="true"]'); if(!b||!b.offsetWidth) return; const was=g.classList.contains("on"), x=b.offsetLeft+"px", w=b.offsetWidth+"px"; if(!anim&&was&&g.style.getPropertyValue("--x")===x&&g.style.getPropertyValue("--w")===w) return; // 이미 그 자리면 가만히(미끄러지는 중 크기 감시가 끊지 않게)
+function segPill(g,anim){ const b=g.querySelector('[aria-checked="true"]'); if(!b||!b.offsetWidth) return; const was=g.classList.contains("on"), r=b.getBoundingClientRect(), gr=g.getBoundingClientRect(), x=(r.left-gr.left-g.clientLeft)+"px", w=r.width+"px"; /* 소수점까지 재야 알약 양옆 틈이 같음 */ if(!anim&&was&&g.style.getPropertyValue("--x")===x&&g.style.getPropertyValue("--w")===w) return; // 이미 그 자리면 가만히(미끄러지는 중 크기 감시가 끊지 않게)
   g.classList.toggle("go",anim&&was); g.style.setProperty("--x",x); g.style.setProperty("--w",w); g.classList.add("on"); g.offsetWidth; g.classList.add("go"); }
 document.querySelectorAll(".seg").forEach(g=>new ResizeObserver(()=>segPill(g,false)).observe(g));
 document.querySelectorAll("[data-kind]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.kind!==kind&&exQ&&$("#q").value===exQ){ $("#q").value=""; exQ=""; $("#qclear").hidden=true; } kind=b.dataset.kind; setSeg("kind",kind); drawQuick(); limit=40; render(); showExample(); })); // 종류를 바꿔도 직접 친 검색어·허가일은 그대로(2026-10-21 찬호님). 자동으로 넣은 예시 검색어만 비우고 그 종류 예시로
@@ -2192,8 +2192,8 @@ $("#repopen").addEventListener("click",()=>setTimeout(()=>$("#repdlg").close(),3
 $("#repdlg").addEventListener("click",e=>{ if(e.target.id==="repdlg") $("#repdlg").close(); });
 document.querySelectorAll("[data-act=feedback]").forEach(b=>b.addEventListener("click",()=>{ if(!openForm()) toast("의견 창구 준비 중이에요."); }));
 
-// 화면 모드: 버튼을 누르면 자동(폰·PC 설정 따라)·밝게·어둡게 중에 고르는 메뉴가 열린다. 고른 값은 이 기기에 기억
-const THEMES=[["auto","자동","폰·PC 설정을 따라가요.",'<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/>'],
+// 화면 모드: 버튼을 누르면 자동(기기 설정 따라)·밝게·어둡게 중에 고르는 메뉴가 열린다. 고른 값은 이 기기에 기억
+const THEMES=[["auto","자동","기기 설정을 따라가요.",'<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/>'],
   ["light","밝게","",'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
   ["dark","어둡게","",'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>']];
 const svg=i=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">${i}</svg>`;
