@@ -106,7 +106,7 @@ header{background:var(--bg);padding-block:16px 14px} /* 모든 폭에서 흘러�
 .theme .aa{display:none;font-size:16px;font-weight:800;line-height:1} /* 글씨(화면·글자)가 안 보이는 폰에서만 "가"를 보인다 */
 @media (hover:hover) and (pointer:fine){.theme:hover{color:var(--accent)}}
 .brand h1{word-break:keep-all;font-size:26px;line-height:1.3;margin:0;font-weight:800;letter-spacing:-.035em}
-.brand small{display:block;color:var(--muted);font-size:13.5px;margin-top:4px;letter-spacing:.01em}
+.brand small{display:block;color:var(--muted);font-size:13.5px;margin-top:4px;letter-spacing:.01em;padding-left:.073em}
 .brand small b{color:var(--accent);font-weight:800}
 .brand small i{font-style:italic;font-weight:500}
 .logo{color:var(--accent);letter-spacing:-.02em;font-weight:800;margin-right:4px}
@@ -629,7 +629,7 @@ footer a{color:var(--accent)}
   .excl.part{display:block!important;margin:0}.excl.part>.chipbtn,.excl.part .note{display:none!important}
 }
 @media (prefers-reduced-motion:reduce){*,.seg::before{transition:none!important}.failpop{animation:none!important}button:active{transform:none}}
-@media (max-width:370px){.brand h1{font-size:17px!important}.brand .mark{width:38px!important;height:38px!important}} /* 더 좁은 폰: 제목이 한 줄에 들어가게 */
+@media (max-width:370px){.brand h1{font-size:17px!important}.brand .mark{width:38px!important;height:38px!important}.brand small{padding-left:.043em!important}} /* 더 좁은 폰: 제목이 한 줄에 들어가게 */
 /* 좁은 폰 화면(폴드 앞화면 등): 머리를 줄여 첫 조항이 빨리 보이게, 카드 여백·글씨를 조금 줄임 */
 @media (max-width:480px){
   body{font-size:14.5px;padding-inline:12px}
@@ -644,7 +644,7 @@ footer a{color:var(--accent)}
   .theme svg{width:20px;height:20px}
   .brand h1{font-size:18px}
   .brand .mark{width:42px;height:42px} /* 휴대폰: 아이콘은 제목·영문 두 줄 높이, 제목은 한 줄에 들어가게 */
-  .brand small{font-size:11px;letter-spacing:0;margin-top:2px} /* 영문 풀이가 한 줄에 */
+  .brand small{font-size:11px;letter-spacing:0;margin-top:2px;padding-left:.05em} /* 영문 풀이가 한 줄에 */
   .intro{font-size:13px;line-height:1.55;margin:0 0 12px}
   input[type=search],input[type=text]{padding:12px 14px}
   input[type=search]{padding-left:42px}
@@ -722,7 +722,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.28)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.29)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -738,7 +738,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.28.3"</script>버전 v2026.10.28.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.29.1"</script>버전 v2026.10.29.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1258,10 +1258,11 @@ const vToks=s=>new Set((s.match(/[가-힣A-Za-z]{2,}/g)||[]).map(w=>w.replace(/(
 const overlap=(a,b)=>{let n=0;for(const t of a)if(b.has(t))n++;return n/(Math.min(a.size,b.size)||1)};
 const lWords=l=>new Set(vName(l).split(/[\s/·,()]+/).filter(w=>w.length>1&&!/\d/.test(w)));
 const dice=(a,b)=>{let n=0;for(const t of a)if(b.has(t))n++;return 2*n/((a.size+b.size)||1)};
-const vName=l=>(l||"").replace(/\s*\([^)]*\)\s*$/,"").trim();
+const vName=l=>(l||"").replace(/\s*\((?!\d+\)$)[^)]*\)\s*$/,"").trim(); // 끝 괄호가 (6) 같은 세부 조항 번호면 이름에 남긴다(3.1.10(3)·(6)이 같은 이름으로 묶이던 것)
 const dateName=k=>!k||/\d{4}|이후|이전|종전|미표기|^기준$/.test(k);
 // 짧은 글은 낱말 3개 이상이 모두 상대(12낱말 이하) 안에 들면 같은 조항으로 본다("승강로는 누수가 없는 구조" ↔ "승강로는 누수가 없고 청결상태가 유지되는 구조") (모자란 곳 16번, 2026-10-26)
 const vIn=(a,b)=>{const[s,l]=a.size<=b.size?[a,b]:[b,a];if(s.size<3||l.size>12)return false;for(const t of s)if(!l.has(t))return false;return true;};
+const sub=l=>(/^(.*)\(\d+\)$/.exec(l||"")||[])[1]; // 끝 세부 번호 (n) 앞 조항 번호
 let SAMEM=new Set(); // 뜻이 같은 쌍 "앞판순번>뒤판순번"
 function buildVersions(){
   const g={}; CV.forEach(x=>{x.__t=vToks(bodyText(x));(g[x.vg||x.t0||x.title]=g[x.vg||x.t0||x.title]||[]).push(x)}); // 묶음은 핵심 말 전 제목(t0)으로
@@ -1269,6 +1270,7 @@ function buildVersions(){
     const gl=y=>y.label, k=vName(gl(x)), named=!dateName(k), best=new Map();
     for(const y of g[x.vg||x.t0||x.title]){ if(y===x||(y.from===x.from&&y.to===x.to)) continue;
       const nameSame=named?vName(gl(y))===k:dateName(vName(gl(y)));
+      if(gl(y)!==gl(x)&&sub(gl(y))&&sub(gl(y))===sub(gl(x))) continue; // 같은 조항의 서로 다른 세부 번호 (3)·(6)은 글이 닮아도 다른 조항
       const sc=dice(x.__t,y.__t), short=Math.min(x.__t.size,y.__t.size)<6;
       if(!(nameSame||(!short&&sc>=0.4)||(short&&(sc>=0.7||vIn(x.__t,y.__t))))) continue;
       // 같은 기간 후보가 여럿이면 이름에 같은 낱말(예: "기계실")이 든 쪽을 먼저
