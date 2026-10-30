@@ -340,7 +340,10 @@ header,.topics{-webkit-user-select:none;user-select:none}
 header input,header textarea{-webkit-user-select:text;user-select:text}
 /* 항목으로 찾기 (검색어가 비었을 때) */
 .topics{margin-top:14px;background:var(--surface);border:1px solid var(--edge);border-radius:16px;padding:12px 14px;box-shadow:var(--lift)}
-.topics summary{font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer}
+.topics summary{font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;list-style:none}
+.topics summary::-webkit-details-marker{display:none}
+.topics summary .chev{vertical-align:-2px;margin:0 7px 0 1px;color:var(--muted);transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.topics[open]>summary .chev{transform:rotate(90deg)}
 .topics summary .ts{margin-left:6px;font-size:12.5px;font-weight:500;color:var(--muted)}
 .favoth{display:block;margin-top:4px} /* 즐겨찾기만 볼 때 '다른 쪽에도 N개' 안내: 앞 문장과 섞여 줄이 끊기지 않게 따로 한 줄 */
 .tg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
@@ -628,7 +631,7 @@ footer a{color:var(--accent)}
   /* 일부만 맞는 결과가 펼쳐져 있으면(모두 맞는 조항이 없을 때) 그 목록을 찍는다. 접힌 칸은 버튼·안내 없이 비어 있음 */
   .excl.part{display:block!important;margin:0}.excl.part>.chipbtn,.excl.part .note{display:none!important}
 }
-@media (prefers-reduced-motion:reduce){*,.seg::before{transition:none!important}.failpop{animation:none!important}button:active{transform:none}}
+@media (prefers-reduced-motion:reduce){*,.seg::before,.topics summary .chev{transition:none!important}.failpop{animation:none!important}button:active{transform:none}}
 @media (max-width:370px){.brand h1{font-size:17px!important}.brand .mark{width:38px!important;height:38px!important}.brand small{padding-left:.043em!important}} /* 더 좁은 폰: 제목이 한 줄에 들어가게 */
 /* 좁은 폰 화면(폴드 앞화면 등): 머리를 줄여 첫 조항이 빨리 보이게, 카드 여백·글씨를 조금 줄임 */
 @media (max-width:480px){
@@ -722,7 +725,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.30)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.10.31)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -738,7 +741,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.30.1"</script>버전 v2026.10.30.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.10.31.1"</script>버전 v2026.10.31.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
 </footer>
@@ -1594,8 +1597,8 @@ function topicPanel(isStd,cnt){
     const kw={}; S.forEach(x=>{if(x.keyword)kw[x.keyword]=(kw[x.keyword]||0)+1});
     body=`<div class="tg">${Object.keys(kw).sort((a,b)=>kw[b]-kw[a]||a.localeCompare(b,"ko")).map(chip).join("")}</div>`;
   } else body=(kind==="elev"?TOPICS:TOPICS_K[kind]).map(([g,ws])=>{ const c=ws.map(chip).join(""); return c?`<div class="tg"><span class="qlabel">${g}</span>${c}</div>`:""; }).join("");
-  body+=`<div class="tfold"><button type="button" class="chipbtn" data-tfold aria-label="항목으로 찾기 접기">▲ 접기</button></div>`;
-  return `<details class="topics"${topicsOpen?" open":""}><summary>항목으로 찾기 <span class="ts">${isStd?"분류별로":"부위별로"} 골라 보기</span></summary>${body}</details>`;
+  body+=`<div class="tfold"><button type="button" class="chipbtn" data-tfold aria-label="항목으로 찾기 접기"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:5px;vertical-align:-1px"><polyline points="3,9 7,5 11,9"/></svg>접기</button></div>`;
+  return `<details class="topics"${topicsOpen?" open":""}><summary><svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,3 9.5,7 5,11"/></svg>항목으로 찾기 <span class="ts">${isStd?"분류별로":"부위별로"} 골라 보기</span></summary>${body}</details>`;
 }
 // 항목으로 찾기는 평소엔 접어 두고, 펼치면 이 기기에 기억한다 (다시 그려도 펼친 채로)
 let topicsH=false, backSkip=0; // backSkip: 코드가 직접 부른 history.back() 수 (popstate 에서 그만큼 건너뜀, 두 개가 겹쳐도 셈이 맞게)
