@@ -725,7 +725,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.04)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.05)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -741,7 +741,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.04.1"</script>버전 v2026.11.04.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.05.1"</script>버전 v2026.11.05.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -2129,7 +2129,7 @@ function showCardRef(b){ lawCur=()=>showCardRef(b);
     return `<div class="csub"><div class="csh">아래 조항<b>${list.length}</b></div>`+grp.map(g=>`<div class="cgrp">${g.map(row).join("")}</div>`).join("")+"</div>"; };
   body.innerHTML=pick.map(y=>`<div class="cref"><span class="ct">${hl(y.title||"",rxs)}</span><span class="cp">${y.from?dot(y.from):"?"} ~ ${y.to?dot(y.to):"현재"}</span>\n${hl(bodyText(y),rxs)}${subs(y)}</div>`).join("");
   $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+n+"’이에요."+(d&&pick.some(y=>on(y,d,d))?" 기준적용일에 적용되는 카드만 보여요.":""); $("#lawwarn").hidden=false;
-  const a=$("#lawfull"); a.textContent="이 조항으로 가기"; a.removeAttribute("target"); a.href="?q="+encodeURIComponent(n); a.dataset.go=n; a.dataset.goi=pick.map(y=>y.__i).join(","); $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
+  const a=$("#lawfull"); a.textContent="이 조항으로 가기"; a.removeAttribute("target"); const g=n.replace(/[\s.]*[가-하]\).*$/,""); a.href="?q="+encodeURIComponent(g); a.dataset.go=g; a.dataset.goi=pick.map(y=>y.__i).join(","); $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
   if(!dlg.open) dlg.show();
 }
 // 선배의 조언 (lab, 2026-10-21): 기준 해설(전 승강기기술원장 비공식 해설집, 카드에 이미 있는 기준 문장은 뺀 것) + 현장 경험(현장경험.md). data/hae.json 은 처음 누를 때만 받는다
