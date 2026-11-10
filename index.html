@@ -767,7 +767,7 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.11.1"</script>버전 v2026.11.11.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.11.2"</script>버전 v2026.11.11.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1006,7 +1006,7 @@ function refLinker(x){
       if((p&&/[가-힣A-Za-z0-9.]/.test(p))||(/\d$/.test(m[0])?/^(\d|\.\d|-\d)/.test(n):/^[IVXⅠ-Ⅻ]/.test(n))) continue;
       const sx=/[IVXⅠ-Ⅻ]$/.test(m[0])&&plain.slice(e).match(/^(?:\.\d+)+/), e2=sx?e+sx[0].length:e; // 부속서 Ⅵ.1: 붙은 안쪽 번호까지 밑줄 (2026-10-21)
       let e3=e2; const ss=(L.find(o=>o.t===m[0])||{}).s, so=ss&&plain.slice(e2).match(/^\s*의\s*(?:표\s*)?([Ⅰ-Ⅻ]+(?:\.\d+)+|\d+(?:\.\d+)+)/); if(so&&ss.includes(so[1])) e3=e2+so[0].length; // 별표 2의 4.8: 빌드가 원문에서 그 번호 줄을 확인한 것만 번호까지 밑줄 (2026-10-24)
-      const xs=(L.find(o=>o.t===m[0])||{}).x; if(xs&&plain.slice(e3).startsWith(xs)) e3+=xs.length; // 15.2.3.3 가), 나) 및 다): 빌드가 정한 하위 항목 나열까지 밑줄 (2026-10-25)
+      const xs=(L.find(o=>o.t===m[0]&&o.x&&plain.slice(e3).startsWith(o.x))||{}).x; if(xs) e3+=xs.length; // 15.2.3.3 가), 나) 및 다): 빌드가 정한 하위 항목 나열까지 밑줄 (2026-10-25)
       hits.push([a,e3,plain.slice(a,e3),m[0]]); rx.lastIndex=e3; }
     if(!hits.length) return h;
     let out="", depth=0, pos=0, hi=0, cur=null, had=false, nw=false;
@@ -1438,11 +1438,11 @@ function foldText(art){
     const b=art.querySelector(".foldkb"); b.setAttribute("aria-expanded",!closing); b.textContent=closing?"본문 펼치기":"본문 접기";
   };
   if(!closing){ vt(apply,art,()=>art,true); return; }
-  // 접을 때는 전환(카드째 사진 찍기) 없이 바로 접고 위치를 맞춘 뒤, 그 카드와 뒤따르는 보이는 카드에만 가벼운 등장 효과 (2026-11-09: 긴 카드 접기가 끊겨 보임)
+  // 접을 때는 전환(카드째 사진 찍기) 없이 바로 접고 위치를 맞춘다 (2026-11-09: 긴 카드 접기가 끊겨 보임)
   if(vtNow) vtNow.skipTransition();
   apply(); keepBelowBar(art);
   if(matchMedia("(prefers-reduced-motion:reduce)").matches) return;
-  // 접은 카드는 제자리(아래에서 올라오면 위로 움찔해 보임, 2026-11-10 찬호님), 뒤따르는 카드만 옅게 나타난다
+  // 접은 카드는 제자리에 두고(아래에서 올라오면 위로 움찔해 보임, 2026-11-10), 화면 안 뒤따르는 카드만 옅게 나타난다
   for(let e=art.nextElementSibling,n=0;e&&n<6&&e.getBoundingClientRect().top<innerHeight;e=e.nextElementSibling,n++) if(e.tagName==="ARTICLE") e.animate({opacity:[.5,1]},{duration:150,easing:"ease-out"});
 }
 // 접은 뒤 카드 위가 위 얇은 검색줄(.minibar) 밑에 들어가 있으면 즉시 그 아래 8px 로 맞춘다 (2026-11-09 폰 제보). 줄이 숨은 상태면 높이를 0 으로 본다. 부드러운 스크롤은 쓰지 않음
