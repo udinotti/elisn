@@ -546,6 +546,7 @@ article.gocard{scroll-margin-top:84px;box-shadow:0 0 0 2px var(--accent);transit
 .rep-go:active{transform:scale(.98)}
 dialog::backdrop{background:rgba(0,0,0,.78)}
 dialog img{max-width:96vw;max-height:88vh;background:#fff;border-radius:16px;display:block}
+#dlgimg{border-radius:0} /* 그림 창 큰 그림은 각지게: 전환 때 작은 그림과 모서리 모양이 달라 보이지 않게 */
 dialog p{color:#fff;text-align:center;font-size:13px;margin:10px 0 0;opacity:.8}
 /* 그림 크게 보기: 화면 가득. 위 줄(제목·2배·닫기), 아래는 그림 칸(넘치면 끌어서 옮김) */
 dialog.viewer{width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;background:rgba(10,10,14,.94);color:#fff}
@@ -649,7 +650,12 @@ footer a{color:var(--accent)}
   /* 일부만 맞는 결과가 펼쳐져 있으면(모두 맞는 조항이 없을 때) 그 목록을 찍는다. 접힌 칸은 버튼·안내 없이 비어 있음 */
   .excl.part{display:block!important;margin:0}.excl.part>.chipbtn,.excl.part .note{display:none!important}
 }
-@media (prefers-reduced-motion:reduce){*,.seg::before,.topics summary .chev{transition:none!important}.failpop{animation:none!important}button:active{transform:none}}
+@media (prefers-reduced-motion:reduce){*,.seg::before{transition:none!important}.failpop{animation:none!important}button:active{transform:none}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+/* 카드가 커지는 전환 (2026-11-08): 이름표 elisn-card 는 한 순간에 한 요소만 가짐 */
+::view-transition-group(elisn-card),::view-transition-old(elisn-card),::view-transition-new(elisn-card),::view-transition-group(root),::view-transition-old(root),::view-transition-new(root){animation-duration:.2s;animation-timing-function:ease-out}
+::view-transition-group(elisn-bar),::view-transition-new(elisn-bar){animation:none}::view-transition-old(elisn-bar){display:none}
+html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 0}html.vtimg::view-transition-group(*),html.vtimg::view-transition-old(*),html.vtimg::view-transition-new(*){animation-duration:.25s;animation-timing-function:cubic-bezier(.2,0,0,1)} /* 그림 크게 보기: 처음엔 빠르게, 끝은 천천히 내려앉게 */
+html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그림 하나만 전환 동안 각지게 (다른 작은 그림은 그대로; 끝나면 vtimg·vtsrc 가 빠지며 원래 모서리로) */
 @media (max-width:370px){.brand h1{font-size:17px!important}.brand .mark{width:38px!important;height:38px!important}.brand small{padding-left:.043em!important}} /* 더 좁은 폰: 제목이 한 줄에 들어가게 */
 /* 좁은 폰 화면(폴드 앞화면 등): 머리를 줄여 첫 조항이 빨리 보이게, 카드 여백·글씨를 조금 줄임 */
 @media (max-width:480px){
@@ -741,7 +747,7 @@ footer a{color:var(--accent)}
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.09)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.10)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -757,7 +763,7 @@ footer a{color:var(--accent)}
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.09.1"</script>버전 v2026.11.09.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.10.1"</script>버전 v2026.11.10.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1378,12 +1384,65 @@ function showCompare(i){
   $("#cmpdlg").showModal(); $("#cmpbody").scrollTop=0;
 }
 // 긴 본문 펼치기·접기. 접을 때 조항 머리가 화면 위로 넘어가 있으면 머리로 돌아가 읽던 자리를 잃지 않게
+// 카드가 커지는 전환 (2026-11-08): from 요소의 이름표를 update 안에서 to() 요소로 옮긴다. 움직임 줄이기·미지원이면 바로 update
+// bar: 본문 펼치기·접기처럼 카드가 위 얇은 검색줄 밑을 지날 수 있으면 검색줄을 따로 떼어 카드 위에 가만히 둔다 (창 열기엔 안 씀: 창의 어두운 뒤판이 검색줄을 덮어야 해서)
+// 지금 돌고 있는 전환 (창이 커지는 도중에 닫으면 이걸 건너뛰고 바로 닫는다)
+let vtNow=null;
+const svt=cb=>{ const t=document.startViewTransition(cb); vtNow=t; const z=()=>{ if(vtNow===t) vtNow=null; }; t.finished.then(z,z); return t; };
+function vt(update,from,to,bar){
+  if(!document.startViewTransition||matchMedia("(prefers-reduced-motion:reduce)").matches||!from){ update(); return; }
+  from.style.viewTransitionName="elisn-card";
+  const mb=$("#minibar"); if(bar&&mb.classList.contains("on")) mb.style.viewTransitionName="elisn-bar";
+  const clear=()=>{ mb.style.viewTransitionName=""; document.querySelectorAll('[style*="elisn-card"]').forEach(e=>{ e.style.viewTransitionName=""; }); };
+  try{ const t=svt(()=>{ from.style.viewTransitionName=""; update(); const e=to&&to(); if(e) e.style.viewTransitionName="elisn-card"; }); t.finished.then(clear,clear); return t; }catch(_){ clear(); update(); }
+}
+// 원문·그림 창 (2026-11-08): 카드가 화면 밖으로 넘치거나(펼친 긴 카드) 위 얇은 검색줄 밑에 걸리면, 카드째 줄이면 글이 겹치고 검색줄이 깜빡여 커지는 효과 대신 부드럽게 겹쳐 바뀐다
+const fitsView=el=>{ const r=el.getBoundingClientRect(), m=$("#minibar"); return r.top>=(m.classList.contains("on")?m.getBoundingClientRect().bottom:0)&&r.bottom<=innerHeight; };
+function vtDlg(update,from,to){
+  if(!from||fitsView(from)) return vt(update,from,to);
+  if(!document.startViewTransition||matchMedia("(prefers-reduced-motion:reduce)").matches){ update(); return; }
+  try{ return svt(update); }catch(_){ update(); }
+}
+// 그림 전환(열기·닫기 공통): 크기(가로·세로)를 매 장면 다시 재면 폰이 장면을 건너뛰어 끊겨 보여, 그림은 비율이 같으니 확대(transform)만 움직여 그래픽 칩이 그리게 한다.
+// fr: 전환 시작 때 처음 모습의 rect, el: 전환 뒤 이름표를 단 요소(그룹 크기가 이 요소 크기). 끝나면(실패도) 이 전환 전용 vtimg 를 뗀다 (남아 있으면 바로 이은 전환이 멈췄다가 튄다)
+function vtImgRun(t,fr,el){ const h=document.documentElement, off=()=>{ h.classList.remove("vtimg"); document.querySelectorAll(".vtsrc").forEach(e=>e.classList.remove("vtsrc")); };
+  if(!t){ off(); return; }
+  t.finished.then(off,off);
+  if(fr) t.ready.then(()=>{ const r=el.getBoundingClientRect(); if(!r.width||!r.height) return;
+    h.animate({transform:["translate("+fr.left+"px,"+fr.top+"px) scale("+fr.width/r.width+","+fr.height/r.height+")","translate("+r.left+"px,"+r.top+"px)"]},{duration:250,easing:"cubic-bezier(.2,0,0,1)",pseudoElement:"::view-transition-group(elisn-card)"}); }).catch(()=>{}); }
+// 원문·그림 창 닫기: 열 때 기억한 카드(_vtFrom)가 화면에 있으면 그 카드로 줄어들며, 아니면 그냥 닫는다
+function closeDlg(d){
+  const f=d._vtFrom, sh=d.id==="dlg"?$("#dlgimg"):d.querySelector(".sheet"), r=f&&f.isConnected?f.getBoundingClientRect():null;
+  d._vtFrom=null;
+  if(!d.open) return;
+  document.documentElement.classList.remove("vtimg"); document.querySelectorAll(".vtsrc").forEach(e=>e.classList.remove("vtsrc"));
+  // 커지는 도중에 닫으면, 새 전환은 다 커진 모습에서 시작해 그림이 한 번 최대로 깜빡였다 줄어든다 → 돌던 전환을 건너뛰고 바로 닫는다
+  if(vtNow){ const t=vtNow; t.skipTransition(); t.updateCallbackDone.then(()=>{ if(d.open) d.close(); },()=>{ if(d.open) d.close(); }); return; }
+  if(r&&sh&&r.width&&r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth){
+    const cl=()=>{ if(d.open) d.close(); };
+    if(!fitsView(f)) vtDlg(cl,f);
+    else if(d.id!=="dlg") vt(cl,sh,()=>f);
+    else { const r0=sh.getBoundingClientRect(); document.documentElement.classList.add("vtimg"); f.classList.add("vtsrc"); vtImgRun(vt(cl,sh,()=>f),r0,f); } // 그림 창은 열 때처럼 확대만으로 줄인다
+  } else d.close();
+}
 function foldText(art){
   const t=art.querySelector(".text.fold"); if(!t) return;
   const closing=!t.classList.contains("clip");
-  t.classList.toggle("clip",closing); t.title=closing?"눌러서 전체 보기":"눌러서 접기";
-  const b=art.querySelector(".foldkb"); b.setAttribute("aria-expanded",!closing); b.textContent=closing?"본문 펼치기":"본문 접기";
-  if(closing&&art.getBoundingClientRect().top<0) art.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
+  const apply=()=>{
+    t.classList.toggle("clip",closing); t.title=closing?"눌러서 전체 보기":"눌러서 접기";
+    const b=art.querySelector(".foldkb"); b.setAttribute("aria-expanded",!closing); b.textContent=closing?"본문 펼치기":"본문 접기";
+  };
+  if(!closing){ vt(apply,art,()=>art,true); return; }
+  // 접을 때는 전환(카드째 사진 찍기) 없이 바로 접고 위치를 맞춘 뒤, 그 카드와 뒤따르는 보이는 카드에만 가벼운 등장 효과 (2026-11-09: 긴 카드 접기가 끊겨 보임)
+  if(vtNow) vtNow.skipTransition();
+  apply(); keepBelowBar(art);
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  for(let e=art,n=0;e&&n<6&&e.getBoundingClientRect().top<innerHeight;e=e.nextElementSibling,n++) if(e.tagName==="ARTICLE") e.animate({opacity:[.5,1],transform:["translateY(8px)","none"]},{duration:150,easing:"ease-out"});
+}
+// 접은 뒤 카드 위가 위 얇은 검색줄(.minibar) 밑에 들어가 있으면 즉시 그 아래 8px 로 맞춘다 (2026-11-09 폰 제보). 줄이 숨은 상태면 높이를 0 으로 본다. 부드러운 스크롤은 쓰지 않음
+function keepBelowBar(art){
+  const barH=$(".controls").getBoundingClientRect().bottom<0?$("#minibar").offsetHeight:0, d=art.getBoundingClientRect().top-barH-8;
+  if(d<0) scrollBy({top:d,behavior:"auto"});
 }
 // 원문 버튼: 이름·모양은 하나("원문"), 카드 글과 원문의 관계는 title로만 알린다 (2026-10-16 운영자: 출처·원문 전체·원문 보기가 섞여 헷갈림)
 const lawBtn=x=>{ const r=x.kind||x.added?"s":LAWREL[x.__i], t=r==="s"?"카드 글이 고시 원문과 같아요. 눌러서 어느 고시의 몇 년 판인지 봐요.":r==="p"?"카드는 조항의 일부예요. 눌러서 조항 전체 원문을 봐요.":"";
@@ -1789,7 +1848,7 @@ $("#out").addEventListener("click",e=>{
   if(tp){$("#q").value=tp.dataset.topic;addRecent(tp.dataset.topic);limit=40;render();scrollTo({top:0});return}
   if(e.target.closest(".nofb")){ if(!openForm()) toast("의견 창구 준비 중이에요."); return; } // 결과가 없을 때 뜨는 의견 남기기
   const im=e.target.closest("[data-img]");
-  if(im){openViewer(im.dataset.img,im.dataset.cap||"");return}
+  if(im){openViewer(im.dataset.img,im.dataset.cap||"",im);return}
   // 긴 본문: 글을 누르면 펼치고, 다시 누르면 접는다 (글자를 끌어 고르는 중이면 그대로 둔다)
   const rb=e.target.closest(".refbtn"); if(rb){ showRef(rb); return; }
   const tx=e.target.closest(".text.fold");
@@ -1804,7 +1863,7 @@ $("#out").addEventListener("click",e=>{
     row.querySelectorAll(".fgb").forEach(b=>b.setAttribute("aria-expanded",b===a&&on)); x.innerHTML=on?card(byI(+a.dataset.i),[],false):""; const fk=row.closest(".fgitem").dataset.fk; if(on) fgOpen.set(fk,a.dataset.i); else fgOpen.delete(fk); }
   else if(a.dataset.act==="more"){limit+=40;render()}
   else if(a.dataset.act==="report") report(art);
-  else if(a.dataset.act==="law") showLaw(+a.dataset.i);
+  else if(a.dataset.act==="law"){ lawFrom=art; showLaw(+a.dataset.i); }
   else if(a.dataset.act==="hae") showHae(+a.dataset.i);
   else if(a.dataset.act==="cmp") showCompare(+a.dataset.i);
   else if(a.dataset.act==="fav"){
@@ -1817,8 +1876,11 @@ $("#out").addEventListener("click",e=>{
   else if(a.dataset.act==="excl"){const l=a.nextElementSibling;l.hidden=!l.hidden;a.textContent=a.textContent.replace(l.hidden?"접기":"보기",l.hidden?"보기":"접기")}
 });
 // 그림 크게 보기: 처음엔 화면에 맞춤. 그림을 누르면 누른 자리를 가운데로 2배, 다시 누르면 맞춤. 어두운 곳·✕·Esc로 닫기
-function openViewer(src,cap){ const box=$("#dlgbox"), img=$("#dlgimg"); box.classList.remove("big"); img.style.width=""; $("#dlgzoom").textContent="2배 확대";
-  img.src=src; img.alt=cap||"그림"; $("#dlgcap").textContent=cap||""; $("#dlg").showModal(); box.scrollTo(0,0); }
+function openViewer(src,cap,from){ const box=$("#dlgbox"), img=$("#dlgimg"); box.classList.remove("big"); img.style.width=""; $("#dlgzoom").textContent="2배 확대";
+  img.src=src; img.alt=cap||"그림"; $("#dlgcap").textContent=cap||""; const d=$("#dlg"); d._vtFrom=from||null;
+  // 큰 그림이 다 받아지기 전에 전환이 찍히면 빈 칸으로 커졌다가 그림이 툭 나와서, 0.4초까지 기다렸다 연다. 그림 전환은 조금 길고 부드럽게
+  const go=()=>{ if(d.open) return; document.documentElement.classList.add("vtimg"); if(from) from.classList.add("vtsrc"); const fr=from&&from.getBoundingClientRect(); vtImgRun(vtDlg(()=>{ d.showModal(); box.scrollTo(0,0); },from,()=>img),fr,img); };
+  if(from&&img.decode) Promise.race([img.decode(),new Promise(r=>setTimeout(r,400))]).then(go,go); else go(); }
 function zoomViewer(ex,ey){ const box=$("#dlgbox"), img=$("#dlgimg");
   if(box.classList.contains("big")){ box.classList.remove("big"); img.style.width=""; $("#dlgzoom").textContent="2배 확대"; return; }
   const r=img.getBoundingClientRect(), fx=ex==null?.5:(ex-r.left)/r.width, fy=ey==null?.5:(ey-r.top)/r.height;
@@ -1831,13 +1893,13 @@ $("#dlgzoom").addEventListener("click",()=>zoomViewer());
 let dlgPop=false, lawStk=[], lawCur=null; // lawStk: 원문 창 안에서 조항을 옮기기 직전 상태 [다시 열 함수, 스크롤] (lab, 2026-10-26)
 document.querySelectorAll("dialog").forEach(d=>{
   new MutationObserver(()=>{ if(d.open&&!d._h){ d._h=1; history.pushState(history.state,"",location.href); } if(d.id==="lawdlg") document.querySelectorAll("body>:not(dialog):not(script)").forEach(e=>{ e.inert=d.open; }); /* 비모달이라 뒤 화면을 직접 막음 */ }).observe(d,{attributes:true,attributeFilter:["open"]});
-  d.addEventListener("close",()=>{ if(!d._h) return; d._h=0; const n=d.id==="lawdlg"?lawStk.length:0; lawStk=[]; if(dlgPop) dlgPop=false; else { backSkip++; history.go(-1-n); } }); // 원문 창 안에서 쌓은 기록도 한꺼번에 되돌림
+  d.addEventListener("close",()=>{ d._vtFrom=null; if(!d._h) return; d._h=0; const n=d.id==="lawdlg"?lawStk.length:0; lawStk=[]; if(dlgPop) dlgPop=false; else { backSkip++; history.go(-1-n); } }); // 원문 창 안에서 쌓은 기록도 한꺼번에 되돌림
 });
 addEventListener("popstate",()=>{
   if(backSkip){ backSkip--; return; } // 버튼으로 닫으며 되돌린 기록이면 다른 창은 그대로
   const top=[...document.querySelectorAll("dialog[open]")].pop(); /* _h 없는 창도 이 뒤로가기의 몫: 열린 창이 있으면 안내 알림은 절대 안 띄움 (2026-10-27) */
   if(top&&top.id==="lawdlg"&&lawStk.length){ const [re,sc]=lawStk.pop(); Promise.resolve(re()).then(()=>{ $("#lawbody").scrollTop=sc; }); return; } // 원문 창은 앞 조항으로
-  if(top){ dlgPop=!!top._h; top.close(); }
+  if(top){ dlgPop=!!top._h; closeDlg(top); }
   else if(topicsH){ topicsH=false; const d=$("#out .topics"); if(d) d.open=false; } // 창이 없으면 항목으로 찾기를 접는다
   else if(guardH){ guardH=false; syncUrl(); /* 맨 아래 기록의 주소가 옛것이라 지금 검색 주소로 되돌림 */ guardAt=Date.now(); toast("한 번 더 누르면 ELISN이 닫혀요",2000); setTimeout(guardOn,2100); } // 첫 화면: 안내만 띄움. 기록은 여기서 다시 쌓지 않음(사용자 누름 없는 pushState 는 크롬이 건너뜀): 2초 안에 또 누르면 그냥 나가고, 다시 쌓기는 2초 뒤·다음 누름(guardOn)
 });
@@ -1845,8 +1907,9 @@ addEventListener("popstate",()=>{
 let guardH=false, guardAt=0;
 const guardOn=()=>{ if(guardH||Date.now()-guardAt<2000||!navigator.userActivation?.isActive||document.querySelector("dialog[open]")||topicsH) return; guardH=true; history.pushState({guard:1},"",location.href); }; // 누를 때마다 조건만 거르고 다시 깖 (창·항목 펼침 중, 안내 직후 2초는 건너뜀). 손가락은 pointerdown 에 아직 활성이 없어 pointerup 도 봄, 한글 입력은 keyup 도 봄
 ["pointerdown","pointerup","keydown","keyup"].forEach(t=>addEventListener(t,guardOn,true));
-$("#dlgx").addEventListener("click",()=>$("#dlg").close());
-$("#dlgbox").addEventListener("click",e=>{ if(e.target.id==="dlgbox") $("#dlg").close(); });
+$("#dlgx").addEventListener("click",()=>closeDlg($("#dlg")));
+$("#dlgbox").addEventListener("click",e=>{ if(e.target.id==="dlgbox") closeDlg($("#dlg")); });
+$("#dlg").addEventListener("cancel",e=>{ e.preventDefault(); closeDlg($("#dlg")); }); // 그림 창 Esc 도 같은 닫기 길로
 $("#cmpclose").addEventListener("click",()=>$("#cmpdlg").close());
 $("#cmpdlg").addEventListener("click",e=>{ if(e.target.id==="cmpdlg") $("#cmpdlg").close(); });
 $("#cmpdel").addEventListener("change",e=>$("#cmpdlg").classList.toggle("cmp-showdel",e.target.checked)); // 빠진 말도 보기
@@ -2030,12 +2093,13 @@ const dropNum=(t,n)=>{ t=String(t||""); return n&&t.startsWith(n)&&/\s/.test(t.c
 const dropNextHead=(t,n)=>{ const N=parseInt(n,10)+1; if(!N) return t; const m=t.match(new RegExp("\\n[ \\t]*"+N+"\\.?[ \\t]+([^\\n]{1,60})$")); return m&&!/다\.?$/.test(m[1])?t.slice(0,m.index):t; };
 // 원문 창 아래 버튼·안내: 국가법령정보센터에 없는 옛 고시(기술표준원 게시글)는 그렇게 알린다 (2026-10-17)
 const lawFoot=k=>{ $("#lawfull").hidden=false; delete $("#lawfull").dataset.go; $("#lawfull").target="_blank"; $("#lawfull").textContent=k?"고시 게시글 보기":"고시 전체 보기"; $("#lawnote").textContent=k?"기술표준원 고시 게시글의 첨부 파일에서 옮긴 글이에요. 표·그림은 게시글 첨부에서 확인하세요.":"국가법령정보센터 고시 원문에서 옮긴 글이에요. 빠진 표·그림이 있으면 고시 전체 보기에서 확인하세요."; };
+let lawFrom=null; // 「원문」을 누른 카드: 창이 이 카드에서 커지고 닫을 때 다시 줄어든다 (2026-11-08)
 async function showLaw(i){
-  lawCur=()=>showLaw(i); const x=byI(i); const dlg=$("#lawdlg"), my=++lawSeq; $("#lawbody").classList.remove("ref");
+  const from=lawFrom; lawFrom=null; lawCur=()=>showLaw(i); const x=byI(i); const dlg=$("#lawdlg"), my=++lawSeq; $("#lawbody").classList.remove("ref");
   $("#lawttl").textContent=x.label&&/^\d/.test(x.label)?dotAll(x.label):(x.title||"");
   $("#lawsrc").textContent="원문 불러오는 중…"; $("#lawbody").textContent=""; $("#lawwarn").hidden=true;
   $("#lawfull").href=lawUrl(x); lawFoot(false);
-  if(!dlg.open) dlg.show();
+  if(!dlg.open){ dlg._vtFrom=from; vtDlg(()=>dlg.show(),from,()=>dlg.querySelector(".sheet")); }
   if(x.kind||x.added){ // 종류 자료·보충한 옛 판 글은 고시 원문에서 바로 옮긴 글이라 그대로 보여 준다
     $("#lawsrc").textContent=x.srcName||""; $("#lawttl").textContent=x.label||x.title||""; $("#lawfull").href=x.srcUrl||lawUrl(x); lawFoot(/kats.go.kr/.test(x.srcUrl||""));
     if(x.tables) $("#lawbody").innerHTML=plainWithTables(dropNum(x.text,x.label),x.tables); else $("#lawbody").textContent=dropNum(x.text,x.label); return; }
@@ -2057,7 +2121,7 @@ async function showLaw(i){
     if(w.length){ $("#lawwarn").textContent=w.join(" "); $("#lawwarn").hidden=false; }
   }catch(e){ if(my===lawSeq) $("#lawsrc").textContent="원문을 불러오지 못했어요. 다시 눌러 주세요."; }
 }
-// 카드 글 속 표·부속서·별표 말을 누르면: 같은 원문 창에 그 대상의 원문 글 (2026-10-20). refs.json은 처음 누를 때만 받는다
+// 카드 글 속 표·부속서·별표 말을 누르면: 같은 원문 창에 그 대상의 원문 글 (2026-10-20). refs.json은 누르기 전에도, 그림 뒤에서 받기와 같은 때(첫 화면이 다 뜬 뒤, 데이터 절약 모드 아님) 서비스 워커가 저장해 두게 한 번 불러 둔다 → 한 번도 안 눌러 봤어도 인터넷 없이 열림. 누를 때 받는 길(loadRefs)은 그대로
 let REFP=null;
 const loadRefs=()=>REFP||(REFP=fetch("data/refs.json").then(r=>{ if(!r.ok) throw new Error("refs"); return r.json(); }).catch(e=>{ REFP=null; throw e; }));
 // 참조 원문을 ELISN 글 모양으로: 창 제목과 겹치는 제목 줄은 빼고, 번호 머리줄(1 / 3.1 / 5.1.2 / Ⅵ.1)은 굵게, 끊긴 줄은 이어 붙이고, 들여쓰기는 카드 본문과 같은 --lv. 표(t-)는 줄마다 한 줄, 머리 칸 줄만 굵게
@@ -2171,7 +2235,7 @@ function showCardRef(b){ lawCur=()=>showCardRef(b);
     return `<div class="csub"><div class="csh">아래 조항<b>${list.length}</b></div>`+grp.map(g=>`<div class="cgrp">${g.map(row).join("")}</div>`).join("")+"</div>"; };
   body.innerHTML=pick.map(y=>`<div class="cref"><span class="ct">${hl(y.title||"",rxs)}</span><span class="cp">${y.from?dot(y.from):"?"} ~ ${y.to?dot(y.to):"현재"}</span>\n${hl(bodyText(y),rxs)}${subs(y)}</div>`).join("");
   $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+n+"’이에요."+(d&&pick.some(y=>on(y,d,d))?" 기준적용일에 적용되는 카드만 보여요.":""); $("#lawwarn").hidden=false;
-  const a=$("#lawfull"); a.textContent="이 조항으로 가기"; a.removeAttribute("target"); const g=n.replace(/[\s.]*[가-하]\).*$/,""); a.href="?q="+encodeURIComponent(g); a.dataset.go=g; a.dataset.goi=pick.map(y=>y.__i).join(","); $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
+  const a=$("#lawfull"); a.textContent="카드 전체 보기"; a.removeAttribute("target"); const g=n.replace(/[\s.]*[가-하]\).*$/,""); a.href="?q="+encodeURIComponent(g); a.dataset.go=g; a.dataset.goi=pick.map(y=>y.__i).join(","); $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
   if(!dlg.open) dlg.show();
 }
 // 선배의 조언 (lab, 2026-10-21): 기준 해설(전 승강기기술원장 비공식 해설집, 카드에 이미 있는 기준 문장은 뺀 것) + 현장 경험(현장경험.md). data/hae.json 은 처음 누를 때만 받는다
@@ -2223,15 +2287,15 @@ async function showRef(b){
     $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+b.textContent+"’이에요."; $("#lawwarn").hidden=false;
   }catch(e){ if(my===lawSeq) $("#lawsrc").textContent=navigator.onLine?"원문을 불러오지 못했어요. 다시 눌러 주세요.":"인터넷이 될 때 한 번 열면 다음부터는 인터넷 없이도 열려요."; }
 }
-$("#lawclose").addEventListener("click",()=>$("#lawdlg").close());
+$("#lawclose").addEventListener("click",()=>closeDlg($("#lawdlg")));
 $("#lawfull").addEventListener("click",e=>{ const g=e.currentTarget.dataset.go; if(!g) return; e.preventDefault(); const ids=(e.currentTarget.dataset.goi||"").split(","); $("#lawdlg").close(); $("#q").value=g; goSearch();
   // 그 번호로 찾은 뒤, 번호가 글에 들어 있기만 한 카드가 아니라 그 번호 카드 자체로 간다(못 찾으면 맨 위). 창을 닫으면 눌렀던 아래 카드 자리로 돌아가 있어서 바로 + 잠깐 뒤 두 번
   const go=()=>{ const t=[...document.querySelectorAll("#out article")].find(a=>!a.parentElement.closest("article")&&ids.some(i=>a.querySelector(':scope [data-i="'+i+'"]'))); if(t){ t.classList.add("gocard"); t.scrollIntoView({block:"start"}); setTimeout(()=>t.classList.remove("gocard"),1800); } else scrollTo(0,0); };
   go(); setTimeout(go,80); }); // 조항 번호 창: 그 번호 카드로 가기
-document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&$("#lawdlg").open&&!document.querySelector("dialog:modal")){ e.preventDefault(); if(lawStk.length) history.back(); else $("#lawdlg").close(); return; } /* Esc: 앞 조항, 없으면 닫기 */ if(!$("#lawdlg").open) return; const b=$("#lawbody"), h=b.clientHeight*0.9, k={PageDown:h,PageUp:-h,ArrowDown:40,ArrowUp:-40,Home:-b.scrollHeight,End:b.scrollHeight}[e.key];
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&$("#lawdlg").open&&!document.querySelector("dialog:modal")){ e.preventDefault(); if(lawStk.length) history.back(); else closeDlg($("#lawdlg")); return; } /* Esc: 앞 조항, 없으면 닫기 */ if(!$("#lawdlg").open) return; const b=$("#lawbody"), h=b.clientHeight*0.9, k={PageDown:h,PageUp:-h,ArrowDown:40,ArrowUp:-40,Home:-b.scrollHeight,End:b.scrollHeight}[e.key];
   if(k===undefined||e.altKey||e.ctrlKey||e.metaKey||e.target.closest("input,textarea,select")) return; e.preventDefault(); b.scrollBy({top:k}); /* 바로 옮김: 부드럽게 움직이면 가려진 창에서 멈춰 있기도 함 */ });
 $("#lawbody").addEventListener("click",e=>{ const im=e.target.closest("[data-img]"); if(im){openViewer(im.dataset.img,im.dataset.cap||"");return} const g=e.target.closest(".reftoc button"); if(g) $("#lawbody").querySelectorAll(".ln")[+g.dataset.go].scrollIntoView({block:"start",behavior:"smooth"}); const rb=e.target.closest("button.csl"); if(rb){ if(lawCur&&$("#lawdlg").open){ lawStk.push([lawCur,$("#lawbody").scrollTop]); history.pushState(history.state,"",location.href); } showRef(rb); } }); // 아래 조항으로 옮기기 전 상태를 쌓아 뒤로가기가 앞 조항으로 가게
-$("#lawdlg").addEventListener("click",e=>{ if(e.target.id==="lawdlg") $("#lawdlg").close(); });
+$("#lawdlg").addEventListener("click",e=>{ if(e.target.id==="lawdlg") closeDlg($("#lawdlg")); });
 // 제보 창구: 노션 "ELISN 제보함" 폼 (공개 링크). 비어 있으면 조항 정보만 복사해 카톡 등으로 보내게 한다
 const FORM_URL="https://udinotti.notion.site/e30c46d4f15e41b0a49a84906d9b55ff";
 let toastT;
@@ -2391,7 +2455,9 @@ if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostnam
     reg.addEventListener("updatefound",()=>{ const w=reg.installing; if(w) w.addEventListener("statechange",()=>{ if(w.state==="installed") ask(w); }); });
   }).catch(()=>{});
   // 핵심 자료 저장이 끝난(활성) 뒤, 첫 화면이 다 뜬 다음 그림 전부 받기. 데이터 절약 모드면 안 받음
-  const getImgs=()=>navigator.serviceWorker.ready.then(r=>{ if(r.active&&!navigator.connection?.saveData) r.active.postMessage("images"); }).catch(()=>{});
+  // 원문 자료(data/refs.json, 1.5MB)도 같은 때 한 번 불러 서비스 워커가 저장하게 한다: 본문은 읽지 않고 실패해도 조용히 넘김. 서비스 워커(controller)가 바뀔 때마다(새 버전) 한 번씩 → 새 버전 저장소에도 채워짐
+  let refsFor=null;
+  const getImgs=()=>navigator.serviceWorker.ready.then(r=>{ if(r.active&&!navigator.connection?.saveData){ r.active.postMessage("images"); const c=navigator.serviceWorker.controller; if(c&&refsFor!==c){ refsFor=c; fetch("data/refs.json").catch(()=>{}); } } }).catch(()=>{});
   if(document.readyState==="complete") getImgs(); else addEventListener("load",getImgs);
   // 서비스 워커가 알려 준 아직 없는 그림을 하나씩 받는다(받는 길에 서비스 워커가 저장). 실패한 그림은 건너뛰고 다음에 열 때 다시
   let imgRun=false, imgTry=0;
