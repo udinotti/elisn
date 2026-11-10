@@ -110,6 +110,7 @@ header{background:var(--bg);padding-block:16px 14px} /* 모든 폭에서 흘러�
 .brand small b{color:var(--accent);font-weight:800}
 .brand small i{font-style:italic;font-weight:500}
 .logo{color:var(--accent);letter-spacing:-.02em;font-weight:800;margin-right:4px}
+.intro{margin:-4px 0 16px;font-size:14px;color:var(--sub);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} /* 제목 아래 한 줄 안내: 폰에서도 한 줄 (2026-11-10) */
 /* 글자처럼 보이는 가벼운 버튼 (의견 남기기) */
 .linkbtn{font:inherit;font-size:13.5px;font-weight:600;border:0;background:none;color:var(--muted);padding:8px 6px;cursor:pointer;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
 @media (hover:hover) and (pointer:fine){.linkbtn:hover{color:var(--accent);text-decoration-color:currentColor}}
@@ -203,6 +204,7 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
   .row2{margin-top:10px}
   header{padding-bottom:10px}
   .brand{margin-bottom:12px}
+  .intro{margin-bottom:12px}
   .quick.kinds{margin-bottom:8px}
   .controls{gap:8px}
   .quick{margin-top:8px}
@@ -672,6 +674,7 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
   .brand h1{font-size:18px}
   .brand .mark{width:42px;height:42px} /* 휴대폰: 아이콘은 제목·영문 두 줄 높이, 제목은 한 줄에 들어가게 */
   .brand small{font-size:11px;letter-spacing:0;margin-top:2px;padding-left:.05em} /* 영문 풀이가 한 줄에 */
+  .intro{font-size:min(13.5px,3.6vw);margin:0 0 12px} /* 화면 폭에 맞춰 줄어 작은 폰(360·320)에서도 한 줄이 끝까지 보이게 */
   input[type=search],input[type=text]{padding:12px 14px}
   input[type=search]{padding-left:42px}
   .qgo{left:4px}
@@ -704,6 +707,7 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
 <div class="wrap">
 <header>
   <div class="brand"><svg class="mark home" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#e8f3ff"/><rect x="11" y="13" width="42" height="41" rx="10" fill="#ffe08a"/><rect x="11" y="13" width="18" height="41" rx="8" fill="#3182f6"/><rect x="35" y="13" width="18" height="41" rx="8" fill="#3182f6"/><path d="M32 4l5 5h-10z" fill="#3182f6"/></svg><div class="bt"><h1><a class="home" href="./" title="처음 화면으로"><span class="logo">ELISN</span> 승강기 검사기준 길잡이</a></h1><small><b>EL</b>evator <b>I</b>nspection <b>S</b>tandards <b>N</b>avigator</small></div><div class="tm"><button type="button" class="theme" id="theme" aria-haspopup="menu" aria-expanded="false" aria-controls="tmenu"></button><div class="tmenu" id="tmenu" role="menu" aria-label="화면 모드와 글자 크기" hidden></div></div></div>
+  <p class="intro">기준적용일을 넣으면 그 승강기에 맞는 조항만 골라 보여 줘요.</p>
   <div class="quick kinds">
     <span class="qlabel">종류</span>
     <div class="qs" role="radiogroup" aria-label="종류" title="← → 종류 바꾸기">
@@ -763,7 +767,7 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.10.3"</script>버전 v2026.11.10.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.10.4"</script>버전 v2026.11.10.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
