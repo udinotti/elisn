@@ -192,8 +192,20 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--accent);outline-offse
 /* 어두운 화면: 눌리는 상자 경계를 3:1 이상으로 (밝은 화면은 변수가 없어 그대로) */
 .dmsg{margin:10px 2px 0;font-size:14px;font-weight:600;color:var(--accent);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .dmsg.bad{color:var(--warn)}
-.dmsg.off{color:var(--muted);font-weight:500} /* 표준화 자료를 볼 때 */
-body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacity .15s}
+body.stdmode .date,body.stdmode .quick:not(.kinds):not(.yrs),body.stdmode .dmsg{display:none} /* 표준화 자료: 기준적용일 칸·바로 고르기·날짜 안내는 감추고 그 자리에 발표 연도 줄 */
+body.stdmode .controls{grid-template-columns:minmax(0,1fr)}
+.quick.yrs[hidden]{display:none}
+.yrs .qd{min-height:44px;display:inline-flex;align-items:center;gap:6px}
+.yrs .qd .tn{font-size:12px;font-weight:600;opacity:.75}
+/* 거름이 걸린 화면: 항목으로 찾기는 접힌 한 줄, 카드 목록 위에는 건수 구분 줄 */
+.tfold{margin-top:14px}
+.tfold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:44px;padding:0 14px;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--edge);border-radius:14px;box-shadow:var(--lift)}
+.tfold>summary::-webkit-details-marker{display:none}
+.tfold>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
+.tfold[open]>summary::after{transform:rotate(-135deg)}
+.tfold>.topics{margin-top:10px}
+.tfold>.topics>h2{display:none}
+.cardhead{margin:14px 2px 8px;padding-top:8px;border-top:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
 .dmsg[hidden]{display:none}
 .row2{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
 .row2>.seg{margin-right:100%;flex:none} /* 첫 줄은 자료 탭만(margin으로 한 줄을 다 차지, 탭이 숨으면 줄도 사라짐). 둘째 줄: 거르기 왼쪽, 동작 버튼(.tools)은 오른쪽 끝, 모자라면 동작 묶음만 다음 줄 오른쪽으로 접힘 */
@@ -222,12 +234,12 @@ body.stdmode .date,body.stdmode .quick:not(.kinds){opacity:.45;transition:opacit
 .chipbtn{font:inherit;font-size:13.5px;font-weight:600;border:0;background:var(--fill);color:var(--sub);border-radius:10px;padding:7.5px 12px 8.5px;cursor:pointer} /* 프리텐다드 한글이 줄 안에서 약간 아래로 앉아, 위 0.5px 줄이고 아래 0.5px 늘려 가운데로 (높이는 그대로, 1px은 너무 올라감) */
 /* 위쪽 도구 버튼(즐겨찾기만·인쇄·결과 공유): 밝은 모드에선 --fill이 페이지 바탕과 같아 박스가 안 보여 흰 바탕으로 */
 .mob #print{display:none} /* 폰에서는 PDF 저장을 거의 안 써서 버튼 줄만 차지한다 (2026-10-06 운영자) */
-#favonly,#failonly,#print,#share,#qrbtn,#fbtool,#note [data-act=favclear]{background:var(--chip)}
-/* 모바일로 보기·결과 공유: 글 앞에 작은 그림(폰, 위로 올리는 화살표 상자). [hidden]일 땐(폰 화면) 그대로 숨게 :not([hidden])에만 flex */
-#qrbtn:not([hidden]),#share,#fbtool{display:inline-flex;align-items:center;gap:3px}
+#favonly,#failonly,#print,#share,#fbtool,#note [data-act=favclear]{background:var(--chip)}
+/* 결과 공유·의견: 글 앞에 작은 그림 */
+#share,#fbtool{display:inline-flex;align-items:center;gap:3px}
 /* 가운데 맞춤만 하면 폰 그림이 글자보다 1px 높아 보여서(실측) 1px 내림.
    폰 그림 양옆에 빈 칸이 있어 왼쪽 여백이 2.5px 넓어 보여서(실측) 왼쪽으로 당기고, 글자와 사이(gap)도 줄임 */
-#qrbtn svg,#share svg,#fbtool svg{width:16px;height:16px;flex:none;position:relative;top:1px;margin-left:-2.5px}
+#share svg,#fbtool svg{width:16px;height:16px;flex:none;position:relative;top:1px;margin-left:-2.5px}
 /* 위쪽 의견 남기기: 모든 폭에서 말풍선만(칩 높이 37.6px, 보이지 않는 ::after로 터치 영역 44px), 글자는 접근성 이름으로만 */
 #fbtool{width:38px;height:37.6px;padding:0;justify-content:center;position:relative}
 #fbtool svg{margin-left:0;top:0}
@@ -354,20 +366,21 @@ article.off{opacity:.75}
 /* 검색창 위쪽(머리말)과 항목으로 찾기 상자는 두 번 눌러도 글자가 파랗게 잡히지 않게 (입력칸은 그대로 고를 수 있게) */
 header,.topics{-webkit-user-select:none;user-select:none}
 header input,header textarea{-webkit-user-select:text;user-select:text}
-/* 항목으로 찾기 (검색어가 비었을 때) */
-.topics{margin-top:14px;background:var(--surface);border:1px solid var(--edge);border-radius:16px;padding:12px 14px;box-shadow:var(--lift)}
-.topics summary{font-size:14.5px;font-weight:700;color:var(--ink);cursor:pointer;list-style:none}
-.topics summary::-webkit-details-marker{display:none}
-.topics summary .chev{vertical-align:-2px;margin:0 7px 0 1px;color:var(--muted);transition:transform .2s cubic-bezier(.2,.8,.2,1)}
-.topics[open]>summary .chev{transform:rotate(90deg)}
-.topics summary .ts{margin-left:6px;font-size:12.5px;font-weight:500;color:var(--muted)}
+/* 항목으로 찾기 (검색어가 비었을 때): 접지 않고 부위마다 카드 하나, 낱말 단추를 바로 보여 줌 */
+.topics{margin-top:14px;scroll-margin-top:72px}
+.topics h2{margin:0 2px 10px;font-size:14.5px;font-weight:700;color:var(--ink)}
+.topics h2 .ts{margin-left:6px;font-size:12.5px;font-weight:500;color:var(--muted)}
+.tgrid{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:900px){.tgrid{grid-template-columns:repeat(4,1fr)}}
+.tcard{background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:12px 12px 14px;box-shadow:var(--lift);min-width:0}
+.tcard.wide{grid-column:1/-1}
+.tcard .qlabel{display:block;margin-bottom:8px}
+/* 폰: 큰 상자 하나에 '부위 이름 한 줄 + 3칸 타일(이름 위·건수 아래)'로 가지런히 (7자 넘는 낱말 w2 는 2칸, 14자 넘는 w3 은 한 줄 전부) */
+@media (max-width:899px){.tgrid{gap:14px;background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:12px;box-shadow:var(--lift)}.tcard{display:block;background:none;border:0;border-radius:0;padding:0;box-shadow:none}.tcard .qlabel{display:block;margin:0 0 6px}.tcard .tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:dense;gap:6px}.tcard .tg .qd{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;min-height:48px;padding:6px 4px;white-space:nowrap;border-radius:12px;text-align:center;line-height:1.25}.tcard .tg .qd .tn{margin-left:0;font-size:11.5px;font-weight:500}.tcard .tg .qd.w2{grid-column:span 2}.tcard .tg .qd.w3{grid-column:1/-1;white-space:normal}}
 .favoth{display:block;margin-top:4px} /* 즐겨찾기만 볼 때 '다른 쪽에도 N개' 안내: 앞 문장과 섞여 줄이 끊기지 않게 따로 한 줄 */
-.tg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
-.tg .qlabel{flex-basis:100%;margin-bottom:-2px}
-.tg .qd{font-size:13.5px;padding:6px 12px;box-shadow:none;background:var(--fill)} /* 흰 상자 안이라 버튼도 흰색이면 밝은 화면에서 글자만 떠 보여서 회색 바탕으로 */
-.topics{scroll-margin-top:72px}
-.tfold{margin-top:12px} /* 접기 버튼은 폭 전체: 왼손·오른손 어느 쪽 엄지로도 닿게 */
-.tfold .chipbtn{width:100%;min-height:44px;padding:0 16px;justify-content:center}
+.tg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tg .qd{font-size:13.5px;padding:6px 12px;box-shadow:none;background:var(--fill);border:1px solid var(--edge);word-break:keep-all;overflow-wrap:anywhere;max-width:100%;text-align:left} /* 카드 안이라 버튼은 회색 바탕+테두리로 눈에 띄게 */
+@media (hover:hover) and (pointer:fine){.tg .qd:hover{border-color:var(--muted)}}
 .tg .tn{margin-left:6px;font-size:12px;font-weight:600;color:var(--muted)}
 .empty-msg{color:var(--sub);font-size:15px;padding:24px 4px;text-align:center}
 .empty-msg .chipbtn{margin:10px 3px 0;font-size:13.5px;padding:5px 12px 7px;background:var(--chip)} /* 빈 결과 안내의 "기준적용일 지우기" 등 */
@@ -608,7 +621,7 @@ footer a{color:var(--accent)}
   .wrap{max-width:none;padding:0}
   .failbox{background:var(--fill)!important}
   .fgb{border:0!important;background:none!important;padding:0!important;min-height:0!important;white-space:normal!important;text-align:left}.fgt,.fgb .lnm{overflow:visible!important;text-overflow:clip!important;max-width:none!important}
-  header,footer,.relq,.acts,.excl,.topics,.more,.minibar,.totop,.toast,.upd,.offline,.note,.resline,.endfb,dialog,#note,.noprint,.fcopy,.lcopy,.failbadge,#failonly{display:none!important}
+  header,footer,.relq,.acts,.excl,.topics,.tfold,.more,.minibar,.totop,.toast,.upd,.offline,.note,.resline,.endfb,dialog,#note,.noprint,.fcopy,.lcopy,.failbadge,#failonly{display:none!important}
   /* 페이지 본문(.wrap) 밖은 모두 빼기: 브라우저 확장 프로그램이 화면 가장자리에 붙이는 아이콘(흐린 빨간 그림)이 쪽마다 찍혔다 (2026-09-30) */
   body>:not(.wrap){display:none!important}
   .phead{display:block;margin:0 0 10px;padding-bottom:8px;border-bottom:1.5px solid #000;font-size:10pt;color:#333}
@@ -656,8 +669,7 @@ footer a{color:var(--accent)}
 /* 카드가 커지는 전환 (2026-11-08): 이름표 elisn-card 는 한 순간에 한 요소만 가짐 */
 ::view-transition-group(elisn-card),::view-transition-old(elisn-card),::view-transition-new(elisn-card),::view-transition-group(root),::view-transition-old(root),::view-transition-new(root){animation-duration:.2s;animation-timing-function:ease-out}
 ::view-transition-group(elisn-bar),::view-transition-new(elisn-bar){animation:none}::view-transition-old(elisn-bar){display:none}
-html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 0}html.vtimg::view-transition-group(*),html.vtimg::view-transition-old(*),html.vtimg::view-transition-new(*){animation-duration:.25s;animation-timing-function:cubic-bezier(.2,0,0,1);animation-fill-mode:both} /* 그림 크게 보기: 처음엔 빠르게, 끝은 천천히 내려앉게 */
-html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그림 하나만 전환 동안 각지게 (다른 작은 그림은 그대로; 끝나면 vtimg·vtsrc 가 빠지며 원래 모서리로) */
+html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 0;overflow:clip}html.vtimg::view-transition-group(*),html.vtimg::view-transition-old(*),html.vtimg::view-transition-new(*){animation-duration:.25s;animation-timing-function:cubic-bezier(.2,0,0,1);animation-fill-mode:both} /* 그림 크게 보기: 처음엔 빠르게, 끝은 천천히 내려앉게 */
 @media (max-width:370px){.brand h1{font-size:17px!important}.brand .mark{width:38px!important;height:38px!important}.brand small{padding-left:.043em!important}} /* 더 좁은 폰: 제목이 한 줄에 들어가게 */
 /* 좁은 폰 화면(폴드 앞화면 등): 머리를 줄여 첫 조항이 빨리 보이게, 카드 여백·글씨를 조금 줄임 */
 @media (max-width:480px){
@@ -723,6 +735,10 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
     <div class="q"><button class="qgo" id="qgo" type="button" aria-label="찾기 (비어 있으면 보이는 예시로 찾기)" title="찾기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" maxlength="100" placeholder="낱말이나 조항 번호" autocomplete="off" aria-label="검색어" role="combobox" aria-autocomplete="list" aria-controls="recent" aria-expanded="false"><button class="qclear" id="qclear" type="button" aria-label="검색어 지우기" title="검색어 지우기" hidden>지우기</button><div class="recent" id="recent" role="listbox" aria-label="최근 검색어" hidden></div></div>
     <div class="date"><label for="d">기준적용일</label><input id="d" type="text" inputmode="decimal" placeholder="예: 240612, 2406, 2024.6" autocomplete="off" aria-label="기준적용일, 숫자로 적기"><button class="qclear" id="dclear" type="button" aria-label="기준적용일 지우기" title="기준적용일 지우기" hidden>지우기</button></div>
   </div>
+  <div class="quick yrs" id="yrs" hidden>
+    <span class="qlabel">발표 연도</span>
+    <div class="qs" id="yrbtns" role="radiogroup" aria-label="발표 연도"></div>
+  </div>
   <div class="quick" role="group" aria-label="기준 바뀌는 날 바로 고르기">
     <span class="qlabel">바로 고르기</span>
     <div class="qs" id="qdays">
@@ -746,12 +762,11 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
     <div class="tools">
     <button type="button" class="chipbtn" id="print">인쇄</button>
     <button type="button" class="chipbtn" id="share" aria-label="결과 공유"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M8 7l4-4 4 4"/><path d="M5 11v7.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V11"/></svg><span class="shtxt">결과 공유</span></button>
-    <button type="button" class="chipbtn" id="qrbtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="3.5"/><path d="M10.5 5.5h3"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg>모바일로 보기</button>
     <button type="button" class="chipbtn" id="fbtool" data-act="feedback" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg><span class="fbtxt">의견 남기기</span></button>
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.13)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.15)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -767,7 +782,7 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 약한 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.13.3"</script>버전 v2026.11.13.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.15.1"</script>버전 v2026.11.15.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -798,9 +813,9 @@ html.vtimg .vtsrc,html.vtimg .vtsrc img{border-radius:0!important} /* 누른 그
 </dialog>
 <dialog id="qrdlg" aria-labelledby="qrttl">
   <div class="sheet">
-    <div class="sh-head"><div><div class="sh-src">ELISN</div><h2 id="qrttl">모바일로 이어 보기</h2></div><button type="button" class="chipbtn" id="qrclose" aria-label="닫기">닫기</button></div>
+    <div class="sh-head"><div><div class="sh-src">ELISN</div><h2 id="qrttl">이 화면 보내기</h2></div><button type="button" class="chipbtn" id="qrclose" aria-label="닫기">닫기</button></div>
     <div class="qr-body"><div class="qr-box" id="qrbox"></div><div class="qr-say" id="qrsay"></div>
-      <div class="qr-act" id="qract" hidden><button type="button" class="chipbtn" id="qrshare" hidden>다른 앱으로 보내기</button><button type="button" class="chipbtn" id="qrcopy">링크 복사</button></div></div>
+      <div class="qr-act" id="qract"><button type="button" class="chipbtn" id="qrshare" hidden>다른 앱으로 보내기</button><button type="button" class="chipbtn" id="qrcopy">링크 복사</button></div></div>
   </div>
 </dialog>
 <dialog id="cmpdlg" aria-labelledby="cmpttl">
@@ -857,7 +872,7 @@ const keyOf=(x,isStd)=>x.__k||((isStd?"s|":"c|")+[x.t0||x.title,x.label,x.from,x
 const fnvHex=k=>{let h=2166136261; for(let i=0;i<k.length;i++) h=Math.imul(h^k.charCodeAt(i),16777619)>>>0; return h.toString(16);}; // 32비트 FNV-1a (사이트만들기가 낸 __h 와 같은 식: 엘리베이터옮기기.js 짧은해시)
 const favs=new Set(); try{JSON.parse(localStorage.getItem("elisn-fav")||"[]").forEach(k=>favs.add(k))}catch(e){}
 const saveFavs=()=>{try{localStorage.setItem("elisn-fav",JSON.stringify([...favs]))}catch(e){}};
-let favOnly=false, failOnly=false;
+let favOnly=false, failOnly=false, stdYear="", tfoldOpen=false; // stdYear: 표준화 자료의 발표 연도 거름("" = 전체), tfoldOpen: 접힌 항목으로 찾기를 펼쳐 둔 상태(다시 그려도 유지)
 // 조항 안 '표준화 자료 N건'을 펼친 조항: 다시 그려도(인쇄·즐겨찾기 등) 펼친 채로 둔다 → 펼쳐 보던 그대로 함께 인쇄된다 (2026-10-04 운영자)
 const relOpen=new Set();
 // 불합격 기준 카드(.failpop)·불합격 목록의 관련 조항 카드(.fgx)도 같게: 다시 그려도 펼친 채 → 화면에서 연 것이 인쇄에도 나온다 (2026-10-18)
@@ -880,7 +895,7 @@ const save=()=>{try{localStorage.setItem("elev-find",JSON.stringify({q:$("#q").v
 // 주소에 지금 검색 상태를 담는다 (?q=카 지붕&d=2016.5.1&src=s). 이 주소를 보내면 같은 화면이 열린다
 const syncUrl=()=>{try{
   const u=new URLSearchParams(), q=$("#q").value.trim(), d=$("#d").value.trim();
-  if(q)u.set("q",q); if(d)u.set("d",d); if(kind!=="elev")u.set("k",kind); if(src==="s")u.set("src","s"); if(failOnly&&(src==="s"||failHas()))u.set("f","1");
+  if(q)u.set("q",q); if(d)u.set("d",d); if(kind!=="elev")u.set("k",kind); if(src==="s")u.set("src","s"); if(src==="s"&&stdYear)u.set("y",stdYear); if(failOnly&&(src==="s"||failHas()))u.set("f","1");
   const s=u.toString(); history.replaceState(null,"",location.pathname+(s?"?"+s:""));
 }catch(e){}};
 const fmt=iso=>iso?iso.replace(/-/g,"."):"";
@@ -969,7 +984,7 @@ function terms(q){
   q=unitFix(q);
   q=q.replace(/[\u119E\u2027\u318D\u30FB]/g,"\u00B7").replace(/([가-힣])\u2219(?=[가-힣])/g,"$1\u00B7"); // 가운뎃점 통일 (2026-10-26)
   // "카 지붕", "카 상부", "카 위"는 한 낱말로 묶어 서로 같은 말로 찾는다 (옛 기준은 "카 위"라고 씀)
-  q=q.replace(/카\s*(지붕|상부|위(?![치험]))/g,"카지붕");
+  q=q.replace(/카\s*(지붕|상부|위(?![치험]))(?:에서|에는|에도|에|의|로|를|은|는|도)?(?=\s|$)/g,"카지붕").replace(/카\s*(지붕|상부|위(?![치험]))/g,"카지붕"); // 뒤에 붙은 토씨(카 위에서)는 떼어야 같은 말 묶음으로 찾는다
   return q.trim().split(/\s+/).filter(Boolean).map(w=>{
     const n=w.replace(/\s+/g,"");
     const g=SYN.find(g=>g.some(v=>v.replace(/\s+/g,"")===n));
@@ -995,7 +1010,6 @@ function hl(text,rxs){
 }
 // 참조 링크 (2026-10-20): 빌드가 정한 카드별 문구(fixes.json refCards)를 글자 부분에서만 버튼으로 바꾼다 (태그·속성은 건드리지 않음)
 // 앞 글자가 한글·영문·숫자이거나(도표 3) 숫자 뒤에 숫자가 이어지면(표 13, 표 3.1) 다른 말이라 그대로 둔다 — 빌드 규칙과 같다
-let LABF=false; // lab 빌드에서만 켜지는 새 기능 스위치(fixes.json lab)
 const REFC={}, TYPO={}, HAE=new Set(); // TYPO: 고시 원문 숫자·참조 오타가 든 카드 번호 → 표시 글(fixes.json typo, 원본/원문오타.json) // HAE: 해설이 있는 카드 번호(lab 빌드만 fixes.json haeCards 를 냄)
 function refLinker(x){
   const L=REFC[x.__i]; if(!L||!L.length) return null;
@@ -1050,6 +1064,20 @@ function stdKey(f){ f=String(f||""); let m,best=null; const re=/(?:^|\D)(\d{2})�
   while(m=re.exec(f)){ const k=[2000+ +m[1],+m[2],""]; if(!best||k[0]>best[0]||k[0]===best[0]&&k[1]>best[1]) best=k; }
   if(best) return best;
   m=f.match(/(?:^|\D)(20\d\d)-(\d\d)-(\d\d)/); return m?[+m[1],99,m[1]+m[2]+m[3]]:[9999,0,""]; }
+// 표준화 자료의 발표 연도: from 의 가장 늦은 회의 연도 → 못 읽으면 when 의 20YY → 그래도 없으면 "기타"(맨 뒤)
+const stdYr=x=>x.__y||(x.__y=(()=>{ const k=stdKey(x.from); if(k[0]!==9999) return String(k[0]); const m=String(x.when||"").match(/(?:^|\D)(20\d\d)(?!\d)/); return m?m[1]:"기타"; })());
+// 발표 연도 단추 줄: 전체 + 연도(최신순, 건수는 검색어와 무관한 지금 종류의 전체 표준화 자료 기준). 건수가 그대로면 단추를 다시 만들지 않아 키보드 포커스가 안 날아간다
+let yrKey="";
+function drawYears(isStd){
+  const box=$("#yrs"); box.hidden=!isStd; if(!isStd) return;
+  const seen=new Set(), all=curS().filter(x=>{ const k=((x.text||"")+tabSig(x)).replace(/\s+/g,"")+"|"+x.from+"|"+x.to; if(seen.has(k)) return false; seen.add(k); return true; }), cnt={}; // 카드로 보이는 것과 같은 기준(글·표·기간이 같은 건 한 장)으로 센다
+  all.forEach(x=>{ const y=stdYr(x); cnt[y]=(cnt[y]||0)+1; });
+  if(stdYear&&!cnt[stdYear]) stdYear="";
+  const ys=Object.keys(cnt).sort((a,b)=>(a==="기타")-(b==="기타")||(a<b?1:a>b?-1:0)), key=kind+JSON.stringify(cnt), g=$("#yrbtns");
+  if(key!==yrKey){ yrKey=key;
+    g.innerHTML=[["","전체",all.length],...ys.map(y=>[y,y,cnt[y]])].map(([v,t,n])=>`<button type="button" class="qd" data-yr="${v}" role="radio" aria-checked="false" tabindex="-1">${t}<span class="tn">${n}</span></button>`).join(""); }
+  g.querySelectorAll("[data-yr]").forEach(b=>{ const on=b.dataset.yr===stdYear; b.setAttribute("aria-checked",on); b.tabIndex=on?0:-1; });
+}
 function stdByMeeting(res){ const c=(a,b)=>a<b?1:a>b?-1:0; // 최신 것부터, 못 읽는 값([9999])은 맨 뒤
   return res.map(o=>({o,k:stdKey(o.x.from)})).sort((p,q)=>(p.k[0]===9999)-(q.k[0]===9999)||c(p.k[0],q.k[0])||c(p.k[1],q.k[1])||c(p.k[2],q.k[2])||p.o.i-q.o.i).map(p=>p.o); }
 // lab 표준화 자료 검색 결과: 번호 앞부분 일치 → 제목·분류에 든 검색어 수 → 회의 차수 최신 → 원래 순서 (본문 등장 횟수는 안 씀)
@@ -1412,24 +1440,41 @@ function vtDlg(update,from,to){
 }
 // 그림 전환(열기·닫기 공통): 크기(가로·세로)를 매 장면 다시 재면 폰이 장면을 건너뛰어 끊겨 보여, 그림은 비율이 같으니 확대(transform)만 움직여 그래픽 칩이 그리게 한다.
 // fr: 전환 시작 때 처음 모습의 rect, el: 전환 뒤 이름표를 단 요소(그룹 크기가 이 요소 크기). 끝나면(실패도) 이 전환 전용 vtimg 를 뗀다 (남아 있으면 바로 이은 전환이 멈췄다가 튄다)
-function vtImgRun(t,fr,el){ const h=document.documentElement; let an=null, off=()=>{ if(an) an.cancel(); h.classList.remove("vtimg"); document.querySelectorAll(".vtsrc").forEach(e=>e.classList.remove("vtsrc")); };
+const vtRad=e=>e?Math.max(...[e,e.querySelector("img")].filter(Boolean).map(x=>parseFloat(getComputedStyle(x).borderTopLeftRadius)||0)):0; // 그림(또는 그 안 img)의 모서리 둥글기(px)
+// r0·r1: 처음·끝 모습의 모서리 둥글기. 찍힌 모습은 각지게 두고 그룹이 잘라 내는 모서리를 확대와 함께 움직여, 둥글다가 툭 각지지 않고 서서히 바뀐다
+function vtImgRun(t,fr,el,r0=0,r1=0){ const h=document.documentElement; let an=null, an2=null, off=()=>{ if(an) an.cancel(); if(an2) an2.cancel(); h.classList.remove("vtimg"); };
   if(!t){ off(); return; }
   t.finished.then(off,off);
   if(fr) t.ready.then(()=>{ const r=el.getBoundingClientRect(); if(!r.width||!r.height) return;
-    an=h.animate({transform:["translate("+fr.left+"px,"+fr.top+"px) scale("+fr.width/r.width+","+fr.height/r.height+")","translate("+r.left+"px,"+r.top+"px)"]},{duration:250,easing:"cubic-bezier(.2,0,0,1)",fill:"both",pseudoElement:"::view-transition-group(elisn-card)"}); }).catch(()=>{}); }
+    const o={duration:250,easing:"cubic-bezier(.2,0,0,1)",fill:"both",pseudoElement:"::view-transition-group(elisn-card)"};
+    an=h.animate({transform:["translate("+fr.left+"px,"+fr.top+"px) scale("+fr.width/r.width+","+fr.height/r.height+")","translate("+r.left+"px,"+r.top+"px)"]},o);
+    if(r0||r1) an2=h.animate({borderRadius:[r0/(fr.width/r.width)+"px",r1+"px"]},o); }).catch(()=>{}); } // 모서리는 따로 움직인다: 확대와 한 묶음이면 그래픽 칩이 못 그려 폰에서 덜 부드럽다
 // 원문·그림 창 닫기: 열 때 기억한 카드(_vtFrom)가 화면에 있으면 그 카드로 줄어들며, 아니면 그냥 닫는다
+// 그림 창 닫기 전용: View Transition 은 시작 전에 화면 가득한 큰 그림을 찍느라 한 박자 늦어서, 큰 그림을 Web Animations 로 바로 작은 그림 자리로 줄인 뒤 닫는다 (여는 쪽은 그대로)
+function shrinkViewer(d,sh,f,r){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches||!sh.animate){ d.close(); return; }
+  const box=$("#dlgbox"), bar=d.querySelector(".vbar"), rd=vtRad(f), r0=sh.getBoundingClientRect(); d._shrink=true;
+  box.style.overflow="visible"; d.style.overflow="hidden"; sh.style.transformOrigin="0 0"; // 2배 확대로 스크롤된 채 줄어들면 잘리니 풀어 둔다
+  const r1=sh.getBoundingClientRect(), sx=r.width/r1.width, sy=r.height/r1.height, o={duration:250,easing:"cubic-bezier(.2,0,0,1)",fill:"forwards"}, an=[];
+  const run=(el,kf,op)=>{ try{ an.push(el.animate(kf,op||o)); }catch(e){} return an[an.length-1]; };
+  const main=run(sh,{transform:["translate("+(r0.left-r1.left)+"px,"+(r0.top-r1.top)+"px) scale("+r0.width/r1.width+","+r0.height/r1.height+")","translate("+(r.left-r1.left)+"px,"+(r.top-r1.top)+"px) scale("+sx+","+sy+")"]});
+  if(rd) run(sh,{borderRadius:["0px",rd/sx+"px"]}); // 끝에 화면에서 보이는 둥글기가 작은 그림과 같게
+  run(d,{backgroundColor:[getComputedStyle(d).backgroundColor,"transparent"]}); if(bar) run(bar,{opacity:[1,0]});
+  run(sh,{boxShadow:["0 0 0 rgba(0,0,0,0)","0 0 0 rgba(0,0,0,0)"]}); run(d,{opacity:[1,0]},{...o,pseudoElement:"::backdrop"});
+  let done=false; const fin=()=>{ if(done) return; done=true; if(d.open) d.close(); an.forEach(a=>{ try{ a.cancel(); }catch(e){} }); box.style.overflow=""; d.style.overflow=""; sh.style.transformOrigin=""; d._shrink=false; };
+  if(main) main.finished.then(fin,fin); else fin(); setTimeout(fin,400); }
 function closeDlg(d){
   const f=d._vtFrom, sh=d.id==="dlg"?$("#dlgimg"):d.querySelector(".sheet"), r=f&&f.isConnected?f.getBoundingClientRect():null;
   d._vtFrom=null;
-  if(!d.open) return;
-  document.documentElement.classList.remove("vtimg"); document.querySelectorAll(".vtsrc").forEach(e=>e.classList.remove("vtsrc"));
+  if(!d.open||d._shrink) return; // 이미 줄어드는 중이면 한 번만
+  document.documentElement.classList.remove("vtimg");
   // 커지는 도중에 닫으면, 새 전환은 다 커진 모습에서 시작해 그림이 한 번 최대로 깜빡였다 줄어든다 → 돌던 전환을 건너뛰고 바로 닫는다
   if(vtNow){ const t=vtNow; t.skipTransition(); t.updateCallbackDone.then(()=>{ if(d.open) d.close(); },()=>{ if(d.open) d.close(); }); return; }
   if(r&&sh&&r.width&&r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth){
     const cl=()=>{ if(d.open) d.close(); };
     if(!fitsView(f)) vtDlg(cl,f);
     else if(d.id!=="dlg") vt(cl,sh,()=>f);
-    else { const r0=sh.getBoundingClientRect(); document.documentElement.classList.add("vtimg"); f.classList.add("vtsrc"); vtImgRun(vt(cl,sh,()=>f),r0,f); } // 그림 창은 열 때처럼 확대만으로 줄인다
+    else shrinkViewer(d,sh,f,r); // 그림 창은 화면을 찍지 않고 큰 그림을 바로 줄인다
   } else d.close();
 }
 function foldText(art){
@@ -1491,8 +1536,11 @@ function render0(){ closeTip();
   if(!hasStd&&src==="s"){ src="c"; setSeg("src",src); }
   const q=$("#q").value, isStd=src==="s";
   const fOn=failOnly&&(isStd||failHas()); $("#failonly").hidden=!isStd&&!failHas(); $("#failonly").setAttribute("aria-pressed",fOn); 
+  const home=!isStd&&!q.trim()&&!favOnly&&!fOn&&!$("#d").value.trim(); // 거름이 하나도 없는 첫 화면 (표준화 자료는 처음부터 카드를 다 보이고, 기준적용일 칸도 없어 늘 아님)
+  drawYears(isStd);
   let {rxs,res,part}=search(isStd?curS():cur(),q);
-  if(isStd){ if(q.trim()){ res=stdSearchSort(res); part=stdSearchSort(part).sort((a,b)=>b.m-a.m); } else res=stdByMeeting(res); } // 검색어 없을 땐 표준화 회의 차수 순서(최신 것부터)
+  if(isStd){ if(q.trim()){ res=stdSearchSort(res); part=stdSearchSort(part).sort((a,b)=>b.m-a.m); } else res=stdByMeeting(res); // 검색어 없을 땐 표준화 회의 차수 순서(최신 것부터)
+    if(stdYear){ const yf=o=>stdYr(o.x)===stdYear; res=res.filter(yf); part=part.filter(yf); } }
   // 글·기간이 똑같은 조항이 여러 번 들어 있어 카드가 겹쳐 나온다 → 하나만 (띄어쓰기 차이는 같은 글로)
   // 즐겨찾기만: 이 기기에 별표해 둔 조항만 남긴다 (검색어·허가일은 그대로 함께 적용). 아래 겹친 카드 걸러내기보다 먼저 해야 별표한 쪽이 남는다
   if(favOnly){ res=res.filter(o=>favs.has(keyOf(o.x,isStd))); part=part.filter(o=>favs.has(keyOf(o.x,isStd))); }
@@ -1523,7 +1571,6 @@ function render0(){ closeTip();
   }
   // 표준화 자료는 허가일로 거르지 않는다: 날짜 칸·바로 고르기를 흐리게 하고, 날짜 아래 안내로 알린다 (값은 두어 검사기준으로 돌아가면 다시 적용)
   document.body.classList.toggle("stdmode",isStd);
-  if(isStd&&raw.trim()){ msg.hidden=false; msg.className="dmsg off"; msg.textContent="표준화 자료는 기준적용일로 거르지 않아요. 검사기준으로 돌아가면 다시 적용돼요."; }
   if(dHint){ msg.hidden=false; msg.textContent=dHint; msg.classList.add("bad"); dHint=""; } // 연도 없이 친 글 안내 (칸이 비어 있어도 한 번 보임)
   markQuick(d);
   // 얇은 검색줄에 지금 검색어·허가일을 보여 준다
@@ -1531,7 +1578,7 @@ function render0(){ closeTip();
   $("#mqt").textContent=qv||"낱말이나 조항 번호"; $("#mqt").className=qv?"":"ph";
   // 친 글 그대로(예: 13) 말고 읽은 뜻으로, 칸 아래 안내와 같은 말로: 2013년 9월 15일·2013년 9월·2013년, 못 읽으면 그렇다고
   const dSay=!dv?"":!p?"못 읽음":p.from===p.to?kor(p.from):p.y?`${+p.from.slice(0,4)}년`:`${+p.from.slice(0,4)}년 ${+p.from.slice(5,7)}월`;
-  $("#md").textContent=dv?`기준적용일 ${dSay}`:"기준적용일 넣기"; $("#md").className="md"+(dv?"":" none");
+  $("#md").textContent=dv?`기준적용일 ${dSay}`:"기준적용일 넣기"; $("#md").className="md"+(dv?"":" none"); $("#md").hidden=isStd; // 표준화 자료에는 기준적용일 칸이 없다
   const total=res.length, useDate=!isStd&&isDate(d);
   hitD=useDate?d:"";
   // 검사기준에서 불합격 항목만: 조항 카드 대신 공단 불합격 기준 목록 + 항목마다 이 기준적용일(없으면 지금) 판의 관련 조항 (항목 → 카드는 failOrInherit의 거꾸로)
@@ -1572,16 +1619,16 @@ function render0(){ closeTip();
     const fc=favCount(); // 조건 때문에 실제로 빠진 게 있을 때만 "N개 중 M개"로 (다 맞으면 그냥 즐겨찾기만)
     // 하나도 안 맞으면 아래 빈 결과 안내가 이유를 말하니 이 줄은 뺀다 (같은 말 두 번 안 하게, 2026-10-16 즐겨찾기 0개일 때도)
     if(res.length) note.push(cond&&res.length<fc?`즐겨찾기 ${fc}개 중 ${cond}에 맞는 ${res.length}개만 보여 줘요.`:"즐겨찾기한 조항만 보여 줘요."); }
-  else if(!q.trim()&&!fOn) note.push((isStd?"검색어가 없어 표준화 회의 차수 순서(최신 것부터)로 보여 줍니다.":"검색어가 없어 전체를 원래 순서대로 보여 줍니다."));
+  else if(!q.trim()&&!fOn&&!home) note.push((isStd?"검색어가 없어 표준화 회의 차수 순서(최신 것부터)로 보여 줍니다.":"검색어가 없어 전체를 원래 순서대로 보여 줍니다.")); // 첫 화면(home)은 카드를 안 그리니 이 말을 뺀다
   if(fOn&&res.length) note.push(isStd?"불합격 판정이 적힌 항목만 보여 줘요.":"불합격 기준이 있는 조항만 보여 줘요.");
   if(lv){ note.length=0; note.push(`공단 불합격 기준 ${fgN}개${` · ${useDate?"이 날짜":"지금"} 조항과 이어진 것 ${fgM}개`}`); }
   // 인쇄할 때 맨 위에 찍히는 머리글
   // 탭 제목 = PDF 파일 이름(브라우저가 문서 제목을 파일 이름으로 씀): 검색어·허가일을 늘 제목에 둔다
   // 인쇄 직전에 바꿨다 되돌리면 폰 크롬은 옛 제목으로 저장하고, PC "Microsoft Print to PDF"는 저장 창이 안 떴다 → 미리 정해 두고 그대로 둔다
   // 날짜는 점 없이 "2013년 9월 15일"로 (파일 이름에 점이 여럿 들어가지 않게)
-  const tParts=[kind!=="elev"&&KIND[kind],isStd&&"표준화 자료",q.trim(),useDate?"기준적용일 "+kor(d):raw.trim()&&"기준적용일 "+raw.trim(),favOnly&&"즐겨찾기",fOn&&"불합격"].filter(Boolean);
+  const tParts=[kind!=="elev"&&KIND[kind],isStd&&"표준화 자료",q.trim(),useDate?"기준적용일 "+kor(d):!isStd&&raw.trim()&&"기준적용일 "+raw.trim(),isStd&&stdYear&&"발표 "+(stdYear==="기타"?"연도 없음":stdYear+"년"),favOnly&&"즐겨찾기",fOn&&"불합격"].filter(Boolean);
   document.title=tParts.length?(BASE_TITLE.startsWith("[LAB] ")?"[LAB] ":"")+"ELISN "+tParts.join(" ").replace(/[\\/:*?"<>|]+/g," ").slice(0,90):BASE_TITLE;
-  $("#phead").innerHTML=`<b>ELISN 승강기 검사기준 길잡이</b><br>`+esc([KIND[kind],isStd?"표준화 자료":"검사기준",q.trim()&&"검색어: "+q.trim(),raw.trim()&&"기준적용일: "+raw.trim(),favOnly&&"즐겨찾기만",fOn&&"불합격 항목만","인쇄일 "+dot(todayIso())].filter(Boolean).join(" · "))+` · 참고용이며 판단은 고시 원문 기준`;
+  $("#phead").innerHTML=`<b>ELISN 승강기 검사기준 길잡이</b><br>`+esc([KIND[kind],isStd?"표준화 자료":"검사기준",q.trim()&&"검색어: "+q.trim(),!isStd&&raw.trim()&&"기준적용일: "+raw.trim(),isStd&&stdYear&&"발표 연도: "+stdYear,favOnly&&"즐겨찾기만",fOn&&"불합격 항목만","인쇄일 "+dot(todayIso())].filter(Boolean).join(" · "))+` · 참고용이며 판단은 고시 원문 기준`;
   // 돋보기로 예시를 넣었으면 무엇으로 찾았는지 알려 준다. 사람이 고쳐 치면 안내는 사라진다
   const exNote=exQ&&q===exQ?`예시로 찾았어요: <b>${esc(exQ)}</b><button class="chipbtn" type="button" data-act="exclear">지우기</button> `:"";
   // 즐겨찾기만 볼 때: 별표한 조항을 한 번에 지우는 버튼 (2026-10-01 운영자)
@@ -1599,7 +1646,8 @@ function render0(){ closeTip();
     (excl.length?"":`<span class="sub">이 검색어의 조항은 이 날짜에 모두 적용돼요.</span>`)+
     `<span class="sub legend"><span class="li"><span class="pill hit">✓ 기간</span>적용</span><span class="li noprint"><span class="pill old">기간</span>적용 안 됨</span>${revSet.size?`<span class="li"><span class="pill rev">개정</span>기준적용일 전 개정·신설</span>`:""}</span>`; // 색 설명: 한 쌍씩 안 끊기게, 개정 표시가 없으면 뺀다
   $("#status").innerHTML=(!q.trim()&&!favOnly&&!fOn?"전체 ":"결과 ")+`<b>${(lv?fgN:res.length).toLocaleString()}</b>건`;
-  $("#status").hidden=useDate; // 허가일을 넣으면 위 파란 칸에 '적용 N건'이 나오니 같은 숫자를 두 번 보이지 않게 숨긴다 (인쇄 건수 확인용으로 글은 채워 둠)
+  const fold=!lv&&!home&&!q.trim()&&!favOnly&&hasTopics(isStd); // 거름이 걸렸는데 항목으로 찾기 패널이 함께 나오는 화면 → 패널은 접고 카드 위에 건수 줄
+  $("#status").hidden=useDate||home||fold; // 첫 화면(거름 없음)에서는 "전체 N건"이 알려 주는 게 없어 숨긴다 // 허가일을 넣으면 위 파란 칸에 '적용 N건'이 나오니 같은 숫자를 두 번 보이지 않게 숨긴다 (인쇄 건수 확인용으로 글은 채워 둠)
   const rel=relTerms(res,q,rxs), rq=$("#relq");
   rq.hidden=!rel.length;
   rq.innerHTML=rel.length?`<span class="qlabel">연관 검색어</span><div class="qs">`+rel.map(w=>`<button type="button" class="qd" data-rel="${esc(w)}">${esc(w)}</button>`).join("")+`</div>`:"";
@@ -1631,8 +1679,9 @@ function render0(){ closeTip();
   if(!res.length&&fOn){ const hq=!!q.trim(), qb=`<button class="chipbtn" type="button" data-act="qclear">검색어 지우기</button>`, db=`<button class="chipbtn" type="button" data-act="dclear">기준적용일 지우기</button>`;
     out.innerHTML=`<p class="empty-msg">불합격 항목만으로 거른 결과가 없어요. 거르기를 끄면 다시 보여요.<br>${offB}${hq?" "+qb:""}${useDate?" "+db:""}</p>`+tail;return}
   if(!res.length){out.innerHTML=`<p class="empty-msg">${useDate?"이 기준적용일에 모든 낱말이 맞는 조항은 없어요.":"모든 낱말이 맞는 조항이 없어요. 낱말을 줄이거나 다른 말로 찾아보세요 (예: \"상부\" 대신 \"지붕\")."}<br><span class="nofbl">찾는 조항이 없나요? <button type="button" class="linkbtn nofb">의견 남기기</button></span></p>`+tail;return}
-  const topics=!q.trim()&&!favOnly&&hasTopics(isStd)?topicPanel(isStd):""; // 항목으로 찾기: 종류마다 따로 만든 말로 (다른 종류의 표준화 자료는 분류가 엘리베이터 것이라 뺀다)
-  out.innerHTML=topics+`<div class="list">${res.slice(0,limit).map(o=>card(o.x,rxs,isStd)).join("")}</div>`+
+  const topics=!q.trim()&&!favOnly&&hasTopics(isStd)?(fold?`<details class="tfold"${tfoldOpen?" open":""}><summary>항목으로 찾기</summary>${topicPanel(isStd)}</details>`:topicPanel(isStd)):""; // 항목으로 찾기: 종류마다 따로 만든 말로 (다른 종류의 표준화 자료는 분류가 엘리베이터 것이라 뺀다)
+  if(home){ out.innerHTML=topics+`<p class="empty-msg firstmsg">검색하거나 위 주제를 눌러 조항을 찾아보세요.</p>`+endFb; return; } // 첫 화면: 조항 카드 대신 안내 한 줄 (2026-11-13)
+  out.innerHTML=topics+(fold?`<div class="cardhead">${isStd?"자료":"조항"} ${res.length.toLocaleString()}건</div>`:"")+`<div class="list">${res.slice(0,limit).map(o=>card(o.x,rxs,isStd)).join("")}</div>`+
     (res.length>limit?`<button class="chipbtn more" type="button" data-act="more">${(res.length-limit).toLocaleString()}건 더 보기</button>`:"")+tail+endFb;
 }
 // 항목으로 찾기: 검색어가 떠오르지 않을 때 부위별로 골라 본다. 누르면 그 말로 찾는다
@@ -1642,8 +1691,8 @@ const TOPICS=[["공간",["승강로","기계실","피트","카 지붕","풀리�
   ["구동·매다는 장치",["구동기","권상기","브레이크","로프","벨트","체인","도르래"]],
   ["안전장치",["과속조절기","추락방지","완충기","상승과속","정지장치","전기안전장치"]],
   ["전기·조명·통화",["조명","비상등","비상통화","제어반","절연","접지"]],
-  ["그 밖에",["레일","균형추","착상","틈새","환기","점검운전","비상구출","보호난간","사다리"]],
-  ["종류",["유압","비상용","소방구조용"]]];
+  ["레일·균형추 등",["레일","균형추","착상","틈새","환기","점검운전","비상구출","보호난간","사다리"]],
+  ["엘리베이터 종류별",["유압","비상용","소방구조용"]]];
 // 엘리베이터 밖 종류: 그 종류 조항 제목에서 뽑은 부위별 말 (결과 0건인 말은 저절로 빠진다)
 const TOPICS_K={
   esc:[["공간·구조",["기계실","구동기 공간","트러스","승강장","보호벽"]],
@@ -1680,30 +1729,19 @@ const TOPICS_K={
 const hasTopics=isStd=>kind==="elev"||(!isStd&&!!TOPICS_K[kind]);
 const topicN={};
 function topicPanel(isStd,cnt){
-  const arr=isStd?S:cur(), fo=failOnly&&(isStd||failHas()), n=w=>{const k=kind+src+w+fo+hitD+(cnt?"L":""); if(!(k in topicN)) topicN[k]=cnt?cnt(w):search(arr,w).res.filter(o=>(!fo||(isStd?stdFail(o.x):failOrInherit(o.x).items.length))&&(!hitD||isStd||applies(o.x,hitD))).length; return topicN[k]}; // 불합격 항목만·허가일을 켜면 그에 맞는 조항 수로
-  const chip=w=>n(w)?`<button type="button" class="qd" data-topic="${esc(w)}">${esc(w)}<span class="tn">${n(w)}</span></button>`:"";
+  const arr=isStd?S:cur(), fo=failOnly&&(isStd||failHas()), n=w=>{const rv=isStd?"":revSel, k=kind+src+w+fo+hitD+rv+(isStd?stdYear:"")+(cnt?"L":""); if(!(k in topicN)) topicN[k]=cnt?cnt(w):search(arr,w).res.filter(o=>(!fo||(isStd?stdFail(o.x):failOrInherit(o.x).items.length))&&(!hitD||isStd||applies(o.x,hitD))&&(!rv||o.x.from===rv)&&(!isStd||!stdYear||stdYr(o.x)===stdYear)).length; return topicN[k]}; // 불합격 항목만·허가일·고른 개정일을 켜면 그에 맞는 조항 수로
+  const chip=w=>n(w)?`<button type="button" class="qd${w.length>=14?" w3":w.length>=7?" w2":""}" data-topic="${esc(w)}">${esc(w)}<span class="tn">${n(w)}</span></button>`:"";
   let body;
   if(isStd){
     const kw={}; S.forEach(x=>{if(x.keyword)kw[x.keyword]=(kw[x.keyword]||0)+1});
-    body=`<div class="tg">${Object.keys(kw).sort((a,b)=>kw[b]-kw[a]||a.localeCompare(b,"ko")).map(chip).join("")}</div>`;
-  } else body=(kind==="elev"?TOPICS:TOPICS_K[kind]).map(([g,ws])=>{ const c=ws.map(chip).join(""); return c?`<div class="tg"><span class="qlabel">${g}</span>${c}</div>`:""; }).join("");
-  body+=`<div class="tfold"><button type="button" class="chipbtn" data-tfold aria-label="항목으로 찾기 접기"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:5px;vertical-align:-1px"><polyline points="3,9 7,5 11,9"/></svg>접기</button></div>`;
-  return `<details class="topics"${topicsOpen?" open":""}><summary><svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,3 9.5,7 5,11"/></svg>항목으로 찾기 <span class="ts">${isStd?"분류별로":"부위별로"} 골라 보기</span></summary>${body}</details>`;
+    body=`<div class="tcard wide"><div class="tg">${Object.keys(kw).sort((a,b)=>a.localeCompare(b,"ko")).map(chip).join("")}</div></div>`;
+  } else body=(kind==="elev"?TOPICS:TOPICS_K[kind]).map(([g,ws])=>{ const c=ws.map(chip).join(""); return c?`<div class="tcard"><span class="qlabel">${g}</span><div class="tg">${c}</div></div>`:""; }).join("");
+  return `<section class="topics"><h2>항목으로 찾기 <span class="ts">${isStd?"분류별로":"부위별로"} 골라 보기</span></h2><div class="tgrid">${body}</div></section>`;
 }
-// 항목으로 찾기는 평소엔 접어 두고, 펼치면 이 기기에 기억한다 (다시 그려도 펼친 채로)
-let topicsH=false, backSkip=0; // backSkip: 코드가 직접 부른 history.back() 수 (popstate 에서 그만큼 건너뜀, 두 개가 겹쳐도 셈이 맞게)
-function topicsUnwind(){ topicsH=false; backSkip++; history.back(); }
-new MutationObserver(()=>{ if(topicsH&&!$("#out .topics[open]")) topicsUnwind(); }).observe($("#out"),{childList:true}); // 칩을 골라 패널이 사라질 때도 쌓은 기록을 지움
-$("#out").addEventListener("keydown",e=>{ if(e.key==="Escape"&&e.target.closest(".topics")) e.target.closest(".topics").open=false; });
-let topicsOpen=false; try{topicsOpen=localStorage.getItem("elisn-topics")==="1"}catch(_){}
-$("#out").addEventListener("toggle",e=>{ if(!e.target.matches(".topics")) return; topicsOpen=e.target.open;
-  // 뒤로가기로 접기: 직접 펼칠 때(손가락·마우스 뒤) 기록 하나를 쌓고, 접으면 그 기록을 지운다 (그림 창과 같은 방식, 주소는 그대로)
-  if(topicsOpen&&!topicsH&&navigator.userActivation?.isActive){ topicsH=true; history.pushState({topics:1},"",location.href); }
-  else if(!topicsOpen&&topicsH) topicsUnwind();
-  try{topicsOpen?localStorage.setItem("elisn-topics","1"):localStorage.removeItem("elisn-topics")}catch(_){} },true);
+let backSkip=0; // backSkip: 코드가 직접 부른 history.back() 수 (popstate 에서 그만큼 건너뜀, 두 개가 겹쳐도 셈이 맞게)
 // 연관 검색어: 결과 조항 제목에 자주 같이 나오는 낱말을 골라, 누르면 지금 검색어에 더해 좁혀 찾게 한다
 // 흔한 말(기준, 설치 등)은 빼고, 늘 붙어 다니는 두 낱말(에너지 분산형)은 한 덩어리로 보여 준다
-const REL_STOP=new Set("기준 요구 요구사항 요건 추가요건 일반사항 종전 현행 설치 작동 엘리베이터 승강기 관련 장치 사용 조건 구조 상태 입증 제한 또는 이상 이상의 서로 다른 적용 검사 방식 수준 최대 최소 위치 수단 경우 대한 의한 있는 없는 해당 기타 표시 성능 부품 방법 사항 등의 및 시험 규정 내용 운전 갖는 가진 위한 따른 방지 조치 필요".split(" "));
+const REL_STOP=new Set("기준 요구 요구사항 요건 추가요건 일반사항 종전 현행 설치 작동 엘리베이터 승강기 관련 장치 사용 조건 구조 상태 입증 제한 또는 이상 이상의 서로 다른 적용 검사 방식 수준 최대 최소 위치 수단 경우 대한 의한 있는 없는 해당 기타 표시 성능 부품 방법 사항 등의 및 시험 규정 내용 운전 갖는 가진 위한 따른 방지 조치 필요 하는 되는 에서 위에서".split(" "));
 function relTerms(res,q,rxs){
   if(!rxs.length||res.length<3) return [];
   const qw=q.replace(/\s+/g,"");
@@ -1723,6 +1761,7 @@ function relTerms(res,q,rxs){
   const pick=[];
   for(const [k] of Object.entries(cand).filter(([,n])=>n>=2&&n<res.length).sort((a,b)=>b[1]-a[1])){
     const flat=k.replace(/\s+/g,"");
+    const tr=terms(k), hit=res.filter(o=>{const h=hay(o.x);return tr.every(r=>{r.lastIndex=0;return r.test(h)})}).length; if(!hit||hit===res.length) continue; // 실제 찾기로 더했을 때 0건이 되거나 그대로인 말은 내놓지 않는다
     if(pick.some(p=>{const f=p.replace(/\s+/g,"");return f.includes(flat)||flat.includes(f)})) continue;
     pick.push(k); if(pick.length===5) break;
   }
@@ -1775,7 +1814,9 @@ function segPill(g,anim){ const b=g.querySelector('[aria-checked="true"]'); if(!
   g.classList.toggle("go",anim&&was); g.style.setProperty("--x",x); g.style.setProperty("--w",w); g.classList.add("on"); g.offsetWidth; g.classList.add("go"); }
 document.querySelectorAll(".seg").forEach(g=>new ResizeObserver(()=>segPill(g,false)).observe(g));
 document.querySelectorAll("[data-kind]").forEach(b=>b.addEventListener("click",()=>{ if(b.dataset.kind!==kind&&exQ&&$("#q").value===exQ){ $("#q").value=""; exQ=""; $("#qclear").hidden=true; } kind=b.dataset.kind; setSeg("kind",kind); drawQuick(); limit=40; render(); showExample(); })); // 종류를 바꿔도 직접 친 검색어·허가일은 그대로(2026-10-21 찬호님). 자동으로 넣은 예시 검색어만 비우고 그 종류 예시로
-radioKeys(document.querySelector(".qs")); radioKeys(document.querySelector(".seg"));
+radioKeys(document.querySelector(".qs")); radioKeys(document.querySelector(".seg")); radioKeys($("#yrbtns"));
+$("#yrbtns").addEventListener("click",e=>{ const b=e.target.closest("[data-yr]"); if(!b) return; stdYear=b.dataset.yr; limit=40; render(); });
+$("#out").addEventListener("toggle",e=>{ if(e.target.matches("details.tfold")) tfoldOpen=e.target.open; },true); // 펼친 상태는 다시 그려도 유지 (toggle 은 거품이 안 떠 capture)
 // 페이지 어디서든 ← →로 종류 바꾸기. 글 쓰는 칸·열린 창·가로로 미는 칸·다른 라디오/탭/슬라이더/메뉴에서는 키를 가로채지 않는다
 // [화살표종류 시작]
 function arrowKindOk(e,dlgOpen,hScroll){
@@ -1813,6 +1854,30 @@ addEventListener("touchend",e=>{ if(swX===null) return;
   const qs=b.parentElement, br=b.getBoundingClientRect(), qr=qs.getBoundingClientRect();
   qs.scrollBy({left:br.left+br.width/2-(qr.left+qr.width/2),behavior:"smooth"});
   scrollTo(0,0); },{passive:true});
+// ── 번호가 바뀐 같은 조항 이음 (2026-11-10) ──
+// 엘리베이터 밖 종류는 2019.3.28 기준에서 번호가 새로 매겨져(5.6.1.1 → 5.6.1) 같은 번호끼리만 묶으면 같은 조항이 갈라진다.
+// 같은 종류 안에서 체계(era)가 다르고 번호가 다른 두 판의 글이 아주 닮으면 한 묶음으로 잇는다. 바뀐 낱말은 같은 말로 쳐서 견준다.
+// 한 판에는 상대 체계에서 가장 닮은 판 하나만 붙이고, 서로 가장 닮은 쌍(서로 1순위)만 인정한다.
+// [번호바뀐짝 시작] 검사 스크립트(번호바뀐짝뽑기.js)가 이 사이를 그대로 가져다 쓴다 (vToks·dice 필요)
+const RN_T=0.6; // 닮음 기준 (dice)
+const RN_SYN=[["핸드레일","손잡이"],["팔레트","디딤판"],["스텝","디딤판"],["콤","빗판"],["꼭대기","상부"]];
+const RN_SYNM=new Map(RN_SYN), RN_SYNL=RN_SYN.filter(p=>p[0].length>2);
+const rnToks=(raw,label)=>{ let t=raw||""; if(label&&t.startsWith(label+" ")) t=t.slice(label.length+1); for(const[a,b]of RN_SYNL) t=t.split(a).join(b); return new Set([...vToks(t)].map(w=>RN_SYNM.get(w)||w)); };
+const rnEra=x=>!x.from?0:x.from<"2019-03-28"?1:2;
+// items: 같은 종류의 판들(__t = rnToks 결과). 반환: [{a,b,sc}] 서로 1순위이고 sc>=T인 쌍(a가 앞 체계)
+function rnPairs(items,T){
+  const all=items.filter(x=>!x.dup&&x.__t.size&&rnEra(x)>0);
+  // 이미 같은 번호로 다른 체계 판과 이어진 판(번호 묶음의 닮음 0.3 이상)은 짝 찾기에서 뺀다: 번호가 그대로인 조항이 엉뚱한 옛 번호와 짝지어지는 것을 막는다
+  const it=all.filter(x=>!all.some(y=>y.label===x.label&&rnEra(y)!==rnEra(x)&&dice(x.__t,y.__t)>=0.3)), best=new Map(); // 판 → (상대 체계 → 가장 닮은 판)
+  for(const x of it){ const m=new Map(); best.set(x,m);
+    for(const y of it){ if(rnEra(y)===rnEra(x)) continue;
+      let sc=dice(x.__t,y.__t); if(Math.min(x.__t.size,y.__t.size)<4&&sc<0.9) sc*=0.8; /* 낱말 3개 이하인 글은 우연히 겹치기 쉬워 점수를 깎는다 */ const c=m.get(rnEra(y)); if(!c||c.sc<sc) m.set(rnEra(y),{y,sc}); } }
+  const out=[];
+  for(const[x,m]of best) for(const[e,o]of m){ const back=best.get(o.y).get(rnEra(x));
+    if(back&&back.y===x&&o.sc>=T-0.1&&rnEra(x)<e) out.push({a:x,b:o.y,sc:o.sc}); }
+  return out;
+}
+// [번호바뀐짝 끝]
 // 엘리베이터 밖 종류 자료(data/kinds.json): 처음 고를 때 한 번 불러와 번호·즐겨찾기 키·시기별 묶음을 붙인다
 function loadKinds(){ if(KP) return KP;
   return KP=fetch("data/kinds.json").then(r=>{ if(!r.ok) throw new Error("kinds"); return r.json(); }).then(j=>{
@@ -1822,6 +1887,13 @@ function loadKinds(){ if(KP) return KP;
     const era=x=>!x.from?0:x.from<"2019-03-28"?1:2;
     for(const v of Object.values(g)){ v.sort((a,b)=>(a.from||"0000").localeCompare(b.from||"0000")); v.forEach(x=>x.__t=vToks((x.text||"")+" "+tabFlat(x)));
       for(const x of v){ const w=v.filter(y=>y===x||era(y)===era(x)||dice(x.__t,y.__t)>=0.3); x.__v=w.length>1?w:null; } }
+    // 번호가 바뀐 같은 조항도 잇는다: 짝이 든 두 번호 묶음을 합쳐 from 순으로
+    for(const x of K) x.__rt=rnToks((x.text||"")+" "+tabFlat(x),x.label);
+    const kk={}; for(const x of K) (kk[x.kind]=kk[x.kind]||[]).push(x);
+    for(const items of Object.values(kk)){ items.forEach(x=>{x.__t=x.__rt});
+      const gr=x=>x.__v||[x], ext=new Map();
+      for(const p of rnPairs(items,RN_T)){ if(p.sc<RN_T) continue; const u=new Set([...gr(p.a),...gr(p.b)]); for(const y of [p.a,p.b]) for(const z of ext.get(y)||[]) u.add(z); for(const y of u) ext.set(y,u); }
+      for(const[x,u]of ext) x.__v=[...u].sort((a,b)=>(a.from||"0000").localeCompare(b.from||"0000")||(a.to||"9999").localeCompare(b.to||"9999")); }
     if(FAILD) for(const k of Object.keys(j.kinds)) failBuild(k,K.filter(x=>x.kind===k&&!x.dup)); FAILI.clear();
     render();
   }).catch(()=>{ KP=null; $("#status").textContent="자료를 불러오지 못했어요. 다시 눌러 주세요."; });
@@ -1850,8 +1922,6 @@ document.addEventListener("click",e=>{ const p=e.target.closest(".pill.tip"), wa
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeTip(); else if((e.key==="Enter"||e.key===" ")&&e.target.matches?.(".pill.tip")){ e.preventDefault(); e.target.click(); } });
 addEventListener("scroll",closeTip,{passive:true}); addEventListener("resize",closeTip);
 $("#out").addEventListener("click",e=>{
-  const tf=e.target.closest("[data-tfold]");
-  if(tf){ const d=tf.closest(".topics"); d.open=false; scrollTo(0,0); d.querySelector("summary").focus({preventScroll:true}); return; } // 접으면 맨 위로(검색창이 바로 보이게, 자판·최근 검색어는 안 띄움. 키보드 자리는 접은 제목에). 뒤로가기·Esc 접기는 그 자리 그대로
   const tp=e.target.closest("[data-topic]");
   if(tp){$("#q").value=tp.dataset.topic;addRecent(tp.dataset.topic);limit=40;render();scrollTo({top:0});return}
   if(e.target.closest(".nofb")){ if(!openForm()) toast("의견 창구 준비 중이에요."); return; } // 결과가 없을 때 뜨는 의견 남기기
@@ -1889,7 +1959,9 @@ $("#out").addEventListener("click",e=>{
 function openViewer(src,cap,from){ const box=$("#dlgbox"), img=$("#dlgimg"); box.classList.remove("big"); img.style.width=""; $("#dlgzoom").textContent="2배 확대";
   img.src=src; img.alt=cap||"그림"; $("#dlgcap").textContent=cap||""; const d=$("#dlg"); d._vtFrom=from||null;
   // 큰 그림이 다 받아지기 전에 전환이 찍히면 빈 칸으로 커졌다가 그림이 툭 나와서, 0.4초까지 기다렸다 연다. 그림 전환은 조금 길고 부드럽게
-  const go=()=>{ if(d.open) return; document.documentElement.classList.add("vtimg"); if(from) from.classList.add("vtsrc"); const fr=from&&from.getBoundingClientRect(); vtImgRun(vtDlg(()=>{ d.showModal(); box.scrollTo(0,0); },from,()=>img),fr,img); };
+  const go=()=>{ if(d.open) return; const sh=()=>{ d.showModal(); box.scrollTo(0,0); };
+    if(!from||!fitsView(from)){ vtDlg(sh,from,()=>img); return; } // 그림이 화면에 다 안 들어오면 커지는 효과 없이 겹쳐 바뀐다: 이때는 작은 그림을 각지게 만들지 않는다 (닫을 때와 같게)
+    const rd=vtRad(from); document.documentElement.classList.add("vtimg"); vtImgRun(vt(sh,from,()=>img),from.getBoundingClientRect(),img,rd,0); }; // 열 때는 작은 그림을 각지게 만들지 않는다: 찍히기 전 한두 장면 동안 각진 모습이 그대로 보여 폰에서 모서리가 툭 펴졌다
   if(from&&img.decode) Promise.race([img.decode(),new Promise(r=>setTimeout(r,400))]).then(go,go); else go(); }
 function zoomViewer(ex,ey){ const box=$("#dlgbox"), img=$("#dlgimg");
   if(box.classList.contains("big")){ box.classList.remove("big"); img.style.width=""; $("#dlgzoom").textContent="2배 확대"; return; }
@@ -1910,12 +1982,11 @@ addEventListener("popstate",()=>{
   const top=[...document.querySelectorAll("dialog[open]")].pop(); /* _h 없는 창도 이 뒤로가기의 몫: 열린 창이 있으면 안내 알림은 절대 안 띄움 (2026-10-27) */
   if(top&&top.id==="lawdlg"&&lawStk.length){ const [re,sc]=lawStk.pop(); Promise.resolve(re()).then(()=>{ $("#lawbody").scrollTop=sc; }); return; } // 원문 창은 앞 조항으로
   if(top){ dlgPop=!!top._h; closeDlg(top); }
-  else if(topicsH){ topicsH=false; const d=$("#out .topics"); if(d) d.open=false; } // 창이 없으면 항목으로 찾기를 접는다
   else if(guardH){ guardH=false; syncUrl(); /* 맨 아래 기록의 주소가 옛것이라 지금 검색 주소로 되돌림 */ guardAt=Date.now(); toast("한 번 더 누르면 ELISN이 닫혀요",2000); setTimeout(guardOn,2100); } // 첫 화면: 안내만 띄움. 기록은 여기서 다시 쌓지 않음(사용자 누름 없는 pushState 는 크롬이 건너뜀): 2초 안에 또 누르면 그냥 나가고, 다시 쌓기는 2초 뒤·다음 누름(guardOn)
 });
-// 첫 화면 뒤로가기 안내 (lab): 첫 누름 뒤 '지킴' 기록 하나를 깔아 둠. 창·항목 기록이 없을 때만
+// 첫 화면 뒤로가기 안내 (lab): 첫 누름 뒤 '지킴' 기록 하나를 깔아 둠. 창 기록이 없을 때만
 let guardH=false, guardAt=0;
-const guardOn=()=>{ if(guardH||Date.now()-guardAt<2000||!navigator.userActivation?.isActive||document.querySelector("dialog[open]")||topicsH) return; guardH=true; history.pushState({guard:1},"",location.href); }; // 누를 때마다 조건만 거르고 다시 깖 (창·항목 펼침 중, 안내 직후 2초는 건너뜀). 손가락은 pointerdown 에 아직 활성이 없어 pointerup 도 봄, 한글 입력은 keyup 도 봄
+const guardOn=()=>{ if(guardH||Date.now()-guardAt<2000||!navigator.userActivation?.isActive||document.querySelector("dialog[open]")) return; guardH=true; history.pushState({guard:1},"",location.href); }; // 누를 때마다 조건만 거르고 다시 깖 (창이 떠 있을 때, 안내 직후 2초는 건너뜀). 손가락은 pointerdown 에 아직 활성이 없어 pointerup 도 봄, 한글 입력은 keyup 도 봄
 ["pointerdown","pointerup","keydown","keyup"].forEach(t=>addEventListener(t,guardOn,true));
 $("#dlgx").addEventListener("click",()=>closeDlg($("#dlg")));
 $("#dlgbox").addEventListener("click",e=>{ if(e.target.id==="dlgbox") closeDlg($("#dlg")); });
@@ -1936,7 +2007,7 @@ $("#qclear").addEventListener("click",()=>{ $("#q").value=""; exQ=""; limit=40; 
 // 제목·아이콘을 누르면 처음 화면으로: 검색어·허가일·자료·보기·즐겨찾기만 보기를 비운다 (즐겨찾기·최근 검색어·화면 설정은 그대로)
 document.querySelectorAll(".brand .home").forEach(el=>el.addEventListener("click",e=>{
   e.preventDefault();
-  $("#q").value=""; $("#d").value=""; exQ=""; src="c"; favOnly=false; failOnly=false; limit=40;
+  $("#q").value=""; $("#d").value=""; exQ=""; src="c"; favOnly=false; failOnly=false; stdYear=""; limit=40;
   setSeg("src",src); $("#recent").hidden=true; document.activeElement?.blur();
   render(); scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"});
 }));
@@ -2405,8 +2476,8 @@ function slider(qk){
     qk.scrollBy({left:(r.left+r.width/2)-(q.left+q.width/2),behavior:"smooth"})},true);
 }
 document.querySelectorAll(".quick .qs").forEach(slider); // 종류 줄·바로 고르기 줄
-// 결과 공유: 지금 검색어·허가일·보기 방식이 담긴 주소를 보낸다. PC는 주소 복사, 폰(lab)은 QR 창, 폰(운영)은 공유 창
-const shareText=url=>{ const bits=[$("#q").value.trim(),$("#d").value.trim()&&"기준적용일 "+$("#d").value.trim(),new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean);
+// 결과 공유: 지금 검색어·허가일·보기 방식이 담긴 주소를 보낸다. PC·폰 모두 QR 창(링크 복사 단추 포함, 폰은 다른 앱으로 보내기도)
+const shareText=url=>{ const bits=[$("#q").value.trim(),src!=="s"&&$("#d").value.trim()&&"기준적용일 "+$("#d").value.trim(),src==="s"&&stdYear&&"발표 "+stdYear,new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean);
   return "ELISN 승강기 검사기준"+(bits.length?" · "+bits.join(" · "):""); };
 const copyLink=async()=>{ const url=location.href; let ok=false;
   try{ await navigator.clipboard.writeText(url); ok=true; }
@@ -2416,21 +2487,17 @@ const copyLink=async()=>{ const url=location.href; let ok=false;
   toast(ok?"링크를 복사했어요. 붙여 넣어 보내면 같은 화면이 열려요.":"주소창의 주소를 복사해 보내 주세요.",ok?3000:4000);
 };
 const phoneShare=()=>navigator.share&&matchMedia("(pointer:coarse)").matches;
-$("#share").addEventListener("click",async()=>{
-  if(phoneShare()) return openQr(true);
-  copyLink();
-});
-// 모바일로 이어 보기(2026-10-01 운영자): PC에서만 버튼을 보이고, 누르면 지금 화면 주소(검색어·허가일·종류 포함)를 QR로 띄운다.
+$("#share").addEventListener("click",()=>openQr(phoneShare())); // PC도 폰처럼 단추 하나: QR + 링크 복사가 한 창에
+// 모바일로 이어 보기(2026-10-01 운영자): 결과 공유를 누르면 지금 화면 주소(검색어·허가일·종류 포함)를 QR로 띄운다.
 // 폰·태블릿 카메라로 비추면 같은 화면이 모바일에서 열린다. QR 그리는 파일(lib/qrcode.js, MIT)은 처음 누를 때만 받는다
-if(!MOB) $("#qrbtn").hidden=false;
 let qrLib=null;
 const loadQr=()=>qrLib||(qrLib=new Promise((ok,no)=>{ if(window.qrcode) return ok();
   const s=document.createElement("script"); s.src="lib/qrcode.js"; s.onload=()=>ok(); s.onerror=()=>{qrLib=null;no();}; document.head.appendChild(s); }));
-// 한 창을 두 곳이 쓴다: PC "모바일로 보기"와 폰 공유. 폰이면 안내 문구가 바뀌고 보내기·복사 단추가 붙는다
+// PC와 폰이 같은 창을 쓴다. 폰이면 안내 문구가 바뀌고 다른 앱으로 보내기 단추가 붙는다
 async function openQr(phone){
   syncUrl(); const url=location.href, box=$("#qrbox"), say=$("#qrsay");
   const q=$("#q").value.trim(), d=$("#d").value.trim();
-  $("#qrttl").textContent=phone?"이 화면 보내기":"모바일로 이어 보기"; $("#qract").hidden=!phone; $("#qrshare").hidden=!navigator.share;
+  $("#qrshare").hidden=!phone;
   box.textContent=""; say.textContent="QR 만드는 중…"; $("#qrdlg").showModal();
   try{
     await loadQr();
@@ -2443,7 +2510,6 @@ async function openQr(phone){
     say.innerHTML=(phone?"옆 사람 폰 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요.":"폰·태블릿 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요.")+(now?"<br>"+esc(now):"");
   }catch(e){ say.textContent=phone?"QR을 불러오지 못했어요. 아래 단추로 보내 주세요.":"QR을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; }
 }
-$("#qrbtn").addEventListener("click",()=>openQr(false));
 $("#qrshare").addEventListener("click",async()=>{ const url=location.href; try{await navigator.share({title:shareText(url),url});}catch(e){} });
 $("#qrcopy").addEventListener("click",copyLink);
 $("#qrclose").addEventListener("click",()=>$("#qrdlg").close());
@@ -2558,10 +2624,10 @@ if(st.src)src=st.src; if(Object.prototype.hasOwnProperty.call(KIND,st.kind))kind
 // 공유받은 링크(?q=…&d=…)로 들어오면 그 검색을 그대로 연다 (이 기기에 기억된 값보다 먼저)
 {const P=new URLSearchParams(location.search);
  // 주소에는 기본값(검사기준·목록)을 적지 않으므로, 주소로 들어왔으면 이 기기에 기억된 자료·보기가 아니라 기본값에서 시작한다
- if(["q","d","src","k","f"].some(k=>P.has(k))){src="c";kind="elev";}
+ if(["q","d","src","k","f","y"].some(k=>P.has(k))){src="c";kind="elev";}
  if(Object.prototype.hasOwnProperty.call(KIND,P.get("k")))kind=P.get("k");
  if(P.has("q"))$("#q").value=P.get("q"); if(P.has("d"))$("#d").value=dFix(P.get("d"));
- if(P.has("src"))src=P.get("src")==="s"?"s":"c"; failOnly=P.get("f")==="1";}
+ if(P.has("src"))src=P.get("src")==="s"?"s":"c"; failOnly=P.get("f")==="1"; if(/^(\d{4}|기타)$/.test(P.get("y")||""))stdYear=P.get("y");}
 setSeg("src",src); setSeg("kind",kind); drawQuick(); syncClear(); // ×는 처음엔 감춰 두고(HTML), 주소로 날짜가 들어왔을 때만 자료를 기다리지 않고 바로 보인다
 showExample(); // 기억된 종류·공유 링크의 종류로 추천 검색어를 다시 보여 준다
 Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.json"].map(u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u);return r.json()})),fetch("data/fail.json").then(r=>r.ok?r.json():null).catch(()=>null)])
@@ -2586,7 +2652,7 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    for(const [k,list] of Object.entries(f.lineJoins||{})){ const x=k[0]==="s"?S[+k.slice(1)-1]:C[+k.slice(1)-1]; if(!x||!x.text) continue;
      let t=x.text.replace(/<br\s*\/?>/gi,"\n"); for(const [p,m] of list){ const [ta,hb]=p.split("\n"); t=t.replace(ta+"\n"+hb,ta+(m==="s"?" ":"")+hb); } x.text=t; }
    for(const [t,ids] of Object.entries(f.lawRel||{})) for(const i of ids) LAWREL[i]=t;
-   LABF=!!f.lab; Object.assign(REFC,f.refCards||{}); Object.assign(TYPO,f.typo||{}); (f.haeCards||[]).forEach(i=>HAE.add(i));
+   Object.assign(REFC,f.refCards||{}); Object.assign(TYPO,f.typo||{}); (f.haeCards||[]).forEach(i=>HAE.add(i));
    // 번호 칸에 날짜·이름만 있어("2019-03-28 이후(건축허가분)") 조항 번호로 못 찾던 카드: 원문 조항 번호(lawNum)도 검색에 넣는다. 화면엔 안 보임 (2026-10-05 운영자)
    for(const [i,n] of Object.entries(f.lawNum||{})){ const x=C[i-1]; if(x) x.num=n; }
    for(const a of f.additions||[]){const x={...a,added:true}; x.__i=C.length+1; x.__k=keyOf(x,false); C.push(x);}
