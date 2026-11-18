@@ -811,7 +811,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.18.1"</script>버전 v2026.11.18.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.18.2"</script>버전 v2026.11.18.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -881,7 +881,7 @@ const loose=w=>{const cs=[...w.replace(/\s+/g,"")]; return cs.map(c=>supRx(c,cs.
 
 const BASE_TITLE=document.title; // 검색이 없을 때의 탭 제목
 let tipEl=null,tipFor=null; // 카드 표시 뜻 말풍선(아래 closeTip)
-let C=[],CV=[],S=[],src="c",limit=40,exQ="",loaded=false,lastHits=0,kind="elev",K=null,KP=null,revSel="",revSet=new Set(),hitD=""; // hitD: 넣은 건축허가일(이 날짜에 적용되는 카드는 기간 표시를 파랗게 ✓) // // revSet: 허가일이 속한 기준 체계가 시작된 뒤 개정(글이 바뀌거나 새로 생김)된 조항(카드 표시용), revSel: 고른 개정일(그 날 개정만 보기) // kind: 승강기 종류, K: 엘리베이터 밖 종류 자료(처음 고를 때 불러옴)
+let C=[],CV=[],S=[],SK=[],src="c",limit=40,exQ="",loaded=false,lastHits=0,kind="elev",K=null,KP=null,revSel="",revSet=new Set(),hitD=""; // hitD: 넣은 건축허가일(이 날짜에 적용되는 카드는 기간 표시를 파랗게 ✓) // // revSet: 허가일이 속한 기준 체계가 시작된 뒤 개정(글이 바뀌거나 새로 생김)된 조항(카드 표시용), revSel: 고른 개정일(그 날 개정만 보기) // kind: 승강기 종류, K: 엘리베이터 밖 종류 자료(처음 고를 때 불러옴)
 // 카드의 즐겨찾기 버튼 글: 폰에서는 별만 보여 버튼들이 한 줄에 들어가게 (글자는 .favl로 숨김)
 const favLbl=on=>(on?"★":"☆")+`<span class="favl"> 즐겨찾기${on?"됨":""}</span>`;
 const KIND={elev:"엘리베이터",esc:"에스컬레이터·무빙워크",wlv:"수직형 휠체어리프트",wli:"경사형 휠체어리프트",dumb:"소형화물용 엘리베이터",ince:"경사형 엘리베이터"};
@@ -889,7 +889,8 @@ const KIND={elev:"엘리베이터",esc:"에스컬레이터·무빙워크",wlv:"�
 const KIND_STD={esc:/에스컬레이터|무빙워크/,wlv:/^(?![\s\S]*경사형\s*휠체어\s*리프트)[\s\S]*휠체어\s*리프트/,wli:/^(?![\s\S]*수직형\s*휠체어\s*리프트)[\s\S]*휠체어\s*리프트/,dumb:/소형\s*화물|덤웨이터/,ince:/경사형\s*엘리베이터/};
 // CV: 중복 카드(보정 fixes의 dup)와 제목 카드(생성기가 dup로 표시, 링크·아래 조항 목록용)를 뺀 엘리베이터 조항. C는 순번(__i)으로 찾아야 해서 그대로 둔다 (2026-10-02)
 const KS={}, cur=()=>kind==="elev"?CV:(KS[kind]||(KS[kind]=(K||[]).filter(x=>x.kind===kind&&!x.dup))); // 제목 카드(dup)는 종류도 검색·건수에서 뺌 (2026-10-26)
-const curS=()=>kind==="elev"?S:S.filter(x=>KIND_STD[kind].test((x.title||"")+" "+(x.keyword||"")+" "+(x.text||"")));
+// SK: 종류(kind)가 붙은 lab 전용 표준화 카드. 그 종류 화면에서만 보이고(엘리베이터 화면엔 안 섞임), 조항 연결(relStd)·묶음(grp)은 S 만 본다 (2026-11-18)
+const curS=()=>kind==="elev"?S:[...S.filter(x=>KIND_STD[kind].test((x.title||"")+" "+(x.keyword||"")+" "+(x.text||""))),...SK.filter(x=>x.kind===kind)];
 const byI=i=>i<=C.length?C[i-1]:K[i-C.length-1]; // 카드의 번호(__i)로 조항 찾기: 엘리베이터 다음에 종류 자료가 이어진다 // lastHits: 마지막 검색에서 찾은 조항 수(일부만 맞는 것 포함). 0건 오타는 최근 검색어에 안 남긴다 // exQ: 돋보기로 넣은 예시 검색어 (직접 친 말과 구분해 안내하려고)
 const st={}; try{Object.assign(st,JSON.parse(localStorage.getItem("elev-find")||"{}"))}catch(e){}
 // 즐겨찾기: 이 기기에만 저장 (로그인 없음). 자료가 새로 올라와도 같은 조항을 가리키게 번호 대신 제목·이름·기간으로 기억한다
@@ -1648,7 +1649,7 @@ function render0(){ closeTip();
   else if(p){
     const label=p.y?`${p.from.slice(0,4)}년`:`${+p.from.slice(0,4)}년 ${+p.from.slice(5,7)}월`;
     split=changeDays(isStd?[]:[...res,...part],p.from,p.to); // 일부만 맞는 조항도 그 기간 안에서 기준이 바뀔 수 있어 함께 본다
-    if(!split.length){ d=p.from; msg.textContent=`→ ${label} (${q.trim()?`이 검색어는 ${label} 안에서 어느 날이든 결과가`:`${label} 안에서는 어느 날이든 적용되는 기준이`} 같아요)`; split=null; }
+    if(!split.length){ d=p.from; msg.textContent=`→ ${label} (${q.trim()?`이 검색어는 ${label} 안에서 어느 날이든 결과가`:`${label} 안에서는 어느 날이든 적용되는 기준이`} 같아요.)`; split=null; }
     else{
       msg.innerHTML=`→ ${label} 안에서 기준이 바뀌어요. 골라 주세요: `+
         [p.from,...split].map((s,i)=>{
@@ -1820,11 +1821,11 @@ const TOPICS_K={
 const hasTopics=isStd=>kind==="elev"||(!isStd&&!!TOPICS_K[kind]);
 const topicN={};
 function topicPanel(isStd,cnt){
-  const arr=isStd?S:cur(), fo=failOnly&&(isStd||failHas()), n=w=>{const rv=isStd?"":revSel, k=kind+src+w+fo+hitD+rv+(isStd?stdYear:"")+(cnt?"L":""); if(!(k in topicN)) topicN[k]=cnt?cnt(w):search(arr,w).res.filter(o=>(!fo||(isStd?stdFail(o.x):failOrInherit(o.x).items.length))&&(!hitD||isStd||applies(o.x,hitD))&&(!rv||o.x.from===rv)&&(!isStd||!stdYear||stdYr(o.x)===stdYear)).length; return topicN[k]}; // 불합격 항목만·허가일·고른 개정일을 켜면 그에 맞는 조항 수로
+  const arr=isStd?curS():cur(), fo=failOnly&&(isStd||failHas()), n=w=>{const rv=isStd?"":revSel, k=kind+src+w+fo+hitD+rv+(isStd?stdYear:"")+(cnt?"L":""); if(!(k in topicN)) topicN[k]=cnt?cnt(w):search(arr,w).res.filter(o=>(!fo||(isStd?stdFail(o.x):failOrInherit(o.x).items.length))&&(!hitD||isStd||applies(o.x,hitD))&&(!rv||o.x.from===rv)&&(!isStd||!stdYear||stdYr(o.x)===stdYear)).length; return topicN[k]}; // 불합격 항목만·허가일·고른 개정일을 켜면 그에 맞는 조항 수로
   const chip=w=>n(w)?`<button type="button" class="qd${w.length>=14?" w3":w.length>=7?" w2":""}" data-topic="${esc(w)}">${esc(w)}<span class="tn">${n(w)}</span></button>`:"";
   let body;
   if(isStd){
-    const kw={}; S.forEach(x=>{if(x.keyword)kw[x.keyword]=(kw[x.keyword]||0)+1});
+    const kw={}; curS().forEach(x=>{if(x.keyword)kw[x.keyword]=(kw[x.keyword]||0)+1});
     body=`<div class="tcard wide"><div class="tg">${Object.keys(kw).sort((a,b)=>a.localeCompare(b,"ko")).map(chip).join("")}</div></div>`;
   } else body=(kind==="elev"?TOPICS:TOPICS_K[kind]).map(([g,ws])=>{ const c=[...ws].sort((a,b)=>a.localeCompare(b,"ko")).map(chip).join(""); /* 묶음 안 낱말은 가나다순(표준화 자료와 같은 규칙) */ return c?`<div class="tcard"><span class="qlabel">${g}</span><div class="tg">${c}</div></div>`:""; }).join("");
   return `<section class="topics"><div class="thead"><h2>항목으로 찾기 <span class="ts">${isStd?"분류별로":"부위별로"} 골라 보기</span></h2></div><div class="tgrid">${body}</div></section>`;
@@ -2610,7 +2611,7 @@ async function openQr(phone){
     const cell=Math.max(3,Math.floor(260/(qr.getModuleCount()+4)));
     // 둘레 흰 여백(픽셀 단위)은 칸 3개 + 상자 안쪽 여백 10px ≈ 칸 4개: 폰 카메라가 QR 경계를 잘 잡게
     const img=new Image(); img.src=qr.createDataURL(cell,cell*3); img.alt="지금 화면 주소 QR"; box.appendChild(img);
-    const now=[q&&"‘"+q+"’ 검색",d&&"기준적용일 "+d,new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean).join(" · ");
+    const now=[kind!=="elev"&&KIND[kind],src==="s"&&"표준화 자료",q&&"‘"+q+"’ 검색",src!=="s"&&d&&"기준적용일 "+d,src==="s"&&stdYear&&"발표 "+stdYear,new URL(url).searchParams.has("f")&&"불합격 항목만"].filter(Boolean).join(" · "); // 종류·표준화·발표 연도도 적음(표준화에선 기준적용일을 안 씀) (2026-11-18 찬호님)
     say.innerHTML=(phone?"옆 사람 폰 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요.":"폰·태블릿 카메라로 비추면 <b>지금 화면이 그대로</b> 열려요.")+(now?"<br>"+esc(now):"");
   }catch(e){ say.textContent=phone?"QR을 불러오지 못했어요. 아래 단추로 보내 주세요.":"QR을 불러오지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; }
 }
@@ -2619,13 +2620,13 @@ $("#qrcopy").addEventListener("click",copyLink);
 $("#qrclose").addEventListener("click",()=>$("#qrdlg").close());
 $("#qrdlg").addEventListener("click",e=>{ if(e.target.id==="qrdlg") $("#qrdlg").close(); });
 $("#mtop").addEventListener("click",()=>topBtn.click());
-// 맨 위로: 브라우저 기본 부드러운 이동은 긴 목록에서 느려서, 길이와 상관없이 0.28초에 올라가게 직접 움직인다(손을 대거나 휠을 굴리면 멈춤)
+// 맨 위로: 브라우저 기본 부드러운 이동은 긴 목록에서 느려서 직접 움직인다. 처음엔 팍 올라가고 끝에서 부드럽게 멈춘다(지수 감속, 0.45초. 손을 대거나 휠을 굴리면 멈춤) (2026-11-18 찬호님)
 topBtn.addEventListener("click",()=>{
   if(matchMedia("(prefers-reduced-motion:reduce)").matches){ scrollTo(0,0); return; }
-  const y0=scrollY, t0=performance.now(), D=280; let stop=false;
+  const y0=scrollY, t0=performance.now(), D=450; let stop=false;
   const halt=()=>{stop=true}, off=()=>{removeEventListener("wheel",halt);removeEventListener("touchstart",halt)};
   addEventListener("wheel",halt,{passive:true}); addEventListener("touchstart",halt,{passive:true});
-  const step=now=>{ if(stop){off();return} const p=Math.min(1,(now-t0)/D); scrollTo(0,Math.round(y0*Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); else off(); };
+  const step=now=>{ if(stop){off();return} const p=Math.min(1,(now-t0)/D); scrollTo(0,p<1?Math.round(y0*Math.pow(2,-10*p)):0); if(p<1) requestAnimationFrame(step); else off(); };
   requestAnimationFrame(step);
   setTimeout(()=>{ if(!stop&&scrollY>0){ stop=true; off(); scrollTo(0,0); } },D+120); // 화면이 가려져 움직임이 멈춰도 끝에는 맨 위에 있게
 });
@@ -2751,14 +2752,14 @@ setSeg("kind",kind); drawQuick(); syncClear(); // ×는 처음엔 감춰 두고(
 showExample(); // 기억된 종류·공유 링크의 종류로 추천 검색어를 다시 보여 준다
 Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.json"].map(u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u);return r.json()})),fetch("data/fail.json").then(r=>r.ok?r.json():null).catch(()=>null)])
  .then(([c,s,f,fl])=>{
-   C=c.criteria;S=s.standardization; C.forEach((x,i)=>x.__i=i+1);
-   C.forEach(x=>x.__k=keyOf(x,false)); S.forEach(x=>x.__k=keyOf(x,true)); // 즐겨찾기 키: 카드 값으로 한 번만
+   C=c.criteria;S=s.standardization.filter(x=>!x.kind);SK=s.standardization.filter(x=>x.kind); C.forEach((x,i)=>x.__i=i+1);
+   C.forEach(x=>x.__k=keyOf(x,false)); S.forEach(x=>x.__k=keyOf(x,true)); SK.forEach(x=>x.__k=keyOf(x,true)); // 즐겨찾기 키: 카드 값으로 한 번만
    SAMEM=new Set(f.sameMeaning||[]); // 시기별 비교에서 표현만 다듬어 뜻이 같은 앞판>뒤판 쌍(밑줄 안 침)
    // 예전 방식 즐겨찾기(제목|번호|보정된 기간, 본문 없음)를 새 키로 옮긴다. 예전엔 한 키가 여러 조항을 가리켰으니 맞는 조항 모두에.
    // 예전 키를 만들 때의 값과 맞춰 봐야 하니, 이후 보정(checked)·번호 칸 교체보다 먼저 한다
    {const old=[...favs].filter(k=>k.split("|").length===5);
     if(old.length){const o=new Set(old);
-      for(const [arr,s] of [[C,false],[S,true]]) for(const x of arr) if(o.has((s?"s|":"c|")+[x.t0||x.title,x.label,x.from,x.to].join("|"))) favs.add(x.__k);
+      for(const [arr,s] of [[C,false],[S,true],[SK,true]]) for(const x of arr) if(o.has((s?"s|":"c|")+[x.t0||x.title,x.label,x.from,x.to].join("|"))) favs.add(x.__k);
       old.forEach(k=>favs.delete(k)); saveFavs();}}
    // 카드 글에 섞여 들어간, 고시 원문이 아닌 메모를 뺀다 (뺄 글이 그대로 있을 때만)
    // replace가 있으면 카드 글을 법령 원문 글로 통째로 바꾼다
@@ -2786,7 +2787,7 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    CV=C.filter(x=>!x.dup);
    FAILD=fl; if(FAILD) {failBuild("elev",CV); FAILI.clear();} // 공단 불합격 기준: 자료가 없으면 버튼·칸만 안 보인다
    // 카드 글에서 가운뎃점이 "?"로 깨진 곳(콘크리트?모르타르)을 불러올 때 한 번에 되살린다 (카드·검색 모두)
-   for(const x of [...C,...S]){ if(x.text) x.text=tidy(x.text); if(x.title) x.title=tidy(x.title); }
+   for(const x of [...C,...S,...SK]){ if(x.text) x.text=tidy(x.text); if(x.title) x.title=tidy(x.title); }
    buildVersions(); // 날짜를 바로잡은 뒤에 묶어야 순서가 맞다
    loaded=true; render()})
  .catch(()=>{$("#status").textContent="자료를 불러오지 못했어요. 페이지를 새로 고쳐 주세요."});
