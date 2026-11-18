@@ -32,7 +32,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
   --now:#0a9c5d; --now-soft:#e5f8ef; --old:#6b7684; --old-soft:#f2f4f6;
   --warn:#c26a00; --warn-soft:#fff3e0; --mark:rgba(255,196,0,.34);
   --del:#e5484d; --star:#d98a00; --star-soft:#fff4d6;
-  --edge:transparent; --lift:0 1px 3px rgba(0,27,55,.10);
+  --edge:transparent; --lift:0 1px 3px rgba(0,27,55,.10); --frame:#d1d6db; --bgedge:#d1d6db; /* 밝은 화면에서 그림·안쪽 카드·「배경」 단추 테두리 */
   color-scheme:light;
   --sans:"Pretendard","Pretendard Variable","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 }
@@ -44,7 +44,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
   --now:#41d392; --now-soft:#143023; --old:#a0a0aa; --old-soft:#2a2a31;
   --warn:#ffb547; --warn-soft:#3a2a12; --mark:rgba(255,196,0,.26);
   --del:#ff7a7f; --star:#ffc53d; --star-soft:#3a2f12;
-  --edge:rgba(255,255,255,.06); --lift:none;
+  --edge:rgba(255,255,255,.06); --lift:none; --frame:rgba(255,255,255,.18); --bgedge:var(--edge); /* 어두운 화면 안쪽 카드 테두리가 안 보여 진하게 (2026-11-18) */
 }}
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -54,7 +54,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
   --now:#41d392; --now-soft:#143023; --old:#a0a0aa; --old-soft:#2a2a31;
   --warn:#ffb547; --warn-soft:#3a2a12; --mark:rgba(255,196,0,.26);
   --del:#ff7a7f; --star:#ffc53d; --star-soft:#3a2f12;
-  --edge:rgba(255,255,255,.06); --lift:none;
+  --edge:rgba(255,255,255,.06); --lift:none; --frame:rgba(255,255,255,.18); --bgedge:var(--edge); /* 어두운 화면 안쪽 카드 테두리가 안 보여 진하게 (2026-11-18) */
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;letter-spacing:-.01em;padding-inline:16px;-webkit-font-smoothing:antialiased}
@@ -205,12 +205,14 @@ body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 
 .tfold>.topics>.thead{display:none}
 .tfold>summary{flex-wrap:wrap}
 .bgfold{margin-top:14px}
-.bgfold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:44px;padding:0 14px;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--edge);border-radius:14px;box-shadow:var(--lift)}
+.bgfold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:44px;padding:0 14px;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--bgedge);border-radius:14px;box-shadow:var(--lift)}
 .bgfold>summary::-webkit-details-marker{display:none}
 .bgfold>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
 .bgfold[open]>summary::after{transform:rotate(-135deg)}
-.bgfold .imgs{display:block}
-.bgfold .imgs img{max-height:none;height:auto;max-width:100%;margin-bottom:10px}
+.bgfold .imgs{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.bgfold .imgs img{display:block;max-height:none;height:auto;max-width:100%;margin:0;border:1px solid var(--frame);border-radius:8px} /* 그림이 여러 장이면 장마다 테두리·간격으로 갈라 보임 (2026-11-18) */
+.bgfold .imgs figure{margin:0;max-width:100%}
+.bgfold .imgs figcaption{margin-top:4px;font-size:12px;color:var(--muted)}
 .attfold .imgs button{display:block;width:100%;border:0;padding:0;background:none;box-shadow:none;border-radius:0;overflow:visible;text-align:left;cursor:zoom-in}
 .bgfold .sub-h{margin:14px 2px 0;font-size:13.5px;font-weight:800;color:var(--ink)} /* 「배경」 안 작은 소제목(협의내용·붙임 이름) */
 .bgfold .sub-h+.text{margin-top:6px}
@@ -362,8 +364,8 @@ mark{background:var(--mark);color:var(--ink);border-radius:4px;padding:0 2px;fon
 .imgs img{display:block;max-height:150px;max-width:100%}
 .rel{margin-top:14px;display:flex;flex-direction:column;gap:10px}
 .rel article{background:var(--fill);border:0;box-shadow:none;border-radius:16px;padding:16px}
-.fgx .rel article{background:var(--surface)} /* 불합격 목록에서 펼친 조항 카드는 회색 바탕이라, 그 안 표준화 카드가 같은 회색이면 안 보임 */
-.fgx .rel article .chipbtn:not(.primary,[aria-pressed=true]),.fgx .rel article .acts .fbico{background:var(--fill)} /* 3단 중첩: 흰 카드 안 버튼은 카드와 다른 회색이어야 보임(바로 아래 .rel .chipbtn·폰의 .rel .acts .fbico 규칙이 흰색을 줘서 안 보였음) */
+.fgx .rel article{background:var(--surface);border:1px solid var(--frame);border-radius:14px} /* 불합격 목록에서 펼친 조항 카드는 회색 바탕이라, 그 안 표준화 카드가 같은 회색이면 안 보임 */
+.fgx .rel article .chipbtn:not(.primary,[aria-pressed=true]){background:var(--fill)} /* 3단 중첩: 흰 카드 안 버튼은 카드와 다른 회색이어야 보임(바로 아래 .rel .chipbtn·폰의 .rel .acts .fbico 규칙이 흰색을 줘서 안 보였음) */
 /* 안쪽 카드 바탕(--fill)과 버튼 바탕이 같아 즐겨찾기 등이 상자 없이 떠 보여서, 안쪽 카드의 버튼은 바깥 카드 색으로 (2026-10-02) */
 .rel .chipbtn:not(.primary){background:var(--surface)}
 .rel .title{font-size:15.5px}
@@ -706,7 +708,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
   .acts .linkbtn{font-size:13px} /* 폰에서는 아이콘만: 제목이 중간에 끊기지 않게 */
   .acts .fbico{display:inline-flex;align-items:center;justify-content:center;width:38px;height:37.6px;padding:0;border-radius:10px;background:var(--fill);color:var(--sub);text-decoration:none} /* 카드 아래 의견 남기기: 폰에서는 말풍선만(이웃 버튼과 같은 높이·모양), 글자는 접근성용 이름으로만 */
   .acts .fbico .fbt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  .rel .acts .fbico{background:var(--surface)} /* 회색 칸 안에 펼친 카드(불합격 목록의 관련 조항 등): 이웃 버튼처럼 바탕을 한 단계 다르게 해 상자가 보이게 */
+  .rel .acts .fbico{background:var(--surface)} .fgx .rel article .acts .fbico{background:var(--fill)} /* 흰 안쪽 카드 안 말풍선은 회색. 넓은 화면에선 글자 링크라 바탕 없음 (2026-11-18) */ /* 회색 칸 안에 펼친 카드(불합격 목록의 관련 조항 등): 이웃 버튼처럼 바탕을 한 단계 다르게 해 상자가 보이게 */
   .theme svg{width:20px;height:20px}
   .brand h1{font-size:18px}
   .brand .mark{width:42px;height:42px} /* 휴대폰: 아이콘은 제목·영문 두 줄 높이, 제목은 한 줄에 들어가게 */
@@ -811,7 +813,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.18.3"</script>버전 v2026.11.18.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.18.4"</script>버전 v2026.11.18.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1131,16 +1133,14 @@ function stdKey(f){ f=String(f||""); let m,best=null; const re=/(?:^|\D)(\d{2})�
   m=f.match(/^\s*(\d{2})년\s*$/); return m?[2000+ +m[1],99,"년"]:[9999,0,""]; } // "21년"처럼 차수 없이 해만 적힌 것: 그 해 안에서 맨 끝 순서로 둔다 (2026-11-17)
 // 표준화 자료의 발표 연도: from 의 가장 늦은 회의 연도 → 못 읽으면 when 의 20YY → 그래도 없으면 "기타"(맨 뒤)
 const stdYr=x=>x.__y||(x.__y=(()=>{ const k=stdKey(x.from); if(k[0]!==9999) return String(k[0]); const m=String(x.when||"").match(/(?:^|\D)(20\d\d)(?!\d)/); return m?m[1]:"기타"; })());
-// 발표 연도 단추 줄: 전체 + 연도(최신순, 건수는 검색어와 무관한 지금 종류의 전체 표준화 자료 기준). 건수가 그대로면 단추를 다시 만들지 않아 키보드 포커스가 안 날아간다
+// 발표 연도 단추 줄: 전체 + 연도(최신순). live 가 없으면 지금 종류의 전체 자료로 연도 고르기만 맞추고, live({cnt,total}: 검색어·불합격만 등을 건 결과를 연도별로 센 것)가 있으면 그 수로 단추를 그린다. 0건인 연도는 숨기되 고른 연도는 남긴다. 건수가 그대로면 단추를 다시 만들지 않아 키보드 포커스가 안 날아간다 (2026-11-18)
 let yrKey="";
-function drawYears(isStd){
+function drawYears(isStd,live){
   const box=$("#yrs"); box.hidden=!isStd; if(!isStd) return;
-  const seen=new Set(), all=curS().filter(x=>{ const k=((x.text||"")+tabSig(x)).replace(/\s+/g,"")+"|"+x.from+"|"+x.to; if(seen.has(k)) return false; seen.add(k); return true; }), cnt={}; // 카드로 보이는 것과 같은 기준(글·표·기간이 같은 건 한 장)으로 센다
-  all.forEach(x=>{ const y=stdYr(x); cnt[y]=(cnt[y]||0)+1; });
-  if(stdYear&&!cnt[stdYear]) stdYear="";
-  const ys=Object.keys(cnt).sort((a,b)=>(a==="기타")-(b==="기타")||(a<b?1:a>b?-1:0)), key=kind+JSON.stringify(cnt), g=$("#yrbtns");
+  if(!live){ const seen=new Set(), all=new Set(); curS().forEach(x=>all.add(stdYr(x))); if(stdYear&&!all.has(stdYear)) stdYear=""; return; }
+  const ys=Object.keys(live.cnt).filter(y=>live.cnt[y]>0||y===stdYear).sort((a,b)=>(a==="기타")-(b==="기타")||(a<b?1:a>b?-1:0)), rows=[["","전체",live.total],...ys.map(y=>[y,y,live.cnt[y]||0])], key=kind+JSON.stringify(rows), g=$("#yrbtns");
   if(key!==yrKey){ yrKey=key;
-    g.innerHTML=[["","전체",all.length],...ys.map(y=>[y,y,cnt[y]])].map(([v,t,n])=>`<button type="button" class="qd" data-yr="${v}" role="radio" aria-checked="false" tabindex="-1">${t}<span class="tn">${n}</span></button>`).join(""); }
+    g.innerHTML=rows.map(([v,t,n])=>`<button type="button" class="qd" data-yr="${v}" role="radio" aria-checked="false" tabindex="-1">${t}<span class="tn">${n}</span></button>`).join(""); }
   g.querySelectorAll("[data-yr]").forEach(b=>{ const on=b.dataset.yr===stdYear; b.setAttribute("aria-checked",on); b.tabIndex=on?0:-1; });
 }
 function stdByMeeting(res){ const c=(a,b)=>a<b?1:a>b?-1:0; // 최신 것부터, 못 읽는 값([9999])은 맨 뒤
@@ -1583,9 +1583,11 @@ function pipeTab(text){
   return tables.length?{text:out.join("\n"),tables}:null;
 }
 // 표준화 카드 「배경」: 공단 문서의 현안사항 원문(줄바꿈만 정리)과 그림, 접어 둠 (2026-11-17, lab)
-const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${esc(x.bg)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map(p=>`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${esc(x.disc)}</div>`:""}${(x.bgsrc||{}).doc?`<div class="note">출처: ${esc(x.bgsrc.doc)}${x.bgsrc.page?" "+x.bgsrc.page+"쪽":""}</div>`:""}</details>`;
+// 그림이 2장 이상이면 장마다 「1/2」 쪽 번호 캡션을 붙인다 (1장이면 그대로)
+const pageFig=(h,i,n)=>n>1?`<figure>${h}<figcaption>${i+1}/${n}</figcaption></figure>`:h;
+const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${esc(x.bg)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map((p,i,A)=>pageFig(`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`,i,A.length)).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${esc(x.disc)}</div>`:""}${(x.bgsrc||{}).doc?`<div class="note">출처: ${esc(x.bgsrc.doc)}${x.bgsrc.page?" "+x.bgsrc.page+"쪽":""}</div>`:""}</details>`;
 // 표준화 카드 「붙임」: 배경과 같은 모양의 접힌 칸, 붙임 이름마다 그림 (2026-11-17, lab)
-const attHTML=x=>`<details class="bgfold attfold"><summary>붙임</summary>${x.att.map(a=>`<div class="sub-h">${esc(a.name)}</div><div class="imgs">${(a.imgs||[]).map(p=>`<button type="button" data-img="${esc(p)}" data-cap="${esc("붙임 "+a.name)}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(a.name)}"></button>`).join("")}</div>`).join("")}</details>`;
+const attHTML=x=>`<details class="bgfold attfold"><summary>붙임</summary>${x.att.map(a=>`<div class="sub-h">${esc(a.name)}</div><div class="imgs">${(a.imgs||[]).map((p,i,A)=>pageFig(`<button type="button" data-img="${esc(p)}" data-cap="${esc("붙임 "+a.name)}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(a.name)}"></button>`,i,A.length)).join("")}</div>`).join("")}</details>`;
 function card(x,rxs,isStd,upNote,why,par){
   const r=!isStd&&range(x);
   const rel=isStd?[]:relStd(x), fo=isStd?{items:[]}:failOrInherit(x), fl=fo.items, fn=failCount(fl), fbt=fo.inherited?"불합격 기준 · 지금 기준(참고)":"불합격 "+fn;
@@ -1625,13 +1627,18 @@ function render0(){ closeTip();
   const fOn=failOnly&&(isStd||failHas()); $("#failonly").hidden=!isStd&&!failHas(); $("#failonly").setAttribute("aria-pressed",fOn); 
   const home=!isStd&&!q.trim()&&!favOnly&&!fOn&&!$("#d").value.trim(); // 거름이 하나도 없는 첫 화면 (표준화 자료는 처음부터 카드를 다 보이고, 기준적용일 칸도 없어 늘 아님)
   drawYears(isStd);
+  let yrLive=null;
   let {rxs,res,part}=search(isStd?curS():cur(),q);
   if(isStd){ if(q.trim()){ res=stdSearchSort(res); part=stdSearchSort(part).sort((a,b)=>b.m-a.m); } else res=stdByMeeting(res); // 검색어 없을 땐 표준화 회의 차수 순서(최신 것부터)
-    if(stdYear){ const yf=o=>stdYr(o.x)===stdYear; res=res.filter(yf); part=part.filter(yf); } }
+  }
   // 글·기간이 똑같은 조항이 여러 번 들어 있어 카드가 겹쳐 나온다 → 하나만 (띄어쓰기 차이는 같은 글로)
   // 즐겨찾기만: 이 기기에 별표해 둔 조항만 남긴다 (검색어·허가일은 그대로 함께 적용). 아래 겹친 카드 걸러내기보다 먼저 해야 별표한 쪽이 남는다
   if(favOnly){ res=res.filter(o=>favs.has(keyOf(o.x,isStd))); part=part.filter(o=>favs.has(keyOf(o.x,isStd))); }
   if(fOn&&isStd){ const ff=o=>stdFail(o.x); res=res.filter(ff); part=part.filter(ff); } // 표준화 자료의 불합격 항목만: 불합격 판정이 적힌 항목만 (검사기준은 아래 lv: 공단 불합격 기준 목록)
+  if(isStd){ // 발표 연도 단추 수: 검색어·즐겨찾기만·불합격만을 건 결과를 연도 거르기 전에 (카드로 보이는 기준으로 겹친 건 한 장) 센 것
+    const s2=new Set(), cnt={}; let total=0; const base=q.trim()||favOnly||fOn?[...res,...part].map(o=>o.x):curS(); /* 거름이 없으면 종류의 전체 자료 그대로 (예전과 같음) */ for(const x of base){ const k=stdDk(x); if(s2.has(k)) continue; s2.add(k); const y=stdYr(x); cnt[y]=(cnt[y]||0)+1; total++; }
+    yrLive={cnt,total}; drawYears(true,yrLive);
+    if(stdYear){ const yf=o=>stdYr(o.x)===stdYear; res=res.filter(yf); part=part.filter(yf); } }
   const seen=new Set(), dk=stdDk, uniq=a=>a.filter(o=>{const k=dk(o.x); if(seen.has(k)) return false; seen.add(k); return true;});
   const pre=res; favIf=null; // 아래에서 넣는다: 꺼진 즐겨찾기만의 숫자 = 지금 누르면 남을 수 (전체 별 수를 보이면 눌렀을 때 0건이 될 수 있다)
   res=uniq(res); part=uniq(part); lastHits=res.length+part.length; // 꺼진 즐겨찾기만의 숫자 = 지금 누르면 남을 수 (전체 별 수를 보이면 눌렀을 때 0건이 될 수 있다)
@@ -2620,13 +2627,15 @@ $("#qrcopy").addEventListener("click",copyLink);
 $("#qrclose").addEventListener("click",()=>$("#qrdlg").close());
 $("#qrdlg").addEventListener("click",e=>{ if(e.target.id==="qrdlg") $("#qrdlg").close(); });
 $("#mtop").addEventListener("click",()=>topBtn.click());
-// 맨 위로: 브라우저 기본 부드러운 이동은 긴 목록에서 느려서 직접 움직인다. 처음엔 팍 올라가고 끝에서 부드럽게 멈춘다(지수 감속, 0.45초. 손을 대거나 휠을 굴리면 멈춤) (2026-11-18 찬호님)
+// 맨 위로: 순간이동 없이 처음엔 팍 올라가고 끝에서 부드럽게 멈춤(지수 감속 0.45초, 손대거나 휠 굴리면 멈춤) (2026-11-18 찬호님)
+// 예전에 폰에서 떨린 건(추정) 지나가며 늦게 뜨는 그림 때문에 브라우저가 화면 위치를 저절로 맞춰(스크롤 고정) 움직임과 부딪힌 탓: 올라가는 동안만 끈다
 topBtn.addEventListener("click",()=>{
   if(matchMedia("(prefers-reduced-motion:reduce)").matches){ scrollTo(0,0); return; }
-  const y0=scrollY, t0=performance.now(), D=450; let stop=false;
-  const halt=()=>{stop=true}, off=()=>{removeEventListener("wheel",halt);removeEventListener("touchstart",halt)};
+  const de=document.documentElement, y0=scrollY, t0=performance.now(), D=450; let stop=false;
+  de.style.overflowAnchor="none";
+  const halt=()=>{stop=true}, off=()=>{removeEventListener("wheel",halt);removeEventListener("touchstart",halt);de.style.overflowAnchor=""};
   addEventListener("wheel",halt,{passive:true}); addEventListener("touchstart",halt,{passive:true});
-  const step=now=>{ if(stop){off();return} const p=Math.min(1,(now-t0)/D); scrollTo(0,p<1?Math.round(y0*Math.pow(2,-10*p)):0); if(p<1) requestAnimationFrame(step); else off(); };
+  const step=now=>{ if(stop){off();return} const p=Math.min(1,(now-t0)/D); scrollTo({top:p<1?Math.round(y0*Math.pow(2,-10*p)):0,behavior:"instant"}); if(p<1) requestAnimationFrame(step); else off(); };
   requestAnimationFrame(step);
   setTimeout(()=>{ if(!stop&&scrollY>0){ stop=true; off(); scrollTo(0,0); } },D+120); // 화면이 가려져 움직임이 멈춰도 끝에는 맨 위에 있게
 });
