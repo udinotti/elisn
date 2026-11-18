@@ -193,7 +193,7 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--accent);outline-offse
 body.stdmode .quick:not(.kinds):not(.yrs),body.stdmode .dmsg{display:none} /* 표준화 자료: 바로 고르기·날짜 안내는 감추고 그 자리에 발표 연도 줄 */
 body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 남긴다(감추면 「표준화만」을 누를 때 아래 내용이 들썩임, 2026-11-16). 값은 두어 검사기준으로 돌아가면 다시 적용 */
 .quick.yrs[hidden]{display:none}
-.yrs .qd{display:inline-flex;align-items:center;gap:6px}
+.yrs .qd{display:inline-flex;align-items:center;gap:6px;will-change:transform} /* 눌림(크기 줄었다 돌아옴)이 끝날 때 작은 숫자가 1px쯤 튀지 않게 늘 같은 층에서 그림 (2026-11-18) */
 .yrs .qd .tn{font-size:12px;font-weight:600;opacity:.75}
 /* 거름이 걸린 화면: 항목으로 찾기는 접힌 한 줄, 카드 목록 위에는 건수 구분 줄 */
 .tfold{margin-top:14px}
@@ -813,7 +813,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.18.4"</script>버전 v2026.11.18.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.18.5"</script>버전 v2026.11.18.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1599,7 +1599,7 @@ function card(x,rxs,isStd,upNote,why,par){
     ${why?`<div class="why">적용 안 됨 · ${esc(why)}</div>`:""}
     <div class="head">${fn?`<div class="hrow">`:""}${shownLabel(x)||!x.label?`<span class="label">${labelHTML(x,isStd)}</span>`:""}${fn?`<button type="button" class="failbadge" data-act="failgo" data-i="${x.__i}" aria-expanded="false" aria-label="${fo.inherited?"불합격 기준 지금 기준(참고) ":"불합격 기준 "}${fn}개 보기">${fbt}</button></div>`:""}<span class="title">${hl(x.title||"",rxs)}${isStd&&x.old&&!x.oldkind?`<span class="oldtag">옛 표준화</span>`:""}</span></div>
     ${isStd&&x.old&&!x.oldkind?`<div class="oldnote">최신 모음(~25년 2차)에 실리지 않은 옛 차수 안건입니다. 지금 기준과 다를 수 있습니다.</div>`:""}
-    ${!isStd&&!x.kind&&!x.dup&&x.to&&!(x.__v||[]).some(y=>y!==x&&y.from&&y.from>x.to)?`<div class="oldnote">지금 기준에서 이어지는 조항을 찾지 못했습니다. 없어졌거나 번호·내용이 크게 바뀌었을 수 있습니다.</div>`:""}
+    ${!isStd&&!x.kind&&!x.dup&&x.to&&!(x.__v||[]).some(y=>y!==x&&y.from&&y.from>x.to)?`<div class="oldnote">지금 기준과 연결 안 됨</div>`:""}
     <div class="meta">${upNote?`<span class="pill kw">상위 조항 해석</span>`:""}${periodPills(x,isStd)}${revSet.has(x)?((x.__v||[]).some(y=>y!==x&&y.to&&y.to<x.from)?tipPill("rev",dot(x.from)+" 개정"):tipPill("rev",dot(x.from)+" 신설")):""}</div>
     ${isStd&&x.grp?grpLine(x,par):""}
     ${isStd&&x.hist?`<div class="histln"><b>바뀐 이력</b>${esc(x.hist)}</div>`:""}
@@ -2280,6 +2280,12 @@ const tidy=s=>eqFix(s).replace(/([가-힣])\?(?=[가-힣A-Za-z0-9])/g,"$1·").re
   .replace(/(\d) °/g,"$1°")            // "35 °" → "35°" (판마다 띄어쓰기만 달라 비교에서 바뀐 말로 잡히던 것)
   .replace(/(\S)[ \t]{2,}(?=\S)/g,"$1 "); // 줄 가운데 겹빈칸 → 한 칸 (줄 앞 들여쓰기는 그대로)
 // 원문 글 첫머리의 조항 번호가 창 제목과 같으면 본문에선 뺀다 (번호가 두 번 보이지 않게, 2026-10-04 운영자). 원문 자료는 그대로, 보여 줄 때만
+// 원문 창의 줄글로 풀린 표 → 카드가 쓰는 같은 표로 (2026-11-18 찬호님: 원문 사이트는 표가 칸으로 보임). 한글·숫자 순서가 카드 표 줄(cut)과 같은 이어진 줄들을 "[표:N]" 한 줄로. 안 맞으면 null(지금처럼 글자 그대로)
+const lawKey=s=>String(s).normalize("NFKC").replace(/[^가-힣0-9]/g,"");
+const lawTabs=(t,x)=>{ if(!x.__ct) return null; const ls=t.split("\n"); let hit=false;
+  for(const {k,n} of x.__ct){ if(!k) continue; for(let a=0;a<ls.length;a++){ if(!lawKey(ls[a])) continue; let acc="",b=a; for(;b<ls.length;b++){ acc+=lawKey(ls[b]); if(acc===k||!k.startsWith(acc)) break; }
+    if(acc===k){ ls.splice(a,b-a+1,"[표:"+n+"]"); hit=true; break; } } }
+  return hit?ls.join("\n"):null; };
 const dropNum=(t,n)=>{ t=String(t||""); return n&&t.startsWith(n)&&/\s/.test(t.charAt(n.length))?t.slice(n.length).replace(/^[ \t]+/,""):t; };
 // 장의 마지막 조항은 원문 조각 끝에 다음 장 제목(8.18.2 끝의 "9. 현수, 보상, …")이 딸려 와서 뺀다. 다음 장 번호로 시작하고 문장으로 끝나지 않는 마지막 줄만 (2026-10-04, 35곳)
 const dropNextHead=(t,n)=>{ const N=parseInt(n,10)+1; if(!N) return t; const m=t.match(new RegExp("\\n[ \\t]*"+N+"\\.?[ \\t]+([^\\n]{1,60})$")); return m&&!/다\.?$/.test(m[1])?t.slice(0,m.index):t; };
@@ -2306,7 +2312,8 @@ async function showLaw(i){
       r=all.filter(v=>L.sources[v.src].date<=d).pop()||all[0]; }
     const s=L.sources[r.src];
     $("#lawsrc").textContent=s.name; $("#lawttl").textContent=r.num; $("#lawfull").href=s.url;
-    $("#lawbody").textContent=dropNum(dropNextHead(tidy(eqTxt(r.text)).replace(/&quot;/g,'"').replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&"),r.num),r.num); // 원문 조각 몇 곳에 HTML 글자(&quot; 등)가 그대로 남아 있어 되돌린다
+    const lt=dropNum(dropNextHead(tidy(eqTxt(r.text)).replace(/&quot;/g,'"').replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&"),r.num),r.num); // 원문 조각 몇 곳에 HTML 글자(&quot; 등)가 그대로 남아 있어 되돌린다
+    const lm=lawTabs(lt,x); if(lm) $("#lawbody").innerHTML=plainWithTables(lm,x.tables); else $("#lawbody").textContent=lt;
     const w=[];
     if(r.near) w.push("이 조항이 적용되던 때의 판 원문이 없어 가장 가까운 판으로 보여 줘요. 글이 조금 다를 수 있어요.");
     if(r.quoted) w.push("2009 고시보다 앞선 기준이라, 원문 중 \"종전기준\"이라고 인용된 부분이 이 조항의 근거예요.");
@@ -2787,7 +2794,7 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    for(const a of f.additions||[]){const x={...a,added:true}; x.__i=C.length+1; x.__k=keyOf(x,false); C.push(x);}
    // 카드 본문에 줄글로 풀린 표: 빌드가 짝을 맞춘 줄(cut)을 "[표:N]" 줄로 바꾸고 표를 붙인다 (표 그리기·검색·인쇄는 tables 쓰는 기존 길). 글이 안 맞으면 그대로 (2026-10-27)
    for(const [i,l] of Object.entries(f.cardTabs||{})){ const x=C[i-1]; if(!x||!x.text) continue;
-     for(const {cut,tab} of l){ if(!x.text.includes(cut)) continue; for(const r of tab.rows) for(const c of r) c.t=tidy(c.t); (x.tables||=[]).push(tab); x.text=x.text.replace(cut,()=>"[표:"+x.tables.length+"]"); } }
+     for(const {cut,tab} of l){ if(!x.text.includes(cut)) continue; for(const r of tab.rows) for(const c of r) c.t=tidy(c.t); (x.tables||=[]).push(tab); x.text=x.text.replace(cut,()=>"[표:"+x.tables.length+"]"); (x.__ct||=[]).push({k:lawKey(cut),n:x.tables.length}); } }
    // 즐겨찾기 이어받기: 예전 카드 키(옛 글이 든 "c|…")는 같은 해시(__h)를 가진 지금 카드의 키로 바꿔 한 번만 저장. "s|"·종류 카드 키는 그대로
    {const H=new Map(), cur=new Set(); for(const x of C){cur.add(x.__k); if(x.__h) H.set(x.__h,x.__k);} let ch=false;
     for(const k of [...favs]){ if(!k.startsWith("c|")||cur.has(k)) continue; const n=H.get(fnvHex(k)); if(n){favs.delete(k); favs.add(n); ch=true;} }
