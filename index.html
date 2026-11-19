@@ -814,7 +814,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.19.1"</script>버전 v2026.11.19.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.19.2"</script>버전 v2026.11.19.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1411,11 +1411,15 @@ const vIn=(a,b)=>{const[s,l]=a.size<=b.size?[a,b]:[b,a];if(s.size<3||l.size>12)r
 const sub=l=>(/^(.*)\(\d+\)$/.exec(l||"")||[])[1]; // 끝 세부 번호 (n) 앞 조항 번호
 let SAMEM=new Set(); // 뜻이 같은 쌍 "앞판순번>뒤판순번"
 function buildVersions(){
+  // 머리줄 카드("8.6.3 …다음과 같아야 한다."처럼 짧고 같은 기간에 8.6.3.1 같은 아래 번호가 있는 것)는 번호가 같아도 내용 있는 카드의 짝으로 고르지 않는다 (2026-11-19, 카문 틈새 8.6.3)
+  const par=new Set(CV.map(z=>z.from+"|"+z.to+"|"+(z.label||"").replace(/\.[^.]+$/,""))), head=y=>y.__t.size<6&&par.has(y.from+"|"+y.to+"|"+y.label);
+  // 단, 그 아래 번호 중 하나가 글로도 닮았을 때만(같은 묶음 안 아래 번호가 글로도 닮았을 때만. 아니면 7.1 일반사항처럼 머리줄과 그대로 잇는다)
+  const kid=(x,y)=>g[x.vg||x.t0||x.title].some(z=>z.from===y.from&&z.to===y.to&&(z.label||"").startsWith(y.label+".")&&(dice(x.__t,z.__t)>=0.4||vIn(x.__t,z.__t)));
   const g={}; CV.forEach(x=>{x.__t=vToks(bodyText(x));(g[x.vg||x.t0||x.title]=g[x.vg||x.t0||x.title]||[]).push(x)}); // 묶음은 핵심 말 전 제목(t0)으로
   for(const x of CV){
     const gl=y=>y.label, k=vName(gl(x)), named=!dateName(k), best=new Map();
     for(const y of g[x.vg||x.t0||x.title]){ if(y===x||(y.from===x.from&&y.to===x.to)) continue;
-      const nameSame=named?vName(gl(y))===k:dateName(vName(gl(y)));
+      const nameSame=(named?vName(gl(y))===k:dateName(vName(gl(y))))&&!(head(y)&&!head(x)&&kid(x,y));
       if(gl(y)!==gl(x)&&sub(gl(y))&&sub(gl(y))===sub(gl(x))) continue; // 같은 조항의 서로 다른 세부 번호 (3)·(6)은 글이 닮아도 다른 조항
       const sc=dice(x.__t,y.__t), short=Math.min(x.__t.size,y.__t.size)<6;
       if(!(nameSame||(!short&&sc>=0.4)||(short&&(sc>=0.7||vIn(x.__t,y.__t))))) continue;
