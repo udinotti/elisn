@@ -161,7 +161,7 @@ input[type=checkbox]:focus-visible{outline:2px solid var(--accent);outline-offse
 .date:focus-within{outline:2px solid var(--accent);outline-offset:-1px}
 .date label{font-size:14px;font-weight:700;color:var(--sub);white-space:nowrap}
 .date input{border:0;box-shadow:none!important;background:transparent;padding:10px 4px;flex:1;width:auto;min-width:0;font-variant-numeric:tabular-nums} /* 칸 폭에 맞춰 줄어듦(검색칸 3 : 날짜칸 2) */
-.date #d{padding-right:72px} /* 칸 안 오른쪽 지우기 버튼 자리: 입력 글자가 버튼에 가리지 않게 */
+.date:has(#dclear:not([hidden])) #d{padding-right:72px} /* 칸 안 오른쪽 지우기 버튼 자리: 입력 글자가 버튼에 가리지 않게 */
 @media (max-width:640px){.date input{flex:1;width:auto;min-width:0}}
 .quick{display:flex;gap:8px;align-items:center;margin-top:12px}
 .quick.kinds{margin:0 0 12px} /* 승강기 종류 줄: 검색창 위 */
@@ -814,7 +814,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.20.4"</script>버전 v2026.11.20.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.20.5"</script>버전 v2026.11.20.5 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -829,7 +829,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <div class="sh-head"><div><div class="sh-src">ELISN</div><h2 id="repttl">의견 남기기</h2></div><button type="button" class="chipbtn" id="repclose" aria-label="닫기">닫기</button></div>
     <div class="rep-body">
       <div class="rep-step"><span class="rep-no">1</span><div><b>조항 정보 복사</b><div class="rep-box"><div id="repclause"></div><button type="button" class="chipbtn" id="repcopy">다시 복사</button></div><p class="rep-state" id="repstate" role="status"></p></div></div>
-      <div class="rep-step"><span class="rep-no">2</span><div><b>폼에 붙여 넣기</b><ul><li><em>조항 (번호·제목)</em> 칸에 붙여 넣으세요.</li><li>폰은 칸을 길게 눌러 <em>붙여넣기</em></li></ul></div></div>
+      <div class="rep-step"><span class="rep-no">2</span><div><b>폼에 붙여 넣기</b><ul><li><em>어느 조항·표준화 안건인가요?</em> 칸에 붙여 넣으세요.</li><li>폰은 칸을 길게 눌러 <em>붙여넣기</em></li></ul></div></div>
       <div class="rep-step"><span class="rep-no">3</span><div><b>내용 적고 제출</b><ul><li>종류를 고르고 고쳤으면 하는 내용을 적어 주세요.</li><li>근거가 있으면 함께 적어 주세요.</li></ul></div></div>
     </div>
     <div class="sh-foot"><a class="rep-go" id="repopen" target="_blank" rel="noopener">의견 폼 열기</a></div>
@@ -1605,7 +1605,7 @@ function card(x,rxs,isStd,upNote,why,par){
   const figAt=Object.keys(fp.at).length?Object.fromEntries(Object.entries(fp.at).map(([i,a])=>[i,`<div class="imgs inl">${a.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`])):null;
   const long=(x.text||"").length+tabFlat(x).length>600;
   const k=keyOf(x,isStd), faved=favs.has(k), nv=isStd?0:(x.__v||[]).length;
-  return `<article class="${why?"off":""}" data-k="${esc(k)}">
+  return `<article class="${why?"off":""}" data-k="${esc(k)}"${isStd?` data-fb="${esc("표준화 "+(x.from||""))}"`:""}>
     ${why?`<div class="why">적용 안 됨 · ${esc(why)}</div>`:""}
     <div class="head">${fn?`<div class="hrow">`:""}${shownLabel(x)||!x.label?`<span class="label">${labelHTML(x,isStd)}</span>`:""}${fn?`<button type="button" class="failbadge" data-act="failgo" data-i="${x.__i}" aria-expanded="false" aria-label="${fo.inherited?"불합격 기준 지금 기준(참고) ":"불합격 기준 "}${fn}개 보기">${fbt}</button></div>`:""}<span class="title">${hl(x.title||"",rxs)}${isStd&&x.old&&!x.oldkind?`<span class="oldtag">옛 표준화</span>`:""}</span></div>
     ${isStd&&x.old&&!x.oldkind?`<div class="oldnote">최신 모음(~25년 2차)에 실리지 않은 옛 차수 안건입니다. 지금 기준과 다를 수 있습니다.</div>`:""}
@@ -1645,7 +1645,7 @@ function render0(){ closeTip();
   if(favOnly){ res=res.filter(o=>favs.has(keyOf(o.x,isStd))); part=part.filter(o=>favs.has(keyOf(o.x,isStd))); }
   if(fOn&&isStd){ const ff=o=>stdFail(o.x); res=res.filter(ff); part=part.filter(ff); } // 표준화 자료의 불합격 항목만: 불합격 판정이 적힌 항목만 (검사기준은 아래 lv: 공단 불합격 기준 목록)
   if(isStd){ // 발표 연도 단추 수: 검색어·즐겨찾기만·불합격만을 건 결과를 연도 거르기 전에 (카드로 보이는 기준으로 겹친 건 한 장) 센 것
-    const s2=new Set(), cnt={}; let total=0; const base=q.trim()||favOnly||fOn?[...res,...part].map(o=>o.x):curS(); /* 거름이 없으면 종류의 전체 자료 그대로 (예전과 같음) */ for(const x of base){ const k=stdDk(x); if(s2.has(k)) continue; s2.add(k); const y=stdYr(x); cnt[y]=(cnt[y]||0)+1; total++; }
+    const s2=new Set(), cnt={}; let total=0; const base=q.trim()||favOnly||fOn?res.map(o=>o.x):curS(); /* 거름이 없으면 종류의 전체 자료 그대로. 「검색어 일부만 맞는」 것은 결과 수에 안 들어가니 연도 수에서도 뺀다(두 낱말 검색에서 전체 217 대 결과 85로 어긋나던 것, 2026-11-20) */ for(const x of base){ const k=stdDk(x); if(s2.has(k)) continue; s2.add(k); const y=stdYr(x); cnt[y]=(cnt[y]||0)+1; total++; }
     yrLive={cnt,total}; drawYears(true,yrLive);
     if(stdYear){ const yf=o=>stdYr(o.x)===stdYear; res=res.filter(yf); part=part.filter(yf); } }
   const seen=new Set(), dk=stdDk, uniq=a=>a.filter(o=>{const k=dk(o.x); if(seen.has(k)) return false; seen.add(k); return true;});
@@ -2520,7 +2520,7 @@ async function copyClause(){
     else{ st.textContent="복사가 안 됐어요. 위 글이 선택돼 있으니 길게 눌러 복사해 주세요."; st.className="rep-state bad"; } }
 }
 function report(art){
-  {const h=art.querySelector(".head").cloneNode(true); h.querySelector(".failbadge")?.remove(); h.querySelectorAll(".label,.title").forEach(e=>e.append(" ")); /* 번호·이름과 제목 사이 띄어쓰기 */ $("#repclause").textContent=h.textContent.replace(/\s+/g," ").trim();}
+  {const h=art.querySelector(".head").cloneNode(true); h.querySelector(".failbadge")?.remove(); h.querySelectorAll(".label,.title").forEach(e=>e.append(" ")); /* 번호·이름과 제목 사이 띄어쓰기 */ $("#repclause").textContent=(art.dataset.fb?"["+art.dataset.fb.trim()+"] ":"")+h.textContent.replace(/\s+/g," ").trim();} /* 표준화 카드는 [표준화 26년 제2차]를 앞에 붙여 어느 안건인지 알게 (2026-11-20) */
   $("#repstate").textContent=""; $("#repstate").className="rep-state";
   $("#repopen").href=FORM_URL||"#";
   $("#repdlg").showModal();
