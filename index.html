@@ -814,7 +814,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.20.3"</script>버전 v2026.11.20.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.20.4"</script>버전 v2026.11.20.4 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1019,8 +1019,8 @@ function whyNot(x,d){
 const TIP={hit:"고른 기준적용일에 적용되는 기간이에요.",old:"고른 기준적용일에는 적용되지 않는 기간이에요.",rev:"고른 기준적용일 전에 개정되거나 새로 생긴 조항이에요."};
 const tipPill=(c,t)=>`<span class="pill ${c} tip" role="button" tabindex="0" aria-expanded="false" data-tip="${c}" aria-label="${esc(t)}, ${TIP[c]}">${t}</span>`; // 누르면 뜻 말풍선(시기 전환 같은 다른 동작은 없다) (2026-11-04)
 // 이어지는 안건: 같은 묶음(grp)의 다른 표준화 카드를 차수 순서로 나열, 누르면 그 아래에 카드를 펼친다 (lab, 2026-11-17)
-function grpLine(x,par){
-  const o=S.filter(y=>y!==x&&y!==par&&y.grp===x.grp).sort((a,b)=>{const p=stdKey(a.from),q=stdKey(b.from);return p[0]-q[0]||p[1]-q[1]});
+function grpLine(x,par){ // par: 위에 이미 펼쳐진 카드들(바깥부터) — 다시 보여 주면 17→23→18→17… 끝없이 겹쳐 펼쳐져서 뺀다 (2026-11-20 찬호님)
+  const up=[].concat(par||[]), o=S.filter(y=>y!==x&&!up.includes(y)&&y.grp===x.grp).sort((a,b)=>{const p=stdKey(a.from),q=stdKey(b.from);return p[0]-q[0]||p[1]-q[1]});
   if(!o.length) return "";
   return `<div class="fgrel" data-self="${esc(x.__k)}"><span class="fgl">이어지는 안건</span>${o.map(y=>`<button type="button" class="chipbtn fgb" data-act="grpgo" data-k="${esc(y.__k)}" aria-expanded="false" title="${esc((y.from||"")+" "+(y.title||""))}"><b>${esc(y.from||"")}</b><span class="fgt">${esc(y.title||"")}</span></button>`).join("")}<div class="fgx"></div></div>`;
 }
@@ -1595,7 +1595,7 @@ function pipeTab(text){
 // 표준화 카드 「배경」: 공단 문서의 현안사항 원문(줄바꿈만 정리)과 그림, 접어 둠 (2026-11-17, lab)
 // 그림이 2장 이상이면 장마다 「1/2」 쪽 번호 캡션을 붙인다 (1장이면 그대로)
 const pageFig=(h,i,n)=>n>1?`<figure>${h}<figcaption>${i+1}/${n}</figcaption></figure>`:h;
-const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${esc(x.bg)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map((p,i,A)=>pageFig(`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`,i,A.length)).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${esc(x.disc)}</div>`:""}${(x.bgsrc||{}).doc?`<div class="note">출처: ${esc(x.bgsrc.doc)}${x.bgsrc.page?" "+x.bgsrc.page+"쪽":""}</div>`:""}</details>`;
+const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${esc(x.bg)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map((p,i,A)=>pageFig(`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`,i,A.length)).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${esc(x.disc)}</div>`:""}${(x.bgsrc||{}).doc?`<div class="note">출처: ${esc(x.bgsrc.doc.replace(/\s*(\((pdf|hwpx?)\)|\.(pdf|hwpx?))$/i,""))}</div>`:""}</details>`;
 // 표준화 카드 「붙임」: 배경과 같은 모양의 접힌 칸, 붙임 이름마다 그림 (2026-11-17, lab)
 const attHTML=x=>`<details class="bgfold attfold"><summary>붙임</summary>${x.att.map(a=>`<div class="sub-h">${esc(a.name)}</div><div class="imgs">${(a.imgs||[]).map((p,i,A)=>pageFig(`<button type="button" data-img="${esc(p)}" data-cap="${esc("붙임 "+a.name)}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(a.name)}"></button>`,i,A.length)).join("")}</div>`).join("")}</details>`;
 function card(x,rxs,isStd,upNote,why,par){
@@ -2054,7 +2054,7 @@ $("#out").addEventListener("click",e=>{
   else if(a.dataset.act==="failgo"){ const o=art.querySelector(":scope>.failpop"); a.setAttribute("aria-expanded",!o); failOpen[o?"delete":"add"](art.dataset.k); if(o) o.remove(); else { const x=byI(+a.dataset.i); (art.querySelector(":scope>.meta:not(:empty)")||art.querySelector(":scope>.head")).insertAdjacentHTML("afterend",failHTML(failOrInherit(x).items,"불합격 기준",failOrInherit(x).inherited?"지금 공단 기준이에요. 이 판의 조항 글과 다를 수 있어 참고로 보여 드려요.":"","failpop",false,dotAll(shownLabel(x)||"번호 없음"))); } } // 화면은 그대로, 적용 기간 아래에 불합격 기준 카드를 끼움
   else if(a.dataset.act==="fcopy"||a.dataset.act==="lcopy") failCopy(a);
   else if(a.dataset.act==="grpgo"){ const row=a.closest(".fgrel"), x=row.querySelector(".fgx"), on=a.getAttribute("aria-expanded")!=="true", y=S.find(s=>s.__k===a.dataset.k);
-    row.querySelectorAll(".fgb").forEach(b=>b.setAttribute("aria-expanded",b===a&&on)); x.innerHTML=on&&y?`<div class="rel">${card(y,[],true,undefined,undefined,S.find(s=>s.__k===row.dataset.self))}</div>`:""; }
+    row.querySelectorAll(".fgb").forEach(b=>b.setAttribute("aria-expanded",b===a&&on)); x.innerHTML=on&&y?`<div class="rel">${card(y,[],true,undefined,undefined,[...document.querySelectorAll(".fgrel")].filter(r=>r.contains(row)).map(r=>S.find(s=>s.__k===r.dataset.self)))}</div>`:""; }
   else if(a.dataset.act==="fgcard"){ const row=a.closest(".fgrel"), x=row.querySelector(".fgx"), on=a.getAttribute("aria-expanded")!=="true"; // 불합격 목록의 관련 조항 칩: 항목 아래에 카드 한 장 펼침/접힘
     row.querySelectorAll(".fgb").forEach(b=>b.setAttribute("aria-expanded",b===a&&on)); x.innerHTML=on?card(byI(+a.dataset.i),[],false):""; const fk=row.closest(".fgitem").dataset.fk; if(on) fgOpen.set(fk,a.dataset.i); else fgOpen.delete(fk); }
   else if(a.dataset.act==="more"){limit+=40;render()}
