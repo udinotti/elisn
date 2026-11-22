@@ -295,6 +295,8 @@ body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 
 .relq[hidden]{display:none}
 .relq .qd{font-size:13.5px;padding:6px 12px;box-shadow:none}
 .relq .qd::before{content:"+ ";color:var(--muted)}
+.relq .qd.rx{background:var(--accent);border-color:var(--accent);color:var(--on-accent)} /* 붙여 둔 연관어: 눌러서 빼기 */
+.relq .qd.rx::before{content:none}
 
 /* 목록 */
 .list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
@@ -798,7 +800,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.21)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.22)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -814,7 +816,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.21.2"</script>버전 v2026.11.21.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.22.1"</script>버전 v2026.11.22.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1596,7 +1598,9 @@ function pipeTab(text){
 // 표준화 카드 「배경」: 공단 문서의 현안사항 원문(줄바꿈만 정리)과 그림, 접어 둠 (2026-11-17, lab)
 // 그림이 2장 이상이면 장마다 「1/2」 쪽 번호 캡션을 붙인다 (1장이면 그대로)
 const pageFig=(h,i,n)=>n>1?`<figure>${h}<figcaption>${i+1}/${n}</figcaption></figure>`:h;
-const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${esc(x.bg)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map((p,i,A)=>pageFig(`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`,i,A.length)).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${esc(x.disc)}</div>`:""}${(x.bgsrc||{}).doc?`<div class="note">출처: ${esc(x.bgsrc.doc.replace(/\s*(\((pdf|hwpx?)\)|\.(pdf|hwpx?))$/i,""))}</div>`:""}</details>`;
+// 배경 출처가 카드 위 차수 칩(예: 18년 제2차)과 같은 차수면 같은 말을 두 번 쓰지 않게 숨긴다. 다른 차수·다른 문서에서 온 배경만 출처를 보인다 (2026-11-22 찬호님)
+const bgSame=x=>{ const m=String(x.bgsrc.doc).match(/(?:20)?(\d\d)년도?\s*제?\s*(\d+)\s*차/); return !!m&&String(x.from||"").includes(`${m[1]}년 제${m[2]}차`); };
+const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${esc(x.bg)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map((p,i,A)=>pageFig(`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`,i,A.length)).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${esc(x.disc)}</div>`:""}${(x.bgsrc||{}).doc&&!bgSame(x)?`<div class="note">출처: ${esc(x.bgsrc.doc.replace(/\s*(\((pdf|hwpx?)\)|\.(pdf|hwpx?))$/i,""))}</div>`:""}</details>`;
 // 표준화 카드 「붙임」: 배경과 같은 모양의 접힌 칸, 붙임 이름마다 그림 (2026-11-17, lab)
 const attHTML=x=>`<details class="bgfold attfold"><summary>붙임</summary>${x.att.map(a=>`<div class="sub-h">${esc(a.name)}</div><div class="imgs">${(a.imgs||[]).map((p,i,A)=>pageFig(`<button type="button" data-img="${esc(p)}" data-cap="${esc("붙임 "+a.name)}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(a.name)}"></button>`,i,A.length)).join("")}</div>`).join("")}</details>`;
 function card(x,rxs,isStd,upNote,why,par){
@@ -1757,9 +1761,11 @@ function render0(){ closeTip();
   const fold=!lv&&!home&&!q.trim()&&!favOnly&&hasTopics(isStd); // 거름이 걸렸는데 항목으로 찾기 패널이 함께 나오는 화면 → 패널은 접고 카드 위에 건수 줄
   $("#status").hidden=useDate||home||fold; // 첫 화면(거름 없음)에서는 "전체 N건"이 알려 주는 게 없어 숨긴다 // 허가일을 넣으면 위 파란 칸에 '적용 N건'이 나오니 같은 숫자를 두 번 보이지 않게 숨긴다 (인쇄 건수 확인용으로 글은 채워 둠)
   const rel=relTerms(res,q,rxs), rq=$("#relq");
-  rq.hidden=!rel.length;
-  rq.innerHTML=rel.length?`<span class="qlabel">연관 검색어</span><div class="qs">`+rel.map(w=>`<button type="button" class="qd" data-rel="${esc(w)}">${esc(w)}</button>`).join("")+`</div>`:"";
-  if(rel.length) slider(rq.querySelector(".qs"));
+  relAdded=relAdded.filter(w=>relAt(q,w)>=0); // 검색칸에서 손으로 지운 연관어는 칩도 뺀다
+  const nRel=rel.length+relAdded.length;
+  rq.hidden=!nRel;
+  rq.innerHTML=nRel?`<span class="qlabel">연관 검색어</span><div class="qs">`+relAdded.map(w=>`<button type="button" class="qd rx" data-relx="${esc(w)}" aria-label="${esc(w)} 빼기">${esc(w)} ✕</button>`).join("")+rel.map(w=>`<button type="button" class="qd" data-rel="${esc(w)}">${esc(w)}</button>`).join("")+`</div>`:"";
+  if(nRel) slider(rq.querySelector(".qs"));
   const out=$("#out");
   // 허가일에 적용 안 되는 조항은 맨 아래에 접어서, 까닭과 함께 보여 준다
   const exclBlock=excl.length?`<div class="excl"><button class="chipbtn" type="button" data-act="excl">이 날짜에 적용 안 되는 조항 ${excl.length}건 보기</button><div class="list" hidden>${excl.slice(0,80).map(o=>card(o.x,rxs,false,false,whyNot(o.x,d))).join("")}</div></div>`:"";
@@ -1847,6 +1853,10 @@ function topicPanel(isStd,cnt){
   } else body=(kind==="elev"?TOPICS:TOPICS_K[kind]).map(([g,ws])=>{ const c=[...ws].sort((a,b)=>a.localeCompare(b,"ko")).map(chip).join(""); /* 묶음 안 낱말은 가나다순(표준화 자료와 같은 규칙) */ return c?`<div class="tcard"><span class="qlabel">${g}</span><div class="tg">${c}</div></div>`:""; }).join("");
   return `<section class="topics"><div class="thead"><h2>항목으로 찾기 <span class="ts">${isStd?"분류별로":"부위별로"} 골라 보기</span></h2></div><div class="tgrid">${body}</div></section>`;
 }
+let relAdded=[]; // 연관 검색어로 붙인 낱말(누른 순서). 칩 ✕ 로 하나씩 뺀다
+// 검색칸 낱말 중 w(두 낱말 묶음이면 이어진 두 칸)가 마지막으로 나오는 자리, 없으면 -1
+function relAt(q,w){ const ws=q.trim().split(/\s+/), p=w.split(" ");
+  for(let i=ws.length-p.length;i>=0;i--) if(p.every((t,j)=>ws[i+j]===t)) return i; return -1; }
 let backSkip=0; // backSkip: 코드가 직접 부른 history.back() 수 (popstate 에서 그만큼 건너뜀, 두 개가 겹쳐도 셈이 맞게)
 // 연관 검색어: 결과 조항 제목에 자주 같이 나오는 낱말을 골라, 누르면 지금 검색어에 더해 좁혀 찾게 한다
 // 흔한 말(기준, 설치 등)은 빼고, 늘 붙어 다니는 두 낱말(에너지 분산형)은 한 덩어리로 보여 준다
@@ -2747,8 +2757,13 @@ const goSearch=()=>{
 };
 $("#qgo").addEventListener("click",goSearch);
 $("#q").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.isComposing){ e.preventDefault(); goSearch(); } });
-$("#relq").addEventListener("click",e=>{ const b=e.target.closest("[data-rel]"); if(!b) return;
-  $("#q").value=($("#q").value.trim()+" "+b.dataset.rel).trim(); limit=40; render(); });
+// 누른 연관어는 줄 맨 앞에 '낱말 ✕' 칩으로 남기고, 칩을 누르면 검색칸에서 그 낱말만 뺀다 (2026-11-22 찬호님)
+$("#relq").addEventListener("click",e=>{ const x=e.target.closest("[data-relx]");
+  if(x){ const w=x.dataset.relx, ws=$("#q").value.trim().split(/\s+/), i=relAt($("#q").value,w);
+    if(i>=0) ws.splice(i,w.split(" ").length);
+    $("#q").value=ws.join(" "); relAdded=relAdded.filter(v=>v!==w); limit=40; render(); return; }
+  const b=e.target.closest("[data-rel]"); if(!b) return;
+  $("#q").value=($("#q").value.trim()+" "+b.dataset.rel).trim(); relAdded.push(b.dataset.rel); limit=40; render(); });
 // 허가일 칸의 "적용 안 됨 N건 ›": 맨 아래 적용 안 되는 조항 목록을 펼치고 그 첫 조항으로 (위에 붙는 얇은 검색줄에 가리지 않게 조금 띄움)
 $("#dateBanner").addEventListener("click",e=>{ const rb=e.target.closest("[data-rev]"); if(rb){ revSel=revSel===rb.dataset.rev?"":rb.dataset.rev; limit=40; render(); return; }
   if(!e.target.closest('[data-act="toexcl"]')) return;
