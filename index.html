@@ -225,6 +225,7 @@ body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 
 .sxb,.sxall{background:var(--surface);color:var(--ink);border:1px solid var(--edge);box-shadow:var(--lift)} /* 눌러서 다른 화면·펼침으로 가는 단추: 상자 모양 (.excl>.chipbtn 과 같은 결) */
 .sx{margin-top:14px}
 .sxh{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;margin:0 2px 8px}
+.sx.c .sxh{justify-content:center;text-align:center} /* 결과 0건일 때: 위 안내 글처럼 가운데로 (2026-11-23) */
 .sxh h2{margin:0;font-size:14.5px;font-weight:700;color:var(--ink)}
 .sxn{font-size:12.5px;color:var(--muted)}
 .sxl{display:flex;flex-direction:column;gap:8px}
@@ -312,6 +313,7 @@ article{background:var(--surface);border:1px solid var(--edge);border-radius:22p
 .pill.old{background:var(--old-soft);color:var(--old)}
 .pill.kw{background:var(--accent-soft);color:var(--accent)}
 .rel .pill.kw{background:var(--surface);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)} /* 회색 표준화 칸 안에서는 옅은 파랑이 묻혀서 흰 바탕 + 파란 테두리 (2026-10-21) */
+.rel .pill.old{background:var(--surface)} /* 표준화 칸 바탕(--fill)과 회색 알약(--old-soft)이 같은 색이라 차수·기타안건 칩이 테두리 없이 묻혔다 → 칸 안 단추처럼 흰 바탕 (2026-11-23) */
 .pill.hit{background:var(--accent);color:var(--on-accent)} /* 넣은 건축허가일에 적용되는 기간 */
 /* 허가일 직전 개정일에 바뀐 조항 표시 (누르면 시기별 비교) */
 .pill.tip{position:relative;cursor:pointer} /* 카드 위 표시(✓ 기간·기간·개정): 누르면 뜻 말풍선. 겉모양은 그대로, 누르는 자리만 ::after 로 위아래 8px 넓혀 약 41px (2026-11-04) */
@@ -367,6 +369,7 @@ mark{background:var(--mark);color:var(--ink);border-radius:4px;padding:0 2px;fon
 .imgs img{display:block;max-height:150px;max-width:100%}
 .rel{margin-top:14px;display:flex;flex-direction:column;gap:10px}
 .rel article{background:var(--fill);border:0;box-shadow:none;border-radius:16px;padding:16px}
+.sx .rel article{background:var(--surface);border:1px solid var(--frame);border-radius:14px} .sx .rel article .chipbtn:not(.primary,[aria-pressed=true]),.sx .rel article .acts .fbico{background:var(--fill)} .sx .rel .pill.old{background:var(--old-soft)} .sx .rel .pill.kw{background:var(--accent-soft);box-shadow:none} /* 검색 결과의 표준화 칸(.sx)은 회색 페이지 위라 펼친 카드도 회색이면 카드가 안 보였다 → 흰 카드, 그 안 칩·단추는 원래 회색·파랑 (2026-11-23 찬호님) */
 .fgx .rel article{background:var(--surface);border:1px solid var(--frame);border-radius:14px} /* 불합격 목록에서 펼친 조항 카드는 회색 바탕이라, 그 안 표준화 카드가 같은 회색이면 안 보임 */
 .fgx .rel article .chipbtn:not(.primary,[aria-pressed=true]){background:var(--fill)} /* 3단 중첩: 흰 카드 안 버튼은 카드와 다른 회색이어야 보임(바로 아래 .rel .chipbtn·폰의 .rel .acts .fbico 규칙이 흰색을 줘서 안 보였음) */
 /* 안쪽 카드 바탕(--fill)과 버튼 바탕이 같아 즐겨찾기 등이 상자 없이 떠 보여서, 안쪽 카드의 버튼은 바깥 카드 색으로 (2026-10-02) */
@@ -800,7 +803,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.22)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.23)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -816,7 +819,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.22.1"</script>버전 v2026.11.22.1 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.23.2"</script>버전 v2026.11.23.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -927,7 +930,7 @@ function stdSection(hits,rxs,mode,useDate){ // mode "c": 맞는 조항이 없을
   const N=hits.length, max=5;
   const rows=hits.slice(0,max).map((o,i)=>{ const x=o.x, k=keyOf(x,true), open=sxOpen.has(k)?sxOpen.get(k):(mode==="c"&&i===0);
     return `<div class="sxr"><button type="button" class="chipbtn sxb" data-act="sxrow" data-k="${esc(k)}" aria-expanded="${open}"><span class="sxm">${esc(stdMt(x))}</span><span class="sxt">${esc(x.title||x.keyword||x.label||"")}</span></button><div class="rel"${open?"":" hidden"}>${card(x,rxs,true)}</div></div>`; }).join("");
-  return `<section class="sx noprint" aria-label="표준화 자료"><div class="sxh"><h2>${mode==="c"?`표준화 자료에는 ${N}건 있어요`:`표준화 자료 ${N}건`}</h2>${useDate?`<span class="sxn">기준적용일과 상관없이 보여요</span>`:""}</div><div class="sxl">${rows}</div>${N>max?`<button type="button" class="chipbtn sxall" data-act="sxall">표준화 자료 ${N}건 모두 보기</button>`:""}</section>`; }
+  return `<section class="sx${mode==="c"?" c":""} noprint" aria-label="표준화 자료"><div class="sxh"><h2>${mode==="c"?`표준화 자료에는 ${N}건 있어요`:`표준화 자료 ${N}건`}</h2>${useDate?`<span class="sxn">기준적용일과 상관없이 보여요</span>`:""}</div><div class="sxl">${rows}</div>${N>max?`<button type="button" class="chipbtn sxall" data-act="sxall">표준화 자료 ${N}건 모두 보기</button>`:""}</section>`; }
 // 불합격 기준 카드(.failpop)·불합격 목록의 관련 조항 카드(.fgx)도 같게: 다시 그려도 펼친 채 → 화면에서 연 것이 인쇄에도 나온다 (2026-10-18)
 const failOpen=new Set(), fgOpen=new Map();
 // 카드 글과 원문 보기 글의 관계(빌드가 미리 비교, data/fixes.json lawRel): "s" 같음, "p" 카드가 조항 일부 → 버튼 이름은 "원문" 하나, 관계는 title로만(2026-10-16) (2026-10-04 운영자)
@@ -1304,8 +1307,9 @@ function joinLines(t){
 // 목록 들여쓰기: 줄 머리 표시(① 가) 1. a. - …)의 종류가 처음 나온 순서대로 한 단씩 안으로 (문서마다 쓰는 순서가 달라 순서로 정한다)
 //  같은 종류가 다시 나오면 그 단으로 돌아가고, 표시 없는 줄은 바로 윗줄 단을 따르며, * ※ 주석 줄은 윗줄보다 한 단 안으로
 //  "6.4.2 …" 같은 조항 번호 줄·비고·표·그림 줄은 맨 앞으로. 첫 줄부터 목록이면 그 단을 맨 앞으로 친다 (2026-09-30)
-const MKS=[[/^[①-⑳]/,"c"],[/^[가-하]\)/,"kp"],[/^[가-하]\.\s/,"kd"],[/^\(\d+\)/,"np"],[/^\d+\)/,"nr"],[/^\d+\.(?!\d)/,"nd"],[/^[a-z][.)]/,"l"],[/^[-·•]\s/,"d"]];
-const TOP=/^\s*(\d+(\.\d+)+\s|비고|표\s?\d|그림|\[표:\d+\]$)/;
+const MKS=[[/^[◆◇]/,"dia"],[/^[❍○ㅇ]/,"ci"],[/^●/,"bd"],[/^▪/,"sq"],[/^[❶-❿]/,"cb"],[/^[①-⑳]/,"c"],[/^[가-하]\)/,"kp"],[/^[가-하]\.\s/,"kd"],[/^\(\d+\)/,"np"],[/^\d+\)/,"nr"],[/^\d+\.(?!\d)/,"nd"],[/^[a-z][.)]/,"l"],[/^[-·•]\s/,"d"]];
+// ◆ 줄과 ❶ 줄(표준화 자료에 많음)도 목록 머리로 쳐서 ◆ 아래 ❶을 한 단 안으로 (2026-11-23, 찬호님 "레벨이 불명확") ❍○ㅇ●▪도 같은 식 (‣·★는 맨 왼쪽)
+const TOP=/^\s*(\d+(\.\d+)+\s|[‣★]|\[(안건|검토의견|검사 적용|표준화 안내)|비고|표\s?\d|그림|\[표:\d+\]$)/; // ‣(차수 항목)·★(덧붙임)·[안건] 같은 칸 머리는 늘 맨 왼쪽 (2026-11-23)
 // "비고 1. …" 다음의 "2. …"는 「비고 」 폭(BG단)만큼만 들여 1. 밑에 숫자가 오게 한다 (2026-11-19, 에스컬레이터 5.12.3.4.1 등 24장)
 const BG=1.5; // 「비고 」 폭 ≈ 2.1em = 1.5단(1단 1.4em)
 function lineLevels(lines){
@@ -1320,6 +1324,11 @@ function lineLevels(lines){
   const f=lines.findIndex(l=>l.trim()), base=f>=0&&lv[f]>0?lv[f]:0;
   return lv.map(v=>Math.max(0,v-base));
 }
+// 글머리 기호 통일 (2026-11-23 찬호님): ●▪❍ㅇ○ 처럼 뜻 없이 섞인 기호를 단계별 한 모양으로 (첫 단 •, 둘째 ◦, 셋째 ▪). 자료 원문은 그대로, 화면만
+const BUL=/^(\s*)([●▪❍ㅇ○])\s*/, BULK={"●":"bd","▪":"sq","❍":"ci","ㅇ":"ci","○":"ci"}, BULG=["•","◦","▪"];
+function bulletNorm(L){ let st=[]; return L.map(l=>{ const s=l.trimStart(); if(TOP.test(s)){ st=[]; return l; }
+  const m=l.match(BUL); if(!m) return l; const k=BULK[m[2]], i=st.indexOf(k); if(i>=0) st=st.slice(0,i+1); else st.push(k);
+  return m[1]+BULG[Math.min(st.length-1,2)]+" "+l.slice(m[0].length); }); }
 // 고시 표 (조항의 tables, 글에는 "[표:N]" 줄): 칸마다 hl()이라 검색어 표시가 칸 안에서도 된다. prev가 있고 칸 수가 같으면 바뀐 칸만 낱말 비교 (시기별 비교)
 const TABMARK=/^\[표:(\d+)\]$/;
 function tabHTML(tab,rxs,prev){
@@ -1335,7 +1344,7 @@ function tabHTML(tab,rxs,prev){
 const tabFlat=x=>x.tables?x.tables.map(t=>t.rows.map(r=>r.map(c=>c.t).join(" ")).join("\n")).join("\n"):"";
 const tabSig=x=>x.tables?JSON.stringify(x.tables):"";
 function textHTML(t,rxs,figAt,tabs,rf){
-  const L=t.split("\n"), lv=lineLevels(L), H=(s,r)=>rf?rf(hl(s,r)):hl(s,r);
+  const L0=t.split("\n"), lv=lineLevels(L0), L=bulletNorm(L0), H=(s,r)=>rf?rf(hl(s,r)):hl(s,r);
   if(!figAt&&!tabs&&!lv.some(v=>v>0)) return H(t,rxs);
   return L.map((l,i)=>{ const m=tabs&&l.match(TABMARK); if(m&&tabs[m[1]-1]) return tabHTML(tabs[m[1]-1],rxs)+(figAt&&figAt[i]?figAt[i]:"");
     return `<div class="ln${/^\s*비고\s*\d+\.(?!\d)/.test(l)?" bgh":""}" style="--lv:${lv[i]}">${l.trim()?H(l.trimStart(),rxs):"&#8203;"}</div>`+(figAt&&figAt[i]?figAt[i]:""); }).join("");
@@ -2416,7 +2425,7 @@ function refHTML(text,name,id,rxs=[],tabs){ // tabs: 칸 구조를 되살린 표
     if(/^\[\s*표\s/.test(l)){ let e=j+1; while(e<L.length&&!REFH.test(L[e])&&!/다\.?$/.test(L[e])&&!/^\[\s*(?:표|그림)\s/.test(L[e])&&!/^┌/.test(L[e])&&!TABMARK.test(L[e])) e++; // 표 제목 뒤 칸 글(문장·머리줄 전까지)
       if(e-j-1>=6){ flush(); items.push({l,tb:L.slice(j+1,e).filter(Boolean)}); j=e-1; continue; } }
     seg.push(l); } flush();
-  const ll=lineLevels(items.map(o=>o.h>=4?"0.0 ":o.l)); let k=0; /* 4단 이상 로마자 머리줄(Ⅲ.7.1.1.1)은 새 절이라 목록 단계를 처음으로: 안 하면 앞 절 목록 단계가 쌓여 폰에서 너무 깊게 들어간다 */
+  const ll=lineLevels(items.map(o=>o.h>=4?"0.0 ":o.l)), bn=bulletNorm(items.map(o=>o.h>=4?"0.0 ":o.l||"")); let k=0; /* 4단 이상 로마자 머리줄(Ⅲ.7.1.1.1)은 새 절이라 목록 단계를 처음으로: 안 하면 앞 절 목록 단계가 쌓여 폰에서 너무 깊게 들어간다 */
   const tbNote=(n,body)=>`<div class="ln tbnote">이 표는 칸이 풀린 채로 옮겨져 있어요. 아래 ‘고시 전체 보기’에서 표로 보세요.</div><details class="reftb"><summary>풀린 칸 글 보기 (${n})</summary>${body}</details>`;
   const EQ=o=>!o.sym&&!o.gap&&!o.box&&!o.tb&&!o.h&&/^=/.test(o.l);
   return items.map((o,i)=>{ const eqNote=EQ(o)&&!(i&&(EQ(items[i-1])||items[i-1].gap))?`<div class="ln eqgap" style="--lv:${Math.min(1,Math.max(0,k-1))}">[기호·수식: 원문에 그림으로만 있어요. 아래 고시 전체 보기에서 확인하세요]</div>`:""; // 좌변 기호가 그림이라 빠진 "= …" 줄 묶음
@@ -2428,7 +2437,7 @@ function refHTML(text,name,id,rxs=[],tabs){ // tabs: 칸 구조를 되살린 표
     if(o.tb) return `<div class="ln rh rh3">${hl(o.l,rxs)}</div>`+tbNote(o.tb.length+"칸",`<p>${o.tb.map(c=>hl(c,rxs)).join(" · ")}</p>`);
     if(o.h){ k=o.h; return `<div class="ln rh rh${Math.min(k,3)}">${hl(o.l,rxs)}</div>`; }
     if(/^\[\s*표\s/.test(o.l)) return `<div class="ln tcap">${hl(o.l,rxs)}</div>`; // 표 제목은 들여쓰지 않고 굵게
-    return `<div class="ln" style="--lv:${Math.min(1,Math.max(0,k-1))+ll[i]}">${hl(o.l,rxs)}</div>`; } // 본문 들여쓰기는 머리줄 깊이와 상관없이 한 단까지: 폰에서 Ⅲ.7.1.1.1 아래 줄이 화면 가운데까지 밀리던 것 (2026-10-22)
+    return `<div class="ln" style="--lv:${Math.min(1,Math.max(0,k-1))+ll[i]}">${hl(bn[i],rxs)}</div>`; } // 본문 들여쓰기는 머리줄 깊이와 상관없이 한 단까지: 폰에서 Ⅲ.7.1.1.1 아래 줄이 화면 가운데까지 밀리던 것 (2026-10-22)
 }
 // 조항 목록 줄에서 공란 카드 거르기 (2026-11-04): 제목이 (공 란)이고 글·표·그림이 없으면 "drop", 그림만 딸렸으면 그림 이름 {name}, 글이 있거나 이름을 못 얻으면 null(그대로)
 const blankRow=z=>{ if(!/^\(?공란\)?$/.test((z.title||"").replace(/\s+/g,"").replace(/\([^)]*식\)$/,""))) return null;
