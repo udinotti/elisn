@@ -209,12 +209,13 @@ body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 
 .bgfold>summary::-webkit-details-marker{display:none}
 .bgfold>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
 .bgfold[open]>summary::after{transform:rotate(-135deg)}
+.bgfold>:not(summary){margin-left:15px} /* 펼친 글·그림을 「배경」 글자(안쪽 여백 14+테두리 1)와 왼쪽 맞춤 (2026-11-23) */
 .bgfold .imgs{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 .bgfold .imgs img{display:block;max-height:none;height:auto;max-width:100%;margin:0;border:1px solid var(--frame);border-radius:8px} /* 그림이 여러 장이면 장마다 테두리·간격으로 갈라 보임 (2026-11-18) */
 .bgfold .imgs figure{margin:0;max-width:100%}
 .bgfold .imgs figcaption{margin-top:4px;font-size:12px;color:var(--muted)}
 .attfold .imgs button{display:block;width:100%;border:0;padding:0;background:none;box-shadow:none;border-radius:0;overflow:visible;text-align:left;cursor:zoom-in}
-.bgfold .sub-h{margin:14px 2px 0;font-size:13.5px;font-weight:800;color:var(--ink)} /* 「배경」 안 작은 소제목(협의내용·붙임 이름) */
+.bgfold .sub-h{margin:14px 2px 0 15px;font-size:13.5px;font-weight:800;color:var(--ink)} /* 「배경」 안 작은 소제목(협의내용·붙임 이름) */
 .bgfold .sub-h+.text{margin-top:6px}
 .oldtag{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-size:12.5px;font-weight:800;white-space:nowrap;vertical-align:2px} /* 옛 표준화: 색 + 글자 (2026-11-17, lab) */
 .oldnote{font-size:13px;font-weight:600;color:var(--warn);margin:8px 2px 0}
@@ -229,7 +230,7 @@ body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 
 .sxh h2{margin:0;font-size:14.5px;font-weight:700;color:var(--ink)}
 .sxn{font-size:12.5px;color:var(--muted)}
 .sxl{display:flex;flex-direction:column;gap:8px}
-.sxb{display:flex;align-items:flex-start;gap:10px;width:100%;min-height:44px;text-align:left;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;border-radius:14px;padding:10px 14px;font-size:14.5px}
+.sxb{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;text-align:left;white-space:normal;word-break:keep-all;overflow-wrap:anywhere;border-radius:14px;padding:10px 14px;font-size:14.5px}
 .sxb .sxm{flex:none;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
 .sxb .sxt{flex:1;min-width:0}
 .sxb::after{content:"";flex:none;align-self:center;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
@@ -1717,7 +1718,9 @@ function render0(){ closeTip();
           :`<span class="fgl none">이 판에는 이어 둔 조항이 없어요</span>`}</div></article>`; }).join("");
     res=[]; part=[]; // 아래 조항 카드용 값은 쓰지 않는다
   }
-  if(!useDate&&!isStd&&!raw.trim()&&!/^[\d.()]+$/.test(q.trim())){ res=curFirst(res); part=curFirst(part); } // 허가일을 안 넣었으면 오늘 적용되는 판을 먼저 (조항 번호 검색은 그대로)
+  let allEra=false; // 기준적용일 없이 검색: 지금 적용 중인 조항을 먼저, 끝난 옛 조항은 뒤로 (그 안 순서는 그대로, 2026-11-23)
+  if(!useDate&&!isStd&&!raw.trim()&&!/^[\d.()]+$/.test(q.trim())){ res=curFirst(res); part=curFirst(part);
+    if(q.trim()){ const td=todayIso(), now=o=>applies(o.x,td), old=res.filter(o=>!now(o)); if(old.length){ allEra=true; res=[...res.filter(now),...old]; part=[...part.filter(now),...part.filter(o=>!now(o))]; } } } // 허가일을 안 넣었으면 오늘 적용되는 판을 먼저 (조항 번호 검색은 그대로)
   let excl=[];
   if(useDate){ excl=res.filter(o=>!applies(o.x,d)); res=res.filter(o=>applies(o.x,d)); part=part.filter(o=>applies(o.x,d)); }
   // 이 허가일에 적용되는 글 중, 허가일이 속한 기준 체계(2013.9.15~ / 2019.3.28~)가 시작된 뒤 개정일에 바뀌거나 새로 생긴 조항을 날짜별로.
@@ -1742,6 +1745,7 @@ function render0(){ closeTip();
     // 버튼이 켜진 것만으로 알 수 있으니 "~만 보여 줘요"는 빼고, 조건 때문에 빠진 게 있을 때만 알린다 (2026-11-21 찬호님 "구구절절")
     if(res.length&&cond&&res.length<fc) note.push(`즐겨찾기 ${fc}개 중 ${cond}에 맞는 ${res.length}개`); }
   else if(!q.trim()&&!fOn&&!home) note.push((isStd?"검색어가 없어 표준화 회의 차수 순서(최신 것부터)로 보여 줍니다.":"검색어가 없어 전체를 원래 순서대로 보여 줍니다.")); // 첫 화면(home)은 카드를 안 그리니 이 말을 뺀다
+  if(allEra&&!favOnly&&!lv) note.push("기준적용일이 없어 모든 시기를 보여 줘요 · 지금 기준 먼저");
   if(lv){ note.length=0; note.push(`공단 불합격 기준 ${fgN}개${` · ${useDate?"이 날짜":"지금"} 조항과 이어진 것 ${fgM}개`}`); }
   // 인쇄할 때 맨 위에 찍히는 머리글
   // 탭 제목 = PDF 파일 이름(브라우저가 문서 제목을 파일 이름으로 씀): 검색어·허가일을 늘 제목에 둔다
