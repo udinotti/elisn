@@ -399,7 +399,8 @@ header input,header textarea{-webkit-user-select:text;user-select:text}
 .topics h2{margin:0 2px 10px;font-size:14.5px;font-weight:700;color:var(--ink)}
 .topics h2 .ts{margin-left:6px;font-size:12.5px;font-weight:500;color:var(--muted)}
 .tgrid{display:grid;grid-template-columns:1fr;gap:10px}
-@media (min-width:900px){.tgrid{grid-template-columns:repeat(4,1fr)}}
+/* PC: 카드를 3줄 벽돌 쌓기로(내용 높이만큼, 빈 흰 공간 없이) + 카드 안 칩은 같은 폭 2칸 (2026-11-23 찬호님) */
+@media (min-width:900px){.tgrid{display:block;columns:3;column-gap:10px}.tcard{display:block;break-inside:avoid;margin-bottom:10px}.tcard.wide{column-span:all}.tcard .tg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.tcard .tg .qd{display:flex;justify-content:space-between;align-items:center;min-width:0;white-space:nowrap}.tcard .tg .qd.w2,.tcard .tg .qd.w3{grid-column:1/-1}.tcard.wide .tg{grid-template-columns:repeat(4,minmax(0,1fr))}.tcard.wide .tg .qd.w2{grid-column:span 2}.tcard.wide .tg .qd.w3{grid-column:span 3}}
 .tcard{background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:12px 12px 14px;box-shadow:var(--lift);min-width:0}
 .tcard.wide{grid-column:1/-1}
 .tcard .qlabel{display:block;margin-bottom:8px}
@@ -804,7 +805,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.23)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.25)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -820,7 +821,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.23.2"</script>버전 v2026.11.23.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.25.3"</script>버전 v2026.11.25.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
