@@ -27,7 +27,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
 /* 토스 느낌: 회색 바탕 + 흰 카드, 굵고 큰 글씨, 파란 포인트 하나, 테두리 대신 여백 */
 :root{
   --bg:#f2f4f6; --surface:#ffffff; --fill:#f2f4f6;--chip:#ffffff; --track:#e5e8eb; --line:#e5e8eb;
-  --ink:#191f28; --sub:#4e5968; --muted:#8b95a1;
+  --ink:#191f28; --sub:#4e5968; --muted:#5f6b7a;
   --accent:#3182f6; --accent-press:#1b64da; --accent-soft:#e8f3ff; --banner:#d6e8ff; --on-accent:#ffffff;
   --now:#0a9c5d; --now-soft:#e5f8ef; --old:#6b7684; --old-soft:#f2f4f6;
   --warn:#c26a00; --warn-soft:#fff3e0; --mark:rgba(255,196,0,.34);
@@ -57,7 +57,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
   --edge:rgba(255,255,255,.06); --lift:none; --frame:rgba(255,255,255,.18); --bgedge:var(--edge); --bgsum:var(--edge); /* 어두운 화면 안쪽 카드 테두리가 안 보여 진하게 (2026-11-18) */
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;letter-spacing:-.01em;padding-inline:16px;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;letter-spacing:-.01em;word-break:keep-all;overflow-wrap:break-word;padding-inline:16px;-webkit-font-smoothing:antialiased}
 .wrap{max-width:880px;margin:0 auto;padding-block:8px calc(88px + env(safe-area-inset-bottom,0px))} /* 아래 여백: 떠 있는 ↑ 버튼(48px)이 맨 아래 글자를 가리지 않게 */
 [hidden]{display:none!important} /* 배포본 머리글에도 있지만, 원본 파일만 열어도 숨김이 먹게 */
 html,button,summary{-webkit-tap-highlight-color:transparent} /* 폰에서 누를 때 잠깐 뜨는 파란 상자(누름 강조)를 화면 어디서든 없애기 (링크·글자 칸·눌리는 상자 모두) */
@@ -327,7 +327,7 @@ article{background:var(--surface);border:1px solid var(--edge);border-radius:22p
 .banner .revs{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
 .banner .revs .rl{flex-basis:100%;display:flex;align-items:center;gap:8px;min-height:28px;font-size:13px;font-weight:700;color:var(--muted)} /* 제목은 한 줄 따로, 개정일 버튼은 그 아래 한데 모아 */
 .banner .rvb{font:inherit;font-size:13px;font-weight:700;border:0;border-radius:999px;padding:5px 11px;background:var(--warn-soft);color:var(--warn);cursor:pointer;font-variant-numeric:tabular-nums}
-.banner .rvb.on{background:var(--warn);color:#fff}
+.banner .rvb.on{background:var(--warn);color:var(--on-accent)}
 .banner .rvb.all{background:var(--fill);color:var(--sub);padding:4px 10px}
 .banner .rvb.all.off{visibility:hidden} /* "전체 보기"는 늘 자리를 잡아 두고 개정일을 골랐을 때만 보임: 생겼다 없어지며 줄 높이가 1px 남짓 바뀌어 아래 칸이 위아래로 떨리던 것 */
 @media (max-width:430px){.banner .revs{gap:5px}.banner .rvb{font-size:12.5px;padding:5px 8px}} /* 폰: 개정일 버튼 셋이 한 줄에 들어가게 */
@@ -437,7 +437,8 @@ html:has(dialog[open]){overflow:hidden}
 .cref .cgrp{background:var(--fill);border-radius:12px;overflow:hidden;margin-bottom:8px} /* 안쪽 여백 없이 줄이 상자 끝까지 차서, 누르는 자리가 회색 상자 그대로 (2026-10-27) */
 .cref .csl{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;margin:0;padding:7px 12px 7px calc(12px + var(--sd,0)*14px);font:inherit;font-size:14px;line-height:1.35;text-align:left;color:var(--ink);background:none;border:0;border-top:1px solid var(--line);border-radius:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cref .cgrp .csl:first-child{border-top:0}
-.cref .csl:hover,.cref .csl:active{background:color-mix(in srgb,var(--fill),var(--ink) 7%)}
+.cref .csl:active{background:color-mix(in srgb,var(--fill),var(--ink) 7%)}
+@media (hover:hover) and (pointer:fine){.cref .csl:hover{background:color-mix(in srgb,var(--fill),var(--ink) 7%)}}
 .cref .csl:active{transform:none} /* 상자를 꽉 채운 줄이라 눌러도 작아지지 않게(작아지면 옆 줄과 어긋남) (2026-10-27) */
 .cref.crg .csl .cb{flex-direction:row;align-items:baseline;gap:10px} .cref.crg .csl .cn{flex:none;min-width:3.4em;font-size:14px} /* 범위 목록 창: 번호와 제목을 한 줄에 */
 .cref.crh .csl .cn{min-width:5.6em;white-space:nowrap} .cref.crh .csl .cx{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden} /* 항 목록 창: 번호가 길어 칸을 넓히고, 글 앞부분은 두 줄까지 */
@@ -539,7 +540,7 @@ article.gocard{scroll-margin-top:84px;box-shadow:0 0 0 2px var(--accent);transit
 .failbadge::after{content:"";display:inline-block;width:5px;height:5px;margin:0 1px 3px 7px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg);transition:transform .15s} /* 아래 화살표: 누르면 펼쳐진다는 표시 */
 .failbadge[aria-expanded=true]{background:var(--fb-red);color:var(--surface)} /* 펼침: 진한 빨강으로 채움 */
 .failbadge[aria-expanded=true]::after{transform:translateY(3px) rotate(-135deg)}
-@media (hover:hover){.failbadge:hover{background:color-mix(in srgb,var(--fb-red) 18%,var(--fb-soft))}.failbadge[aria-expanded=true]:hover{background:var(--fb-red)}}
+@media (hover:hover) and (pointer:fine){.failbadge:hover{background:color-mix(in srgb,var(--fb-red) 18%,var(--fb-soft))}.failbadge[aria-expanded=true]:hover{background:var(--fb-red)}}
 @media (prefers-reduced-motion:reduce){.failbadge::after{transition:none}}
 .failbox{margin-top:12px;padding:12px 14px;border-radius:16px;background:var(--fb-box)}
 .failbox .fh{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14.5px;font-weight:700;color:var(--fb-red)}
@@ -821,7 +822,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.25.3"</script>버전 v2026.11.25.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.25.2"</script>버전 v2026.11.25.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -2705,14 +2706,14 @@ if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostnam
     document.addEventListener("visibilitychange",()=>{ swap(); if(!document.hidden&&navigator.onLine&&Date.now()-last>36e5){ last=Date.now(); reg.update().catch(()=>{}); } });
   }).catch(()=>{});
   // 핵심 자료 저장이 끝난(활성) 뒤, 첫 화면이 다 뜬 다음 그림 전부 받기. 데이터 절약 모드면 안 받음
-  // 원문 자료(data/refs.json, 1.5MB)도 같은 때 한 번 불러 서비스 워커가 저장하게 한다: 본문은 읽지 않고 실패해도 조용히 넘김. 서비스 워커(controller)가 바뀔 때마다(새 버전) 한 번씩 → 새 버전 저장소에도 채워짐
+  // 원문 자료(data/refs.json, 1.5MB)도 같은 때 한 번 불러 서비스 워커가 저장하게 한다: 본문은 쓰지 않고 끝까지 받기만 하고 실패해도 조용히 넘김. 서비스 워커(controller)가 바뀔 때마다(새 버전) 한 번씩 → 새 버전 저장소에도 채워짐
   let refsFor=null;
-  const getImgs=()=>navigator.serviceWorker.ready.then(r=>{ if(r.active&&!navigator.connection?.saveData){ r.active.postMessage("images"); const c=navigator.serviceWorker.controller; if(c&&refsFor!==c){ refsFor=c; fetch("data/refs.json").catch(()=>{}); } } }).catch(()=>{});
+  const getImgs=()=>navigator.serviceWorker.ready.then(r=>{ if(r.active&&!navigator.connection?.saveData){ r.active.postMessage("images"); const c=navigator.serviceWorker.controller; if(c&&refsFor!==c){ refsFor=c; fetch("data/refs.json").then(r=>r.arrayBuffer()).catch(()=>{}); } } }).catch(()=>{});
   if(document.readyState==="complete") getImgs(); else addEventListener("load",getImgs);
   // 서비스 워커가 알려 준 아직 없는 그림을 하나씩 받는다(받는 길에 서비스 워커가 저장). 실패한 그림은 건너뛰고 다음에 열 때 다시
   let imgRun=false, imgTry=0;
   navigator.serviceWorker.addEventListener("message",async e=>{ const l=e.data&&e.data.images; if(!Array.isArray(l)||imgRun||!navigator.serviceWorker.controller) return;
-    imgRun=true; for(const u of l){ try{ await fetch(u); }catch(_){} } imgRun=false; if(++imgTry<2) getImgs(); }); /* 한 번 더 물어 그 사이 빠진 그림을 채운다(늘 실패하는 그림 때문에 끝없이 돌지 않게 한 번만) */
+    imgRun=true; for(const u of l){ try{ await (await fetch(u)).arrayBuffer(); /* 끝까지 읽어야 옛 서비스 워커가 일을 마친 것으로 쳐져 새 버전으로 넘어간다 */ }catch(_){} } imgRun=false; if(++imgTry<2) getImgs(); }); /* 한 번 더 물어 그 사이 빠진 그림을 채운다(늘 실패하는 그림 때문에 끝없이 돌지 않게 한 번만) */
 }
 // 홈 화면에 추가 버튼: 늘 보이고, 누르면 기기에 맞게 반응한다
 //  설치 창을 띄울 수 있는 브라우저(안드로이드, PC 크롬·엣지)는 바로 설치 창(안드로이드는 Play Protect 차단 창 대처 안내를 함께), 아이폰은 공유 → 더 보기 → 홈 화면에 추가 안내,
