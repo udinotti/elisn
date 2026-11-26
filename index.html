@@ -32,7 +32,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
   --now:#0a9c5d; --now-soft:#e5f8ef; --old:#6b7684; --old-soft:#f2f4f6;
   --warn:#c26a00; --warn-soft:#fff3e0; --mark:rgba(255,196,0,.34);
   --del:#e5484d; --star:#d98a00; --star-soft:#fff4d6;
-  --edge:transparent; --lift:0 1px 3px rgba(0,27,55,.10); --frame:#d1d6db; --bgedge:#d1d6db; --bgsum:rgba(0,27,55,.07); /* 밝은 화면에서 그림·안쪽 카드·「배경」 단추 테두리 */
+  --edge:transparent; --lift:0 1px 3px rgba(0,27,55,.10); --frame:#d1d6db; --bgedge:#d1d6db; --bgsum:rgba(0,27,55,.07); --sumedge:transparent; --relchip:var(--surface); /* 밝은 화면에서 그림·안쪽 카드·「배경」 단추 테두리 */
   color-scheme:light;
   --sans:"Pretendard","Pretendard Variable","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
 }
@@ -44,7 +44,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
   --now:#41d392; --now-soft:#143023; --old:#a0a0aa; --old-soft:#2a2a31;
   --warn:#ffb547; --warn-soft:#3a2a12; --mark:rgba(255,196,0,.26);
   --del:#ff7a7f; --star:#ffc53d; --star-soft:#3a2f12;
-  --edge:rgba(255,255,255,.06); --lift:none; --frame:rgba(255,255,255,.18); --bgedge:var(--edge); --bgsum:var(--edge); /* 어두운 화면 안쪽 카드 테두리가 안 보여 진하게 (2026-11-18) */
+  --edge:rgba(255,255,255,.06); --lift:none; --frame:rgba(255,255,255,.18); --bgedge:var(--edge); --bgsum:var(--edge); --sumedge:var(--frame); --relchip:#3a3a43; /* 어두운 화면 안쪽 카드 테두리가 안 보여 진하게 (2026-11-18) */
 }}
 :root[data-theme="dark"]{
   color-scheme:dark;
@@ -54,7 +54,7 @@ if(/iP(hone|ad|od)|Android|Mobile/i.test(navigator.userAgent)||(navigator.platfo
   --now:#41d392; --now-soft:#143023; --old:#a0a0aa; --old-soft:#2a2a31;
   --warn:#ffb547; --warn-soft:#3a2a12; --mark:rgba(255,196,0,.26);
   --del:#ff7a7f; --star:#ffc53d; --star-soft:#3a2f12;
-  --edge:rgba(255,255,255,.06); --lift:none; --frame:rgba(255,255,255,.18); --bgedge:var(--edge); --bgsum:var(--edge); /* 어두운 화면 안쪽 카드 테두리가 안 보여 진하게 (2026-11-18) */
+  --edge:rgba(255,255,255,.06); --lift:none; --frame:rgba(255,255,255,.18); --bgedge:var(--edge); --bgsum:var(--edge); --sumedge:var(--frame); --relchip:#3a3a43; /* 어두운 화면 안쪽 카드 테두리가 안 보여 진하게 (2026-11-18) */
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;letter-spacing:-.01em;word-break:keep-all;overflow-wrap:break-word;padding-inline:16px;-webkit-font-smoothing:antialiased}
@@ -205,7 +205,7 @@ body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 
 .tfold>.topics>.thead{display:none}
 .tfold>summary{flex-wrap:wrap}
 .bgfold{margin-top:14px}
-.bgfold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:44px;padding:0 14px;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--surface);border:1px solid var(--bgsum,var(--bgedge));border-radius:14px} /* 밝은 화면에서 그림자·진한 테두리로 튀어 어두운 화면처럼 옅게 (2026-11-19) */
+.bgfold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;min-height:44px;padding:0 14px;font-size:14.5px;font-weight:700;color:var(--ink);background:var(--fill);border:1px solid var(--sumedge);border-radius:14px} .rel article .bgfold>summary{background:var(--surface)} .sx .rel article .bgfold>summary,.fgx .rel article .bgfold>summary{background:var(--fill)} /* 「배경」·「붙임」·「해설」 접힘 상자가 흰 카드와 같은 흰색이라 잘 안 보였다 → 회색 바탕+진한 테두리, 회색 카드 안에서는 흰 바탕 (2026-11-26 찬호님) */ /* 밝은 화면에서 그림자·진한 테두리로 튀어 어두운 화면처럼 옅게 (2026-11-19) */
 .bgfold>summary::-webkit-details-marker{display:none}
 .bgfold>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-2px);transition:transform .15s}
 .bgfold[open]>summary::after{transform:rotate(-135deg)}
@@ -217,6 +217,8 @@ body.stdmode .date{opacity:.5} /* 기준적용일 칸은 제자리에 흐리게 
 .attfold .imgs button{display:block;width:100%;border:0;padding:0;background:none;box-shadow:none;border-radius:0;overflow:visible;text-align:left;cursor:zoom-in}
 .bgfold .sub-h{margin:14px 2px 0 15px;font-size:13.5px;font-weight:800;color:var(--ink)} /* 「배경」 안 작은 소제목(협의내용·붙임 이름) */
 .bgfold .sub-h+.text{margin-top:6px}
+.haefig{margin:10px 2px 0;padding:0}.haefig img{display:block;width:100%;max-width:100%;height:auto;background:#fff;border-radius:8px}.haefig figcaption{margin-top:4px;font-size:12.5px;color:var(--muted);line-height:1.5} /* 해설집 그림: 흰 바탕을 깔아 다크에서도 보임 */
+.haebody{margin-left:0!important}.haebody .sub-h{margin-left:2px}.haebody .text,.haebody .note{margin-left:2px;margin-top:6px} /* 「해설」 펼침: 바깥 접힘 여백(15px)이 이미 있어 안쪽은 다시 들이지 않음 */
 .oldtag{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:999px;background:var(--warn-soft);color:var(--warn);font-size:12.5px;font-weight:800;white-space:nowrap;vertical-align:2px} /* 옛 표준화: 색 + 글자 (2026-11-17, lab) */
 .oldnote{font-size:13px;font-weight:600;color:var(--warn);margin:8px 2px 0}
 .histln{margin-top:12px;font-size:13.5px;line-height:1.6;color:var(--sub)}
@@ -348,10 +350,13 @@ article{background:var(--surface);border:1px solid var(--edge);border-radius:22p
 .text.fold{cursor:pointer} /* 긴 본문은 눌러서 펼치고 접는다 */
 .foldkb:not(:focus-visible){position:absolute;width:1px;height:1px;min-height:0;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap} /* 키보드·스크린리더용 펼침 버튼: 포커스가 올 때만 보임 */
 .text .ln{padding-left:calc(var(--lv,0)*1.4em)} /* 목록 단계만큼 들여쓰기 */
+.text .ln.hg{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.3em} /* ① 가) 1. • 줄: 꺾인 줄이 번호 뒤 첫 글자 밑으로 (2026-11-25 찬호님) */
 .text .ln.bgh{padding-left:calc(1.5*1.4em);text-indent:calc(-1.5*1.4em)} /* 「비고 1. …」 줄: 「비고」만 내밀고 꺾인 줄은 1. 밑으로(2. 줄과 같은 자리, 2026-11-19) */
 .refnw{white-space:nowrap} /* 여는 괄호와 참조 링크를 한 줄에 (2026-10-21) */
 .refbtn{font:inherit;color:var(--accent);background:none;border:0;margin:-8px 0;padding:8px 2px;border-radius:4px;cursor:pointer;text-align:left;text-decoration:underline dotted;text-decoration-thickness:1px;text-underline-offset:3px;-webkit-tap-highlight-color:transparent} /* 카드 글 속 표·부속서·별표 말: 누르면 그 원문 (2026-10-20). 긴 링크가 두 줄이 되면 가운데로 몰리지 않게 왼쪽 맞춤 (2026-11-04); 위아래 margin -8px 은 padding 이 줄 높이를 늘리지 않게 상쇄, 누르는 자리 크기는 그대로 (2026-11-05) */
 .refbtn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.subch{margin:10px 0 2px} .sch{font-size:12px;font-weight:700;color:var(--sub);margin-bottom:6px} .sch b{margin-left:6px;color:var(--accent)} .scb{display:flex;flex-wrap:wrap;gap:6px}
+.chipbtn.refbtn.subchip{margin:0;padding:7px 12px;min-height:36px;background:var(--fill);color:var(--accent);text-decoration:none;font-variant-numeric:tabular-nums;border-radius:10px} /* 이 아래 조항 단추 (2026-11-26 찬호님) */
 /* 고시 표(종류 자료의 tables): 글 사이 제자리에 실제 표로. 넓으면 표 상자만 가로로 밀어 보고(쪽 전체는 안 밀림) */
 .kt{margin:10px 0;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:normal}
 .kt table{border-collapse:collapse;font-size:13.5px;line-height:1.5;color:var(--sub);font-variant-numeric:tabular-nums}
@@ -364,17 +369,16 @@ article{background:var(--surface);border:1px solid var(--edge);border-radius:22p
 .text.clip{max-height:16em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 65%,transparent);mask-image:linear-gradient(#000 65%,transparent)}
 mark{background:var(--mark);color:var(--ink);border-radius:4px;padding:0 2px;font-weight:600}
 .acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
-.acts [data-act="hae"]{display:none} /* 「조언」 단추는 넣지 않기로 해 숨김(2026-11-16 찬호님). 조언 창·자료·시험은 그대로 둠 */
 .imgs{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .imgs button{border:0;border-radius:14px;padding:0;background:#fff;cursor:zoom-in;max-width:100%;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
 .imgs img{display:block;max-height:150px;max-width:100%}
 .rel{margin-top:14px;display:flex;flex-direction:column;gap:10px}
 .rel article{background:var(--fill);border:0;box-shadow:none;border-radius:16px;padding:16px}
 .sx .rel article{background:var(--surface);border:1px solid var(--frame);border-radius:14px} .sx .rel article .chipbtn:not(.primary,[aria-pressed=true]),.sx .rel article .acts .fbico{background:var(--fill)} .sx .rel .pill.old{background:var(--old-soft)} .sx .rel .pill.kw{background:var(--accent-soft);box-shadow:none} /* 검색 결과의 표준화 칸(.sx)은 회색 페이지 위라 펼친 카드도 회색이면 카드가 안 보였다 → 흰 카드, 그 안 칩·단추는 원래 회색·파랑 (2026-11-23 찬호님) */
-.fgx .rel article{background:var(--surface);border:1px solid var(--frame);border-radius:14px} /* 불합격 목록에서 펼친 조항 카드는 회색 바탕이라, 그 안 표준화 카드가 같은 회색이면 안 보임 */
+.fgx .rel article{background:var(--surface);border:1px solid var(--frame);border-radius:14px} .fgx .rel .pill.old{background:var(--old-soft)} .fgx .rel .pill.kw{background:var(--accent-soft);box-shadow:none} /* 이어지는 안건으로 펼친 흰 카드 안 차수·분류 칩이 흰 바탕이라 상자가 안 보였다 → 원래 회색·파랑 (2026-11-26 찬호님) */ /* 불합격 목록에서 펼친 조항 카드는 회색 바탕이라, 그 안 표준화 카드가 같은 회색이면 안 보임 */
 .fgx .rel article .chipbtn:not(.primary,[aria-pressed=true]){background:var(--fill)} /* 3단 중첩: 흰 카드 안 버튼은 카드와 다른 회색이어야 보임(바로 아래 .rel .chipbtn·폰의 .rel .acts .fbico 규칙이 흰색을 줘서 안 보였음) */
 /* 안쪽 카드 바탕(--fill)과 버튼 바탕이 같아 즐겨찾기 등이 상자 없이 떠 보여서, 안쪽 카드의 버튼은 바깥 카드 색으로 (2026-10-02) */
-.rel .chipbtn:not(.primary){background:var(--surface)}
+.rel .chipbtn:not(.primary){background:var(--relchip)} /* 어두운 화면: 안쪽 카드(--fill)보다 밝은 칩 (2026-11-26 찬호님) */
 .rel .title{font-size:15.5px}
 .why{font-size:13px;font-weight:700;color:var(--warn);margin-bottom:8px}
 article.off{opacity:.75}
@@ -383,7 +387,7 @@ article.off{opacity:.75}
 .fgrel{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:12px;font-size:13px}.fgl{color:var(--sub);font-weight:700}.fgl.none{color:var(--muted);font-weight:400}
 .fgc{display:inline-flex;align-items:center;gap:4px;max-width:100%;min-width:0}.fgr{color:var(--muted);white-space:nowrap}
 .fgb{display:inline-flex;align-items:center;line-height:1.2;gap:6px;max-width:100%;min-width:0;min-height:32px;padding:0 10px;font-size:13px;white-space:nowrap}.fgb b{font-variant-numeric:tabular-nums}.fgb .lnm{display:inline-block;max-width:9em;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}.fgt{min-width:0;overflow:hidden;text-overflow:ellipsis}.fgp{color:var(--sub);font-variant-numeric:tabular-nums}
-.fgb[aria-expanded=true]{background:var(--accent-soft);color:var(--accent)}.fgx{align-self:stretch;margin-top:4px}.fgx:empty{display:none}
+.fgb[aria-expanded=true]{background:var(--accent-soft);color:var(--accent)}.fgb:active{transform:none} /* 이어지는 안건 칩: 누를 때 0.97배로 줄었다 돌아오면 끝에서 글자가 소수점 위치에서 제자리로 붙으며 위아래로 들썩였다 → 이 칩만 줄어들기 끔, 누른 표시는 파란 바탕으로 (2026-11-26 찬호님) */.fgx{align-self:stretch;margin-top:4px}.fgx:empty{display:none}
 /* 새로 고칠 때 자료를 불러오는 사이 결과 칸이 비면 바닥글이 검색창 밑까지 올라와 번쩍인다 → 빈 동안은 화면 높이만큼 자리를 잡아 둔다 */
 #out:empty{min-height:100vh}
 .excl{margin-top:28px}
@@ -446,12 +450,6 @@ html:has(dialog[open]){overflow:hidden}
 .cref .csl .cn{font-size:12px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
 .cref .csl[style*="--sd:0"] .cx{font-weight:700}
 .cref .csl .cv{flex:none;color:var(--muted);font-size:18px;line-height:1}
-.adv+.adv{margin-top:16px;padding-top:12px;border-top:1px solid var(--fill)} /* 선배의 조언 창: 기준 해설 / 현장 경험 두 칸 */
-.adv .advh{display:block;font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
-.adv .advh small{font-size:12.5px;font-weight:600;color:var(--muted);margin-left:6px}
-.adv .advx{margin:0 0 8px}
-.adv .advw{display:block;font-size:12.5px;color:var(--muted)}
-.adv .advn{color:var(--muted)}
 article.gocard{scroll-margin-top:84px;box-shadow:0 0 0 2px var(--accent);transition:box-shadow .4s} /* "이 조항으로 가기"로 찾은 그 번호 카드: 그 자리로 가서 잠깐 파란 테두리 */
 .cref .ct{display:block;font-size:16px;font-weight:800;color:var(--ink);line-height:1.5}
 .cref .cp{display:inline-block;margin:4px 0 6px;font-size:13px;font-weight:700;color:var(--now);background:var(--now-soft);border-radius:999px;padding:2px 10px}
@@ -652,7 +650,7 @@ footer a{color:var(--accent)}
   .printonly{display:inline!important}
   @page{size:A4;margin:14mm 12mm}
   /* 기기가 어두운 모드여도 흰 종이에 검은 글씨로 (어두운 색 규칙이 더 강해서 선택자를 같이 적는다) */
-  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){color-scheme:light;--bg:#fff;--surface:#fff;--fill:#f2f4f6;--chip:#ffffff;--ink:#000;--sub:#222;--muted:#555;--edge:transparent;--lift:none;--accent:#1b64da;--accent-soft:#e8f3ff;--banner:#e8f3ff;--now:#0a7a48;--now-soft:#e5f8ef;--old:#444;--old-soft:#f2f4f6;--warn:#a35800;--warn-soft:#fff3e0;--mark:rgba(255,196,0,.34)}
+  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){color-scheme:light;--sumedge:transparent;--relchip:#fff;--bg:#fff;--surface:#fff;--fill:#f2f4f6;--chip:#ffffff;--ink:#000;--sub:#222;--muted:#555;--edge:transparent;--lift:none;--accent:#1b64da;--accent-soft:#e8f3ff;--banner:#e8f3ff;--now:#0a7a48;--now-soft:#e5f8ef;--old:#444;--old-soft:#f2f4f6;--warn:#a35800;--warn-soft:#fff3e0;--mark:rgba(255,196,0,.34)}
   body{background:#fff;padding:0;font-size:12pt}
   .wrap{max-width:none;padding:0}
   .failbox{background:var(--fill)!important}
@@ -806,7 +804,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     </div>
   </div>
 </header>
-<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.25)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
+<p class="offline" id="offline" hidden>인터넷 없이 보는 중이에요. 기기에 저장된 자료(최근 업데이트 2026.11.26)로 보여 드려요. 고시 전체 보기·의견 남기기는 인터넷이 있을 때 돼요.</p>
 <div class="phead" id="phead"></div>
 <p class="banner" id="dateBanner" hidden></p>
 <p class="resline"><span class="status" id="status">자료 불러오는 중…</span> <span class="note" id="note"></span></p>
@@ -822,7 +820,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.25.2"</script>버전 v2026.11.25.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.26.2"</script>버전 v2026.11.26.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -1245,7 +1243,12 @@ function stdNums(){
   for(const c of C){ if(c.kind||c.dup||!(isDate(c.from)&&c.from>="2019-03-28")) continue; const m=(c.label||"").match(/^\d+(?:\.\d+)+/)||(c.text||"").match(/^\s*(\d+(?:\.\d+)+)/); if(m) STDNUM.add(m[1]||m[0]); }
   return STDNUM;
 }
+let RSC=new WeakMap(), RSS=null; // relStd 결과를 조항마다 기억 (검색마다 표준화 자료 전체를 다시 훑던 것, 폰에서 검색이 느리던 곳 2026-11-26)
 function relStd(x){
+  if(RSS!==S){ RSC=new WeakMap(); RSS=S; }
+  let r=RSC.get(x); if(!r){ r=relStd0(x); RSC.set(x,r); } return r;
+}
+function relStd0(x){
   if(x.kind) return []; // 표준화 자료 번호는 엘리베이터 조항 번호라 다른 종류엔 붙이지 않는다
   if(!(isDate(x.from)&&x.from>="2019-03-28")) return [];
   const lm=(x.label||"").match(/^\d+(?:\.\d+)+/), tm=(x.text||"").match(/^\s*(\d+(?:\.\d+)+)/);
@@ -1346,14 +1349,19 @@ function tabHTML(tab,rxs,prev){
 }
 const tabFlat=x=>x.tables?x.tables.map(t=>t.rows.map(r=>r.map(c=>c.t).join(" ")).join("\n")).join("\n"):"";
 const tabSig=x=>x.tables?JSON.stringify(x.tables):"";
+// 내어쓰기 (2026-11-25 찬호님): 줄 머리 표시(① 가) 1. • …) 뒤 글이 꺾이면 둘째 줄이 표시 뒤 첫 글자 밑에 오게, 표시와 글을 두 칸으로
+const HANG=/^(?:[◆◇❍○ㅇ●▪•◦‣★❶-❿①-⑳※*]|[가-하][.)]|\(\d+\)|\d+\)|\d+\.(?!\d)|[a-z][.)]|[-·])\s+/;
 function textHTML(t,rxs,figAt,tabs,rf){
   const L0=t.split("\n"), lv=lineLevels(L0), L=bulletNorm(L0), H=(s,r)=>rf?rf(hl(s,r)):hl(s,r);
-  if(!figAt&&!tabs&&!lv.some(v=>v>0)) return H(t,rxs);
+  if(!figAt&&!tabs&&!lv.some(v=>v>0)&&!L.some(l=>HANG.test(l.trimStart()))) return H(t,rxs);
   return L.map((l,i)=>{ const m=tabs&&l.match(TABMARK); if(m&&tabs[m[1]-1]) return tabHTML(tabs[m[1]-1],rxs)+(figAt&&figAt[i]?figAt[i]:"");
-    return `<div class="ln${/^\s*비고\s*\d+\.(?!\d)/.test(l)?" bgh":""}" style="--lv:${lv[i]}">${l.trim()?H(l.trimStart(),rxs):"&#8203;"}</div>`+(figAt&&figAt[i]?figAt[i]:""); }).join("");
+    const s=l.trimStart(), bgh=/^비고\s*\d+\.(?!\d)/.test(s), h=!bgh&&s.match(HANG), fig=figAt&&figAt[i]?figAt[i]:"";
+    if(h&&s.length>h[0].length) return `<div class="ln hg" style="--lv:${lv[i]}"><span>${H(h[0].trimEnd(),rxs)}</span><span>${H(s.slice(h[0].length),rxs)}</span></div>`+fig;
+    return `<div class="ln${bgh?" bgh":""}" style="--lv:${lv[i]}">${l.trim()?H(s,rxs):"&#8203;"}</div>`+fig; }).join("");
 }
 // 표 자리 줄을 글 그대로 두고 줄 잇기 (줄 잇기가 표 자리 줄을 윗줄에 붙이지 않게 표 자리마다 끊어서)
-function joinKeep(t){ if(!/(^|\n)\[표:\d+\](\n|$)/.test(t)) return joinLines(t);
+// (lab) 윗줄 문장 도중 조항 번호로 시작하는 줄("…설치되어⏎6.1.5.1 가)2)의 기준을 만족한다면 적합")은 새 항목이 아니라 이어진 글 (2026-11-26 찬호님). 운영과 같아야 하는 [줄잇기] 밖(joinKeep 첫머리)에 둔다
+function joinKeep(t){ t=t.replace(/([가-힣])[ \t]*\n(?=\d+(?:\.\d+)+\s?[가-하]\)\S*?[의에을를이가은는과와])/g,(m,c)=>/[다함음]/.test(c)?m:c+" "); if(!/(^|\n)\[표:\d+\](\n|$)/.test(t)) return joinLines(t);
   const out=[], seg=[]; const flush=()=>{ if(seg.length){ out.push(joinLines(seg.join("\n"))); seg.length=0; } };
   for(const l of t.split("\n")){ if(TABMARK.test(l.trim())){ flush(); out.push(l.trim()); } else seg.push(l); } flush(); return out.join("\n"); }
 // 표가 든 글을 창에 넣을 HTML로 (원문 보기): 글은 그대로 이스케이프, 표 자리에 표
@@ -1407,7 +1415,9 @@ const stdNoLabel=x=>["연결된 조항 없음",x.oldkind||x.old?"옛 차수 안�
 const labelHTML=(x,std)=>{if(std&&!shownLabel(x)){const [t,why]=stdNoLabel(x); return `<span title="${esc(why)}">${t}</span>`;} const [l,m]=labelParts(x); const n=m?m[1]:(x.num||"").trim(); if(!l||dateOnly(l)||/^\d/.test(l)||!n||l.includes(n)) return esc(dotAll(shownLabel(x)||"번호 없음")); /* 이름에 번호가 이미 있으면(예: MRL 5.2.3) 한 번만 */ return esc(dotAll(n))+` <small class="lnm">· ${esc(dotAll(l))}</small>`;};
 const labelNum=x=>{const [l,m]=labelParts(x); const n=m?m[1]:(x.num||"").trim(); return esc(dotAll(l&&!dateOnly(l)&&!/^\d/.test(l)&&n&&!l.includes(n)?n:(shownLabel(x)||"번호 없음")));}; // 칩처럼 제목이 바로 옆에 붙는 곳: 번호만(주제 이름은 빼서 두 번 말줄임 안 되게)
 // (2026-10-02) 줄 잇기를 마친 뒤 빈 줄은 뺀다: 항목 사이마다 빈 줄을 넣어 둔 곳(5.8 가)·나)… 사이)이 쓸데없이 벌어져 보이던 것
-const bodyText=x=>{let t=joinKeep((x.text||"").replace(/<br\s*\/?>/gi,"\n").trim()).replace(/\n[ \t]*(?=\n)/g,"");const l=shownLabel(x);if(l&&t.startsWith(l+" "))t=t.slice(l.length).trim();return t;};
+const BTC=new WeakMap(); // 카드 글 줄잇기 결과를 조항마다 기억 (검색마다 같은 글을 다시 잇던 것, 2026-11-26)
+const bodyText=x=>{ if(BTC.has(x)) return BTC.get(x); const r=bodyText0(x); BTC.set(x,r); return r; };
+const bodyText0=x=>{let t=joinKeep((x.text||"").replace(/<br\s*\/?>/gi,"\n").trim()).replace(/\n[ \t]*(?=\n)/g,"");const l=shownLabel(x);if(l&&t.startsWith(l+" "))t=t.slice(l.length).trim();return t;};
 // ── 시기별 비교 ──
 // 같은 제목 묶음 안에서 "같은 조항의 다른 시기 판"을 찾는다
 // - 날짜뿐인 이름("2013-09-15 이후(건축허가분)")끼리는 제목이 곧 한 조항이라 묶는다
@@ -1612,9 +1622,14 @@ function pipeTab(text){
 const pageFig=(h,i,n)=>n>1?`<figure>${h}<figcaption>${i+1}/${n}</figcaption></figure>`:h;
 // 배경 출처가 카드 위 차수 칩(예: 18년 제2차)과 같은 차수면 같은 말을 두 번 쓰지 않게 숨긴다. 다른 차수·다른 문서에서 온 배경만 출처를 보인다 (2026-11-22 찬호님)
 const bgSame=x=>{ const m=String(x.bgsrc.doc).match(/(?:20)?(\d\d)년도?\s*제?\s*(\d+)\s*차/); return !!m&&String(x.from||"").includes(`${m[1]}년 제${m[2]}차`); };
-const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${esc(x.bg)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map((p,i,A)=>pageFig(`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`,i,A.length)).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${esc(x.disc)}</div>`:""}${(x.bgsrc||{}).doc&&!bgSame(x)?`<div class="note">출처: ${esc(x.bgsrc.doc.replace(/\s*(\((pdf|hwpx?)\)|\.(pdf|hwpx?))$/i,""))}</div>`:""}</details>`;
+const bgHTML=x=>`<details class="bgfold"><summary>배경</summary>${x.bg?`<div class="text">${textHTML(joinKeep(x.bg.replace(/<br\s*\/?>/gi,"\n").trim()),[],null,null)}</div>`:""}${(x.bgimgs||[]).length?`<div class="imgs">${x.bgimgs.map((p,i,A)=>pageFig(`<img loading="lazy" src="${esc(p)}" alt="배경 그림">`,i,A.length)).join("")}</div>`:""}${x.disc?`<div class="sub-h">협의내용</div><div class="text">${textHTML(joinKeep(x.disc.replace(/<br\s*\/?>/gi,"\n").trim()),[],null,null)}</div>`:""}${(x.bgsrc||{}).doc&&!bgSame(x)?`<div class="note">출처: ${esc(x.bgsrc.doc.replace(/\s*(\((pdf|hwpx?)\)|\.(pdf|hwpx?))$/i,""))}</div>`:""}</details>`;
 // 표준화 카드 「붙임」: 배경과 같은 모양의 접힌 칸, 붙임 이름마다 그림 (2026-11-17, lab)
 const attHTML=x=>`<details class="bgfold attfold"><summary>붙임</summary>${x.att.map(a=>`<div class="sub-h">${esc(a.name)}</div><div class="imgs">${(a.imgs||[]).map((p,i,A)=>pageFig(`<button type="button" data-img="${esc(p)}" data-cap="${esc("붙임 "+a.name)}" aria-label="그림 크게 보기"><img loading="lazy" src="${esc(p)}" alt="${esc(a.name)}"></button>`,i,A.length)).join("")}</div>`).join("")}</details>`;
+// 제목만 있는 조항(본문 30자 이하)은 바로 아래 번호 조항을 단추로 붙인다: 누르면 기존 조항 링크 창(showCardRef) (2026-11-26 찬호님)
+function subChips(x){ if(x.__i>C.length||!x.__i) return ""; const L=shownLabel(x); if(!L||bodyText(x).length>30||(x.tables||[]).length||[].concat(x.image||[]).length) return "";
+  const n=L.split(".").length+1, seen=new Set(), list=[]; for(const z of C){ const zl=shownLabel(z); if(!zl||seen.has(zl)||!zl.startsWith(L+".")||zl.split(".").length!==n||/^MRL/.test(z.title||"")!==/^MRL/.test(x.title||"")||(z.from||"")>(x.to||"9999-12-31")||(z.to||"9999-12-31")<(x.from||"")||blankRow(z)==="drop") continue; seen.add(zl); list.push([zl,z]); }
+  if(!list.length) return ""; list.sort((p,q)=>p[0].localeCompare(q[0],"en",{numeric:true}));
+  return `<div class="subch"><div class="sch">이 아래 조항<b>${list.length}</b></div><div class="scb">${list.map(([zl,z])=>`<button type="button" class="chipbtn refbtn csl subchip" data-ref="c${z.__i}" data-i="${x.__i}" data-n="${esc(zl)}">${esc(zl)}</button>`).join("")}</div></div>`; }
 function card(x,rxs,isStd,upNote,why,par){
   const r=!isStd&&range(x);
   const rel=isStd?[]:relStd(x), fo=isStd?{items:[]}:failOrInherit(x), fl=fo.items, fn=failCount(fl), fbt=fo.inherited?"불합격 기준 · 지금 기준(참고)":"불합격 "+fn;
@@ -1631,12 +1646,14 @@ function card(x,rxs,isStd,upNote,why,par){
     ${isStd&&x.hist?`<div class="histln"><b>바뀐 이력</b>${esc(x.hist)}</div>`:""}
     ${isStd&&x.note?`<div class="histln"><b>현장 적용</b>${esc(x.note)}</div>`:""}
     <div class="text${long?" clip fold":""}">${textHTML(bT,rxs,figAt,pt?pt.tables:x.tables,linkers(x))}</div>
+    ${isStd?"":subChips(x)}
     ${x.figRef?figRefHTML(x):""}
     ${fp.rest.length?`<div class="imgs">${fp.rest.map(n=>figHTML(x,imgs[n],n)).join("")}</div>`:""}
     ${isStd&&(x.bg||x.disc)?bgHTML(x):""}
     ${isStd&&(x.att||[]).length?attHTML(x):""}
+    ${!isStd&&HAE.has(x.__i)?`<details class="bgfold haefold" data-hae="${x.__i}"><summary>해설</summary><div class="haebody"></div></details>`:""}
     ${!isStd&&TYPO[x.__i]?`<div class="note typo">※ 원문 오타로 보임: ${esc(TYPO[x.__i])}</div>`:""}
-    <div class="acts">${long?`<button class="chipbtn foldkb" type="button" data-act="open" aria-expanded="false">본문 펼치기</button>`:""}<button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${nv>1?`<button class="chipbtn cntbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별<span class="pcw"> 비교</span><span class="cnt">${nv}</span></button>`:""}${rel.length?`<button class="chipbtn cntbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화<span class="pcw"> 자료</span><span class="cnt">${rel.length}<span class="pcw">건</span></span></button>`:""}<span class="acts-r"><button class="linkbtn fbico" type="button" data-act="report" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg><span class="fbt">의견 남기기</span></button>${isStd?"":(HAE.has(x.__i)?`<button class="chipbtn" type="button" data-act="hae" data-i="${x.__i}">조언</button>`:"")+lawBtn(x)}</span></div>
+    <div class="acts">${long?`<button class="chipbtn foldkb" type="button" data-act="open" aria-expanded="false">본문 펼치기</button>`:""}<button class="chipbtn fav" type="button" data-act="fav" aria-pressed="${faved}" aria-label="즐겨찾기">${favLbl(faved)}</button>${nv>1?`<button class="chipbtn cntbtn" type="button" data-act="cmp" data-i="${x.__i}">시기별<span class="pcw"> 비교</span><span class="cnt">${nv}</span></button>`:""}${rel.length?`<button class="chipbtn cntbtn relbtn" type="button" data-act="rel" aria-expanded="${relOpen.has(k)}">표준화<span class="pcw"> 자료</span><span class="cnt">${rel.length}<span class="pcw">건</span></span></button>`:""}<span class="acts-r"><button class="linkbtn fbico" type="button" data-act="report" aria-label="의견 남기기" title="의견 남기기"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg><span class="fbt">의견 남기기</span></button>${isStd?"":lawBtn(x)}</span></div>
     ${rel.length?`<div class="rel"${relOpen.has(k)?"":" hidden"}>${rel.map(o=>card(o.s,rxs,true,o.up)).join("")}</div>`:""}
   </article>`;
 }
@@ -2088,7 +2105,6 @@ $("#out").addEventListener("click",e=>{
   else if(a.dataset.act==="sxall"){ if(setSrc("s")){ render(); scrollTo(0,0); } }
   else if(a.dataset.act==="report") report(art);
   else if(a.dataset.act==="law"){ lawFrom=art; showLaw(+a.dataset.i); }
-  else if(a.dataset.act==="hae") showHae(+a.dataset.i);
   else if(a.dataset.act==="cmp") showCompare(+a.dataset.i);
   else if(a.dataset.act==="fav"){
     const k=art.dataset.k, on=!favs.has(k); on?favs.add(k):favs.delete(k); saveFavs();
@@ -2317,10 +2333,15 @@ const tidy=s=>eqFix(s).replace(/([가-힣])\?(?=[가-힣A-Za-z0-9])/g,"$1·").re
 // 원문 글 첫머리의 조항 번호가 창 제목과 같으면 본문에선 뺀다 (번호가 두 번 보이지 않게, 2026-10-04 운영자). 원문 자료는 그대로, 보여 줄 때만
 // 원문 창의 줄글로 풀린 표 → 카드가 쓰는 같은 표로 (2026-11-18 찬호님: 원문 사이트는 표가 칸으로 보임). 한글·숫자 순서가 카드 표 줄(cut)과 같은 이어진 줄들을 "[표:N]" 한 줄로. 안 맞으면 null(지금처럼 글자 그대로)
 const lawKey=s=>String(s).normalize("NFKC").replace(/[^가-힣0-9]/g,"");
-const lawTabs=(t,x)=>{ if(!x.__ct) return null; const ls=t.split("\n"); let hit=false;
-  for(const {k,n} of x.__ct){ if(!k) continue; for(let a=0;a<ls.length;a++){ if(!lawKey(ls[a])) continue; let acc="",b=a; for(;b<ls.length;b++){ acc+=lawKey(ls[b]); if(acc===k||!k.startsWith(acc)) break; }
+// 원문 창 줄글 표를 제목으로도 맞춤: 2022 별표 22 조항에 "[ 표 N. … ]" 제목이 있으면 제목 뒤 줄글 칸(다음 문장·번호·비고 줄 앞까지)을 빌드가 실어 준 표로 (LAWTAB, 2026-11-26 찬호님)
+const LAWTAB={};
+const lawFlatEnd=(ls,a)=>{ let e=a+1; while(e<ls.length){ const l=ls[e].trim(); if(!l||/^(비고|\d+(\.\d+)+[\s가-하「]|[가-하]\)|\d+\)|\[)/.test(l)||(/[다음함]\.?$/.test(l)&&l.length>20&&!/ \| /.test(l))) break; e++; } return e; };
+const lawTabs=(t,x,src)=>{ const ls=t.split("\n"), tb=[...(x.tables||[])]; let hit=false;
+  for(const {k,n} of x.__ct||[]){ if(!k) continue; for(let a=0;a<ls.length;a++){ if(!lawKey(ls[a])) continue; let acc="",b=a; for(;b<ls.length;b++){ acc+=lawKey(ls[b]); if(acc===k||!k.startsWith(acc)) break; }
     if(acc===k){ ls.splice(a,b-a+1,"[표:"+n+"]"); hit=true; break; } } }
-  return hit?ls.join("\n"):null; };
+  if(src==="b22_2022") for(let a=0;a<ls.length;a++){ const m=ls[a].match(/^\s*\[\s*표\s*(\d+)\.?\s/), w=m&&LAWTAB[m[1]]; if(!w) continue;
+    const tab=w.tab||(w.box&&boxTab(w.box)); if(!tab) continue; const e=lawFlatEnd(ls,a); if(e-a<3) continue; tb.push(tab); ls.splice(a+1,e-a-1,"[표:"+tb.length+"]"); hit=true; }
+  return hit?[ls.join("\n"),tb]:null; };
 const dropNum=(t,n)=>{ t=String(t||""); return n&&t.startsWith(n)&&/\s/.test(t.charAt(n.length))?t.slice(n.length).replace(/^[ \t]+/,""):t; };
 // 장의 마지막 조항은 원문 조각 끝에 다음 장 제목(8.18.2 끝의 "9. 현수, 보상, …")이 딸려 와서 뺀다. 다음 장 번호로 시작하고 문장으로 끝나지 않는 마지막 줄만 (2026-10-04, 35곳)
 const dropNextHead=(t,n)=>{ const N=parseInt(n,10)+1; if(!N) return t; const m=t.match(new RegExp("\\n[ \\t]*"+N+"\\.?[ \\t]+([^\\n]{1,60})$")); return m&&!/다\.?$/.test(m[1])?t.slice(0,m.index):t; };
@@ -2348,7 +2369,8 @@ async function showLaw(i){
     const s=L.sources[r.src];
     $("#lawsrc").textContent=s.name; $("#lawttl").textContent=r.num; $("#lawfull").href=s.url;
     const lt=dropNum(dropNextHead(tidy(eqTxt(r.text)).replace(/&quot;/g,'"').replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&amp;/g,"&"),r.num),r.num); // 원문 조각 몇 곳에 HTML 글자(&quot; 등)가 그대로 남아 있어 되돌린다
-    const lm=lawTabs(lt,x); if(lm) $("#lawbody").innerHTML=plainWithTables(lm,x.tables); else $("#lawbody").textContent=lt;
+    const lm=lawTabs(lt,x,r.src); if(lm) $("#lawbody").innerHTML=plainWithTables(lm[0],lm[1]); else $("#lawbody").textContent=lt;
+    $("#lawbody").insertAdjacentHTML("beforeend",subChips(x)); // 제목만 있는 조항: 이 아래 조항 단추 (2026-11-26 찬호님)
     const w=[];
     if(r.near) w.push("이 조항이 적용되던 때의 판 원문이 없어 가장 가까운 판으로 보여 줘요. 글이 조금 다를 수 있어요.");
     if(r.quoted) w.push("2009 고시보다 앞선 기준이라, 원문 중 \"종전기준\"이라고 인용된 부분이 이 조항의 근거예요.");
@@ -2467,25 +2489,31 @@ function showCardRef(b){ lawCur=()=>showCardRef(b);
     const row=([zl,z])=>`<button type="button" class="csl" style="--sd:${zl.split(".").length-L.split(".").length-1}" data-ref="c${z.__i}" data-i="${x.__i}" data-n="${esc(zl)}"><span class="cb"><span class="cn">${esc(zl)}</span><span class="cx">${esc(cut((blankRow(z)||{}).name||subT(z)))}</span></span><span class="cv" aria-hidden="true">›</span></button>`;
     const grp=[]; for(const it of list){ if(!grp.length||it[0].split(".").length===L.split(".").length+1) grp.push([]); grp[grp.length-1].push(it); } // 바로 아래 단계(16.1.5.1)마다 한 칸
     return `<div class="csub"><div class="csh">아래 조항<b>${list.length}</b></div>`+grp.map(g=>`<div class="cgrp">${g.map(row).join("")}</div>`).join("")+"</div>"; };
-  body.innerHTML=pick.map(y=>`<div class="cref"><span class="ct">${hl(y.title||"",rxs)}</span><span class="cp">${y.from?dot(y.from):"?"} ~ ${y.to?dot(y.to):"현재"}</span>\n${hl(bodyText(y),rxs)}${subs(y)}</div>`).join("");
+  body.innerHTML=pick.map(y=>`<div class="cref"><span class="ct">${hl(y.title||"",rxs)}</span><span class="cp">${y.from?dot(y.from):"?"} ~ ${y.to?dot(y.to):"현재"}</span>\n${hl(bodyText(y),rxs)}${[].concat(y.image||[]).length?`<div class="imgs">${[].concat(y.image).map((p,n)=>figHTML(y,p,n)).join("")}</div>`:""}${y.figRef?figRefHTML(y):""}${subs(y)}</div>`).join(""); // 참조 창에도 카드 그림 (2026-11-26 찬호님)
   $("#lawwarn").textContent="카드 "+dotAll(shownLabel(x)||x.title||"")+"에서 가리키는 ‘"+n+"’이에요."+(d&&pick.some(y=>on(y,d,d))?" 기준적용일에 적용되는 카드만 보여요.":""); $("#lawwarn").hidden=false;
   const a=$("#lawfull"); a.textContent="카드 전체 보기"; a.removeAttribute("target"); const g=n.replace(/[\s.]*[가-하]\).*$/,""); a.href="?q="+encodeURIComponent(g); a.dataset.go=g; a.dataset.goi=pick.map(y=>y.__i).join(","); $("#lawnote").textContent="ELISN 카드 글이에요. 고시 원문은 그 카드의 원문 단추로 보세요.";
   if(!dlg.open) dlg.show();
 }
-// 선배의 조언 (lab, 2026-10-21): 기준 해설(전 승강기기술원장 비공식 해설집, 카드에 이미 있는 기준 문장은 뺀 것) + 현장 경험(현장경험.md). data/hae.json 은 처음 누를 때만 받는다
+// 카드 아래 접힌 「해설」 (lab, 2026-11-25): 선배의 조언(전 승강기기술원장 해설집) · 해설서(2019) · 현장 경험. data/hae.json 은 처음 펼칠 때만 받는다
 let HAEP=null;
 const loadHae=()=>HAEP||(HAEP=fetch("data/hae.json").then(r=>{ if(!r.ok) throw new Error("hae"); return r.json(); }).catch(e=>{ HAEP=null; throw e; }));
-async function showHae(i){
-  lawCur=()=>showHae(i); const x=byI(i), dlg=$("#lawdlg"), my=++lawSeq, body=$("#lawbody"); lawFoot(false); $("#lawfull").hidden=true; body.classList.remove("ref"); body.textContent=""; body.scrollTop=0;
-  $("#lawttl").textContent="선배의 조언"; $("#lawsrc").textContent="불러오는 중…";
-  $("#lawwarn").textContent="선배들이 남긴 비공식 조언이에요. 공단 공식 입장이 아니니, 판단은 고시 원문으로 하세요."; $("#lawwarn").hidden=false;
-  $("#lawnote").textContent="기준 해설은 ‘승강기안전부품 안전기준 및 승강기 안전기준 해설’(전 승강기기술원장, 개인 지식과 AI로 쓴 글)에서 이 조항 부분만 옮겼어요. 현장 경험은 의견 남기기로 보내 주세요.";
-  if(!dlg.open) dlg.show();
-  try{ const H=await loadHae(); if(my!==lawSeq) return; const h=H[i]; if(!h) throw new Error("hae");
-    const rxs=terms($("#q").value); $("#lawttl").textContent=h.n+" 선배의 조언"; $("#lawsrc").textContent="선배의 조언 (비공식)";
-    body.innerHTML=`<div class="adv"><span class="advh">기준 해설<small>전 승강기기술원장 해설집</small></span>${h.t?hl(h.t,rxs):'<span class="advn">이 조항 해설은 없어요.</span>'}</div>${h.s?`<div class="adv"><span class="advh">해설서(2019)<small>엘리베이터 안전기준 해설서</small></span>${h.s.p.length?'<span class="advw">풀이</span>'+h.s.p.map(t=>`<div class="advx">${hl(t,rxs)}</div>`).join(""):""}${h.s.n.length?'<span class="advw">주의·FAQ</span>'+h.s.n.map(t=>`<div class="advx">${hl(t,rxs)}</div>`).join(""):""}<span class="advw">엘리베이터 안전기준 해설서(행정안전부고시 제2019-32호 기준) · 참고 자료이며 주무부처 해석에 따라 달라질 수 있어요</span></div>`:""}<div class="adv"><span class="advh">현장 경험</span>${(h.x||[]).length?h.x.map(e=>`<div class="advx">${hl(e.t,rxs)}<span class="advw">${esc(e.w?e.w+" · ":"")}${dot(e.d)}</span></div>`).join(""):'<span class="advn">아직 없어요. 알려 주실 경험이 있으면 카드의 의견 남기기(말풍선)로 보내 주세요.</span>'}</div>`; }
-  catch(e){ if(my===lawSeq) $("#lawsrc").textContent=navigator.onLine?"해설을 불러오지 못했어요. 다시 눌러 주세요.":"인터넷이 될 때 한 번 열면 다음부터는 인터넷 없이도 열려요."; }
-}
+// 해설집 글 속 그림 줄 "[그림:hae/NN.webp 가로x세로]"(해설링크.js 가 남김)는 그림으로 그린다. 바로 앞 줄이 "~예"로 끝나는 설명이면 그림 아래 작은 글(figcaption)로 옮긴다
+const haeT=t=>{ const out=[], ls=String(t).split("\n"); let g=[];
+  const flush=()=>{ if(g.length) out.push(`<div class="text">${esc(g.join("\n"))}</div>`); g=[]; };
+  for(const l of ls){ const m=l.match(/^\[그림:(hae\/\d+\.webp) (\d+)x(\d+)\]$/);
+    if(!m){ g.push(l); continue; }
+    let cap=""; if(g.length&&/예$/.test(g[g.length-1].trim())&&g[g.length-1].length<80) cap=g.pop().trim();
+    flush();
+    out.push(`<figure class="haefig"><img src="images/${m[1]}" width="${m[2]}" height="${m[3]}" loading="lazy" decoding="async" alt="${esc(cap||"해설집 그림")}">${cap?`<figcaption>${esc(cap)}</figcaption>`:""}</figure>`); }
+  flush(); return out; };
+const haeHTML=h=>{ const sec=(t,A,s)=>A.length?`<div class="sub-h">${t}${s?`<small style="margin-left:6px;font-size:12px;font-weight:400;color:var(--muted)">${s}</small>`:""}</div>${A.map(v=>v[0]==="<"?v:`<div class="text">${v}</div>`).join("")}`:"";
+  return sec("선배의 조언",h.t?haeT(h.t):[],"전 승강기기술원장 해설집")+sec("해설서",[...((h.s||{}).p||[]),...((h.s||{}).n||[])].map(esc),"엘리베이터 안전기준 해설서(2019)")
+    +sec("현장 경험",(h.x||[]).map(e=>esc(e.t)+(e.w||e.d?`<div class="note">${esc(e.w?e.w+" · ":"")}${e.d?dot(e.d):""}</div>`:""))); };
+$("#out").addEventListener("toggle",async e=>{ const d=e.target; if(!d.classList||!d.classList.contains("haefold")||!d.open) return; // toggle 은 거품이 없어 capture
+  const b=d.querySelector(".haebody"); if(b.firstChild&&!b.dataset.err) return; delete b.dataset.err; b.innerHTML=`<div class="note">불러오는 중…</div>`;
+  try{ const h=(await loadHae())[d.dataset.hae]; if(!h) throw new Error("hae"); b.innerHTML=haeHTML(h); }
+  catch(_){ b.dataset.err="1"; b.innerHTML=`<div class="note">${navigator.onLine?"해설을 불러오지 못했어요. 접었다 다시 펼쳐 주세요.":"인터넷이 될 때 한 번 열면 다음부터는 인터넷 없이도 열려요."}</div>`; }
+},true);
 // 범위 표기 (2026-11-03): "7.4 ~ 7.13" 전체가 버튼 하나(빌드가 refCards 의 rg 로 준 [번호, 아이디] 목록). 누르면 원문 창을 재사용해 그 사이 조항 목록을 보이고, 줄(button.csl)을 누르면 조항 번호 링크와 같이 그 조항으로 간다
 function showRangeRef(b){ lawCur=()=>showRangeRef(b);
   const x=byI(+b.dataset.i), dlg=$("#lawdlg"), o=(REFC[x.__i]||[])[+b.dataset.rg]; if(!o||!o.rg) return;
@@ -2834,7 +2862,7 @@ Promise.all([...["data/criteria.json","data/standardization.json","data/fixes.js
    for(const [k,list] of Object.entries(f.lineJoins||{})){ const x=k[0]==="s"?S[+k.slice(1)-1]:C[+k.slice(1)-1]; if(!x||!x.text) continue;
      let t=x.text.replace(/<br\s*\/?>/gi,"\n"); for(const [p,m] of list){ const [ta,hb]=p.split("\n"); t=t.replace(ta+"\n"+hb,ta+(m==="s"?" ":"")+hb); } x.text=t; }
    for(const [t,ids] of Object.entries(f.lawRel||{})) for(const i of ids) LAWREL[i]=t;
-   Object.assign(REFC,f.refCards||{}); Object.assign(TYPO,f.typo||{}); (f.haeCards||[]).forEach(i=>HAE.add(i));
+   Object.assign(REFC,f.refCards||{}); Object.assign(LAWTAB,f.lawTabs||{}); Object.assign(TYPO,f.typo||{}); (f.haeCards||[]).forEach(i=>HAE.add(i));
    // 번호 칸에 날짜·이름만 있어("2019-03-28 이후(건축허가분)") 조항 번호로 못 찾던 카드: 원문 조항 번호(lawNum)도 검색에 넣는다. 화면엔 안 보임 (2026-10-05 운영자)
    for(const [i,n] of Object.entries(f.lawNum||{})){ const x=C[i-1]; if(x) x.num=n; }
    for(const a of f.additions||[]){const x={...a,added:true}; x.__i=C.length+1; x.__k=keyOf(x,false); C.push(x);}
