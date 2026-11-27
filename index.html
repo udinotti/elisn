@@ -822,7 +822,7 @@ html.vtimg::view-transition-group(elisn-card){animation:none;transform-origin:0 
     <section><h3>의견 남기기</h3><button type="button" class="chipbtn primary ft-btn" data-act="feedback"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>의견 남기기 →</button></section>
     <section class="wide"><h3>앱처럼 쓰기 (인터넷 없이)</h3><p id="installtxt">한 번 열어 두면 조항 자료와 원문이 기기에 저장돼, 기계실이나 공사 중인 건물처럼 신호가 없는 곳에서도 검색과 원문 보기가 돼요. 새 자료는 인터넷이 될 때 저절로 받아져요.<br>아래 버튼을 누르면 쓰는 기기에 맞는 설치 방법을 알려 줘요.</p><button type="button" class="chipbtn primary ft-btn" id="install" hidden>홈 화면에 추가</button><p class="installhow" id="installhow" hidden></p></section>
   </div>
-  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.27.2"</script>버전 v2026.11.27.2 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
+  <p class="ft-meta"><script>window.ELISN_VER="v2026.11.27.3"</script>버전 v2026.11.27.3 · 현행 고시 행정안전부고시 제2022-18호(2022.3.2 시행) 기준</p>
 <script>/* 운영자 본인 방문 빼기: 주소의 #은 아래에서 곧 지워져 집계 파일의 #toggle-goatcounter가 못 읽는다 */if(location.hash==="#no-count"){localStorage.setItem("skipgc","t");alert("이 브라우저의 방문은 이제 통계에 안 세어요")}</script>
 <script data-goatcounter="https://elisn.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   <p class="ft-copy">Copyright ⓒ 2026 ELISN. Created by 김찬호.</p>
@@ -879,7 +879,9 @@ if("scrollRestoration" in history) history.scrollRestoration="manual";
 // 같은 뜻 다른 말: 검색어 하나가 이 중 무엇과도 맞으면 찾은 것으로 본다
 const SYN=[["카지붕","카상부"],["조명","조도","lx","㏓","룩스","작업등","전등","전구"],["비상등","비상조명","예비조명"],
   ["피트","핏"],["기계실","기계류공간"],["인터폰","비상통화"],["문닫힘","도어닫힘"],
-  ["브레이크","제동기"],["과속조절기","조속기"]]; // 2019 기준에서 이름이 바뀐 말 (옛 조항은 제동기·조속기)
+  ["브레이크","제동기"],["과속조절기","조속기"],
+  ["균형추","카운터웨이트"],["도르래","풀리","시브"],["주로프","현수로프","와이어로프"],["전동기","모터"],["레일","가이드레일","주행안내레일"],
+  ["잠금장치","인터록"],["틈새","간격","간극"],["손잡이","핸드레일"],["자동구출운전","ARD"]]; // 2026-11-27 찬호님이 고른 묶음(도어스위치는 전기·잠금장치는 기계라 따로, 구출운전은 ARD와 다름) // 2019 기준에서 이름이 바뀐 말 (옛 조항은 제동기·조속기)
 const isDate=v=>typeof v==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const rxEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
@@ -1055,6 +1057,7 @@ function periodPills(x,isStd){
 }
 // 한 글자 단위(㎜㎡㎧ 등, U+3380–33FF)는 카드 글에서 mm·m²·m/s 로 바뀌어 있어서 검색어도 같게 바꾼다 (원문오타.js 의 단위표와 같은 규칙)
 const unitFix=s=>s.replace(/[㎀-㏿]/g,c=>c.normalize("NFKC").replace(/∕/g,"/").replace(/([a-z])([23])$/,(m,a,n)=>a+(n==="2"?"²":"³")));
+const LB="(?"+"<![A-Za-z])", LB_OK=(()=>{ try{ new RegExp(LB+"b"); return true; }catch(e){ return false; } })(); // 뒤 보기를 문자열로 만들어 실행 중에만 시험(옛 아이폰은 글자 그대로 쓰면 스크립트 전체가 멈춤)
 function terms(q){
   q=unitFix(q);
   q=q.replace(/[\u119E\u2027\u318D\u30FB]/g,"\u00B7").replace(/([가-힣])\u2219(?=[가-힣])/g,"$1\u00B7"); // 가운뎃점 통일 (2026-10-26)
@@ -1062,9 +1065,9 @@ function terms(q){
   q=q.replace(/카\s*(지붕|상부|위(?![치험]))(?:에서|에는|에도|에|의|로|를|은|는|도)?(?=\s|$)/g,"카지붕").replace(/카\s*(지붕|상부|위(?![치험]))/g,"카지붕"); // 뒤에 붙은 토씨(카 위에서)는 떼어야 같은 말 묶음으로 찾는다
   return q.trim().split(/\s+/).filter(Boolean).map(w=>{
     const n=w.replace(/\s+/g,"");
-    const g=SYN.find(g=>g.some(v=>v.replace(/\s+/g,"")===n));
+    const g=SYN.find(g=>g.some(v=>v.replace(/\s+/g,"").toLowerCase()===n.toLowerCase())); // ard도 ARD 묶음으로
     if(!g&&/^[\d.()]+$/.test(w)) { const r=new RegExp("(^|[^\\d.])"+rxEsc(w)+"(?!\\d)","gi"); r.num=1; return r; } // 조항 번호: 5.1.2가 15.1.2·5.1.20에 맞지 않게 (하위 5.1.2.1은 맞음). lookbehind 없이(옛 아이폰), 앞 글자는 hl에서 표시 제외
-    const alts=(g?g:[w]).map(loose).map(a=>/\d초$/.test(n)?a+"(?!과)":a); // 띄어쓰기를 안 봐서 "60초"가 "60 초과"에 맞던 것: 숫자+초 뒤에 "과"가 오면 뺀다 (2026-11-20 찬호님)
+    const alts=(g?g:[w]).map(v=>g&&/^[A-Z]{2,}$/.test(v)?(LB_OK?LB:"")+v+"(?![A-Za-z])":loose(v)).map(a=>/\d초$/.test(n)?a+"(?!과)":a); // 묶음 속 영문 약자(ARD)는 낱말 전체만: guard·board 안의 ard에 맞지 않게 (뒤 보기를 못 쓰는 옛 아이폰은 앞쪽만 느슨) // 띄어쓰기를 안 봐서 "60초"가 "60 초과"에 맞던 것: 숫자+초 뒤에 "과"가 오면 뺀다 (2026-11-20 찬호님)
     if(g&&g[0]==="카지붕") alts.push("카\\s*위(?![치험])");
     const r=new RegExp(alts.join("|"),"gi");
     if(g&&g[0]!=="카지붕") r.lit=new RegExp(loose(w),"i"); // 친 말 그대로(작업등)가 같은 뜻 다른 말(조명)보다 앞에 오게
@@ -2228,14 +2231,38 @@ $("#print").addEventListener("click",async()=>{
 });
 // 최근 검색어: 빈 검색창을 누르면 뜨고, 고르면 바로 찾는다
 const rIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>';
+// 치는 말 추천 낱말: 카드 제목을 낱말로 쪼개 세어 두고(처음 한 번), 친 글자가 들어 있는 낱말을 보여 준다
+let wordIdx=null, wordKey="";
+function wordSuggest(typed,shown){
+  const t=typed.replace(/\s+/g,"").toLowerCase();
+  if(t.length<2||/^[\d.()]+$/.test(t)||!loaded) return [];
+  const key=C.length+"|"+S.length+"|"+SK.length+"|"+(K?K.length:0);
+  if(!wordIdx||wordKey!==key){
+    wordKey=key; wordIdx=new Map();
+    for(const arr of [C,S,SK,K||[]]) for(const x of arr){
+      for(const w of String(x.title||x.t0||"").split(/[\s·,.:;()\[\]{}「」『』<>\/\\~\-—–"'“”‘’]+/)){
+        if(w.length<2||/^[\d.]+$/.test(w)||REL_STOP.has(w)) continue;
+        wordIdx.set(w,(wordIdx.get(w)||0)+1);
+      }
+    }
+    for(const [w,n] of [...wordIdx]){ const m=w.match(/^(.{2,}?)(으로|에서|에는|에도|에의|과의|와의|에|의|을|를|은|는|이|가|와|과|로|도)$/); if(m&&wordIdx.has(m[1])){ wordIdx.set(m[1],wordIdx.get(m[1])+n); wordIdx.delete(w); } } // 조사 붙은 꼴(과속조절기의)은 줄기(과속조절기)에 합침
+  }
+  const have=new Set(shown.map(s=>s.replace(/\s+/g,"").toLowerCase()));
+  const out=[];
+  for(const [w,n] of wordIdx){ const f=w.toLowerCase(); if(f===t||have.has(f)||!f.includes(t)) continue; out.push([w,n,f.startsWith(t)?0:1]); }
+  out.sort((a,b)=>a[2]-b[2]||b[1]-a[1]||a[0].length-b[0].length);
+  return out.slice(0,5).map(o=>o[0]);
+}
 function showRecent(){
   const box=$("#recent");
   // 치는 중이면 그 글자가 들어 있는 최근 검색어만 보여 준다 ("비" → "비상통"). 띄어쓰기는 무시, 친 말과 똑같은 것은 뺀다
   const typed=$("#q").value.trim(), flat=s=>s.replace(/\s+/g,"").toLowerCase();
   const list=typed?recent.filter(s=>flat(s).includes(flat(typed))&&flat(s)!==flat(typed)):recent;
-  if(!list.length||document.activeElement!==$("#q")){box.hidden=true;return}
+  const sug=typed?wordSuggest(typed,list):[];
+  if((!list.length&&!sug.length)||document.activeElement!==$("#q")){box.hidden=true;return}
   const rx=typed?[new RegExp(loose(typed),"gi")]:[];
-  box.innerHTML=`<div class="rh"><span>최근 검색어</span><button type="button" data-rclear>기록 지우기</button></div>`+list.map((s,n)=>`<div class="rrow" role="presentation"><button type="button" class="ri" role="option" aria-selected="false" id="ri${n}" tabindex="-1" data-r="${esc(s)}">${rIcon}<span>${hl(s,rx)}</span></button><button type="button" class="rx" data-rdel="${esc(s)}" aria-label="${esc(s)} 지우기" title="지우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>`).join("");
+  const sIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>';
+  box.innerHTML=(list.length?`<div class="rh"><span>최근 검색어</span><button type="button" data-rclear>기록 지우기</button></div>`:"")+list.map((s,n)=>`<div class="rrow" role="presentation"><button type="button" class="ri" role="option" aria-selected="false" id="ri${n}" tabindex="-1" data-r="${esc(s)}">${rIcon}<span>${hl(s,rx)}</span></button><button type="button" class="rx" data-rdel="${esc(s)}" aria-label="${esc(s)} 지우기" title="지우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>`).join("")+(sug.length?`<div class="rh"><span>추천 낱말</span></div>`+sug.map((s,n)=>`<div class="rrow" role="presentation"><button type="button" class="ri" role="option" aria-selected="false" id="ri${list.length+n}" tabindex="-1" data-r="${esc(s)}">${sIcon}<span>${hl(s,rx)}</span></button></div>`).join(""):"");
   if(box.hidden){ recentY=scrollY; recentAt=Date.now(); }
   box.hidden=false; rSel(-1); $("#q").setAttribute("aria-expanded","true");
 }
